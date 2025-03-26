@@ -42,10 +42,6 @@ function FormSection () {
     }
   })
 
-  const handleForgotPassword = () => {
-    return NotFound()
-  }
-
   return (
     <div className='section-container mt-[50px]'>
       <div className='mt-5 p-5 bg-gray-300 dark:bg-gray-700 focus:left-[50%] dark:shadow-2xl hover:scale-105 transition-all rounded-lg border-b-4 border-gray-300'>
