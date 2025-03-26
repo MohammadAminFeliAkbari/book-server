@@ -19,21 +19,25 @@ const BookForm = () => {
   })
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type, files } = e.target
-    console.log(name, value, type, files)
+    const { name, value, type } = e.target
 
-    if (type === 'file') {
-      setBookData({
-        ...bookData,
-        [name]: files[0] // Store the File object
-      })
+    // Check if the target is an HTMLInputElement
+    if (e.target instanceof HTMLInputElement && type === 'file') {
+      // Access files only if it's a file input
+      const file = e.target.files ? e.target.files[0] : null // Get the first file if it exists
+
+      setBookData(prevData => ({
+        ...prevData,
+        [name]: file // Store the File object
+      }))
     } else {
-      setBookData({
-        ...bookData,
-        [name]: value
-      })
+      // For other input types like text or textarea
+      setBookData(prevData => ({
+        ...prevData,
+        [name]: value // Store string value
+      }))
     }
   }
 
