@@ -3,9 +3,7 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import config from '../../config'
 import { province } from './province'
-import { Select } from 'antd'
 import { category } from './category'
-import { toPersianNumber } from '@/convertNumberToPersion'
 
 const BookForm = () => {
   const [showError, setError] = useState()
