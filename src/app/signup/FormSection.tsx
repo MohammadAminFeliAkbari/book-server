@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React from 'react'
 import { useFormik } from 'formik'
 import './signUpCss.css'
 import NotFound from '../not-found'
