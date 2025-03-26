@@ -3,8 +3,8 @@ import React from 'react'
 export default function loading () {
   return (
     <ol className='flex flex-wrap gap-3 justify-center m-10'>
-      {new Array(3).fill('').map(_ => (
-        <Skeleton />
+      {new Array(3).fill('').map((_,index) => (
+        <Skeleton key={index}/>
       ))}
     </ol>
   )

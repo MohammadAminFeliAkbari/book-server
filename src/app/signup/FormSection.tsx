@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
 import { useFormik } from 'formik'
-import { useRouter } from 'next/router'
 import './signUpCss.css'
 import NotFound from '../not-found'
 
@@ -30,7 +29,7 @@ const validate = (values: FormValues) => {
 }
 
 function FormSection () {
-  const [error, setError] = useState<string>('')
+  // const [error, setError] = useState<string>('')
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -60,7 +59,7 @@ function FormSection () {
             onChange={formik.handleChange}
             value={formik.values.userName}
           />
-          {formik.errors.userName || error ? (
+          {/* {formik.errors.userName || error ? (
             <div className='text-red-500 dark:text-red-500 text-right flex gap-4 text-md mb-2 ml-10'>
               <button
                 type='button' // Use type="button" to prevent form submission
@@ -73,7 +72,7 @@ function FormSection () {
                 ? '(!نام کاربری دیگری استفاده کنید) این یوزرنیم قبلا استفاده شده'
                 : formik.errors.userName}
             </div>
-          ) : null}
+          ) : null} */}
           <input
             className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
             type='password'

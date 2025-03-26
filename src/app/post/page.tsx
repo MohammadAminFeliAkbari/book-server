@@ -104,7 +104,7 @@ const BookForm = () => {
         value={bookData.category} // Ensure the select is controlled
       >
         <option value=''>دسته بندی</option>
-        {category.map((item: any) => (
+        {category.map((item: { value: string; display_name: string }) => (
           <option key={item.value} value={item.value}>
             {item.display_name} {/* Show the display name to the user */}
           </option>
@@ -129,7 +129,7 @@ const BookForm = () => {
         value={bookData.province} // Ensure the select is controlled
       >
         <option value=''>انتخاب شهرستان</option>
-        {province.map((item: any) => (
+        {province.map((item: { value: string; display_name: string }) => (
           <option key={item.value} value={item.value}>
             {item.display_name} {/* Show the display name to the user */}
           </option>
