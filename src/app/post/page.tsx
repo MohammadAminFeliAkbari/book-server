@@ -1,15 +1,32 @@
 'use client'
 import React, { useState } from 'react'
 import axios from 'axios'
-import 'tailwindcss/tailwind.css'
 import config from '../../config'
 import { province } from './province'
-import { Select } from 'antd'
 import { category } from './category'
-import { toPersianNumber } from '@/convertNumberToPersion'
+
+type BookData = {
+  title: string
+  author: string
+  category: string
+  sale_price: string
+  province: string
+  front_image: null | string | File // Or specify proper type
+  back_image: null | string | File // Or specify proper type
+  description: string
+}
+
+type ShowError = {
+  title?: boolean // Optional, indicating if there's an error for this field
+  category?: boolean // Optional, indicating if there's an error for this field
+  sale_price?: boolean // Optional, indicating if there's an error for this field
+  province?: boolean // Optional, indicating if there's an error for this field
+  front_image?: boolean // Optional, indicating if there's an error for this field
+  back_image?: boolean // Optional, indicating if there's an error for this field
+}
 
 const BookForm = () => {
-  const [showError, setError] = useState()
+  const [showError, setError] = useState<ShowError>({})
   const [bookData, setBookData] = useState({
     title: '',
     author: '',
@@ -22,21 +39,27 @@ const BookForm = () => {
   })
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
-    const { name, value, type, files } = e.target
-    console.log(name, value, type, files)
+    const { name, value, type } = e.target
 
-    if (type === 'file') {
-      setBookData({
-        ...bookData,
-        [name]: files[0] // Store the File object
-      })
+    // Check if the target is an HTMLInputElement
+    if (e.target instanceof HTMLInputElement && type === 'file') {
+      // Access files only if it's a file input
+      const file = e.target.files ? e.target.files[0] : null // Get the first file if it exists
+
+      setBookData(prevData => ({
+        ...prevData,
+        [name]: file // Store the File object
+      }))
     } else {
-      setBookData({
-        ...bookData,
-        [name]: value
-      })
+      // For other input types like text or textarea
+      setBookData(prevData => ({
+        ...prevData,
+        [name]: value // Store string value
+      }))
     }
   }
 
@@ -44,8 +67,15 @@ const BookForm = () => {
     e.preventDefault()
     const formData = new FormData()
 
+    // Assuming bookData is of type BookData
     for (const key in bookData) {
-      formData.append(key, bookData[key]) // Append each key-value pair to FormData
+      if (Object.prototype.hasOwnProperty.call(bookData, key)) {
+        // Using key as a keyof BookData
+        formData.append(
+          key as keyof BookData,
+          bookData[key as keyof BookData] as string
+        ) // Cast to any for safety
+      }
     }
 
     try {
@@ -90,13 +120,13 @@ const BookForm = () => {
       />
       <input
         type='text'
-        name='author'
-        value={bookData.author}
+        name='title'
+        value={bookData.title}
         onChange={handleChange}
-        placeholder='نویسنده'
+        placeholder='عنوان'
         className={`${
-          showError?.author ? 'border border-red-500' : null
-        }  block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          showError?.title ? 'border border-red-500' : ''
+        } block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
       />
       <select
         name='category'
@@ -107,7 +137,7 @@ const BookForm = () => {
         value={bookData.category} // Ensure the select is controlled
       >
         <option value=''>دسته بندی</option>
-        {category.map((item: any) => (
+        {category.map((item: { value: string; display_name: string }) => (
           <option key={item.value} value={item.value}>
             {item.display_name} {/* Show the display name to the user */}
           </option>
@@ -132,7 +162,7 @@ const BookForm = () => {
         value={bookData.province} // Ensure the select is controlled
       >
         <option value=''>انتخاب شهرستان</option>
-        {province.map((item: any) => (
+        {province.map((item: { value: string; display_name: string }) => (
           <option key={item.value} value={item.value}>
             {item.display_name} {/* Show the display name to the user */}
           </option>

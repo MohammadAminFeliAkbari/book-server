@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faShoppingCart, faHeart } from '@fortawesome/free-solid-svg-icons'
+import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'
 
 const Card = ({ book }) => {
   return (
@@ -25,7 +25,6 @@ const Card = ({ book }) => {
         </div>
         <div
           className='extend-btn cursor-pointer group flex items-center justify-center hover:w-20 h-10 w-10 text-gray-800 bg-green-600 rounded-full transition-all duration-300'
-          onClick={() => {}}
         >
           <FontAwesomeIcon icon={faShoppingCart} className='text-gray-200' />
           <span className='hidden group-hover:inline ml-2 text-gray-200'>

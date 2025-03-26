@@ -49,7 +49,7 @@ export default function TopFooter () {
           640: { slidesPerView: 1, spaceBetween: 20 },
           768: { slidesPerView: 2, spaceBetween: 100 },
           850: { slidesPerView: 2, spaceBetween: 100 },
-          1024: { slidesPerView: 5, spaceBetween: 50 }
+          1024: { slidesPerView: 3, spaceBetween: 50 }
         }}
         navigation
         pagination={{ clickable: true }}

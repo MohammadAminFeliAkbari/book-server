@@ -5,7 +5,7 @@ export default function Home() {
     <div className='m-7'>
       <h1>لیست کتاب ها</h1>
       
-    <Slider></Slider>
+    {/* <Slider></Slider> */}
     </div>
   );
 }

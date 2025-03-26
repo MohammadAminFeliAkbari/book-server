@@ -11,8 +11,8 @@ export interface Item {
   category: string
   sale_price: number
   province: string
-  front_image: any
-  back_image: any
+  front_image: string
+  back_image: string
   description: string
   created_at: string
 }

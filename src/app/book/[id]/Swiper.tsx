@@ -1,10 +1,12 @@
 'use client'
 import React from 'react'
 import { Swiper as SwiperComponent, SwiperSlide } from 'swiper/react'
+import { Navigation } from 'swiper/modules'
 
 // Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/pagination'
+import 'swiper/css/navigation'
 
 type SwiperProps = {
   data: {
@@ -15,7 +17,7 @@ type SwiperProps = {
 
 export default function Swiper ({ data }: SwiperProps) {
   if (!data) {
-    return <div>No images available.</div> // Handle case where data is undefined
+    return <div>No images available.</div>
   }
 
   return (
@@ -23,6 +25,8 @@ export default function Swiper ({ data }: SwiperProps) {
       pagination={{
         dynamicBullets: true
       }}
+      navigation={true} // Enable navigation arrows
+      modules={[Navigation]} // Register the Navigation module
     >
       {data.front_image && (
         <SwiperSlide>

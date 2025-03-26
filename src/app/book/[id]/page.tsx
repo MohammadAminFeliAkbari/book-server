@@ -1,17 +1,13 @@
 import React from 'react'
-import { useRouter } from 'next/router'
 import axios from 'axios'
 import config from '../../../config'
 import { Item } from '../page'
 import Swiper from './Swiper'
 import { toPersianNumber } from '@/convertNumberToPersion'
 
-type props = {
-  params: Promise<{ id: number }>
-  searchParams: Promise<{}>
-}
+export default async function Page (props: { params: Promise<{ id: number }> }) {
+  console.log(props)
 
-export default async function Page (props: any) {
   const { id } = await props.params
   const response = await axios.get(`${config.BASE_URL}/bookcase/books/${id}`)
 

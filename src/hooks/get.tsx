@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 interface Book {
   title: string
@@ -9,8 +9,9 @@ interface Book {
   province: string
 }
 
-export default function get (url: string) {
-  const [data, setData] = useState<Book[]>()
+export default function useFetchBooks (url: string) {
+  // Rename to useFetchBooks
+  const [data, setData] = useState<Book[]>([]) // Initialize with an empty array
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +25,7 @@ export default function get (url: string) {
       }
     }
     fetchData()
-  }, [])
+  }, [url]) // Add url as a dependency
+
   return data
 }
