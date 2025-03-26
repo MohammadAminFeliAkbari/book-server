@@ -5,8 +5,28 @@ import config from '../../config'
 import { province } from './province'
 import { category } from './category'
 
+type BookData = {
+  title: string
+  author: string
+  category: string
+  sale_price: string
+  province: string
+  front_image: null | string | File // Or specify proper type
+  back_image: null | string | File // Or specify proper type
+  description: string
+}
+
+type ShowError = {
+  title?: boolean // Optional, indicating if there's an error for this field
+  category?: boolean // Optional, indicating if there's an error for this field
+  sale_price?: boolean // Optional, indicating if there's an error for this field
+  province?: boolean // Optional, indicating if there's an error for this field
+  front_image?: boolean // Optional, indicating if there's an error for this field
+  back_image?: boolean // Optional, indicating if there's an error for this field
+}
+
 const BookForm = () => {
-  const [showError, setError] = useState()
+  const [showError, setError] = useState<ShowError>({})
   const [bookData, setBookData] = useState({
     title: '',
     author: '',
@@ -19,7 +39,9 @@ const BookForm = () => {
   })
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value, type } = e.target
 
@@ -45,8 +67,15 @@ const BookForm = () => {
     e.preventDefault()
     const formData = new FormData()
 
+    // Assuming bookData is of type BookData
     for (const key in bookData) {
-      formData.append(key, bookData[key]) // Append each key-value pair to FormData
+      if (Object.prototype.hasOwnProperty.call(bookData, key)) {
+        // Using key as a keyof BookData
+        formData.append(
+          key as keyof BookData,
+          bookData[key as keyof BookData] as any
+        ) // Cast to any for safety
+      }
     }
 
     try {
@@ -91,13 +120,13 @@ const BookForm = () => {
       />
       <input
         type='text'
-        name='author'
-        value={bookData.author}
+        name='title'
+        value={bookData.title}
         onChange={handleChange}
-        placeholder='نویسنده'
+        placeholder='عنوان'
         className={`${
-          showError?.author ? 'border border-red-500' : null
-        }  block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          showError?.title ? 'border border-red-500' : ''
+        } block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
       />
       <select
         name='category'
