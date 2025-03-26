@@ -5,7 +5,9 @@ import { Item } from '../page'
 import Swiper from './Swiper'
 import { toPersianNumber } from '@/convertNumberToPersion'
 
-export default async function Page (props: { params: { id: number } }) {
+export default async function Page (props: { params: Promise<{ id: number }> }) {
+  console.log(props)
+
   const { id } = await props.params
   const response = await axios.get(`${config.BASE_URL}/bookcase/books/${id}`)
 
