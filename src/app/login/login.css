@@ -1,0 +1,9 @@
+.login {
+  background-attachment: fixed;
+  background-position: center;
+  height: 85vh;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
