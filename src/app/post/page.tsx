@@ -19,7 +19,7 @@ const BookForm = () => {
   })
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any
   ) => {
     const { name, value, type, files } = e.target
     console.log(name, value, type, files)
