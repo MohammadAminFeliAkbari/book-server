@@ -73,7 +73,7 @@ const BookForm = () => {
         // Using key as a keyof BookData
         formData.append(
           key as keyof BookData,
-          bookData[key as keyof BookData] as any
+          bookData[key as keyof BookData] as string
         ) // Cast to any for safety
       }
     }
