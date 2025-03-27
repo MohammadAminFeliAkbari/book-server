@@ -2,7 +2,10 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Header from '../components/Header/Header'
 import Footer from '../components/Footer/Footer'
+<<<<<<< HEAD
 import MainLayout from '../../context/MainLayout'
+=======
+>>>>>>> refs/remotes/origin/main
 
 export const metadata: Metadata = {
   title: 'Create Next App',

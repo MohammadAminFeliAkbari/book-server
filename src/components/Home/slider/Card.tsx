@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { toPersianNumber } from '../../../convertNumberToPersion'
 import React from 'react'
 
@@ -17,9 +18,15 @@ const Card: React.FC<CardProps> = ({
   sale_price
 }) => {
   return (
+<<<<<<< HEAD
     <div className='flex flex-col items-center justify-center relative gap-4 bg-white shadow-lg rounded-lg overflow-hidden transition transform hover:shadow-2xl dark:bg-gray-800 dark:hover:bg-gray-700 p-6 cursor-pointer'>
       <div className='w-full flex items-center justify-center h-60 overflow-hidden rounded-lg'>
         <img
+=======
+    <div className='flex flex-col items-center justify-center relative gap-4 dark:bg-gray-900 dark:hover:bg-gray-900 transition duration-300 ease-in-out p-6 rounded-lg cursor-pointer rtl:text'>
+      <div className='w-full flex items-center justify-center h-64 overflow-hidden rounded-lg'>
+        <Image
+>>>>>>> refs/remotes/origin/main
           className='h-full object-cover transition-transform duration-300 hover:scale-105'
           src={front_image}
           alt={title}
