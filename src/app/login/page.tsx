@@ -1,10 +1,12 @@
 'use client'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import axios from 'axios'
 import config from '../../config'
 import { AppContext } from '../../../context/AppContext'
+import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import loadingSvg from '../signup/loading.svg'
 
 interface FormValues {
   phone_number: string
@@ -22,6 +24,10 @@ const validationSchema = Yup.object().shape({
 });
 
 function FormSection() {
+  const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const { setRefresh, setAccess } = useContext(AppContext)
+  const router = useRouter()
   const formik = useFormik<FormValues>({
     initialValues: {
       phone_number: '',
@@ -29,20 +35,32 @@ function FormSection() {
     },
     validationSchema,
     onSubmit: async (values) => {
-      axios.post(`${config.BASE_URL}/auth/login/`, values, {
+      setLoading(true)
+      fetch(`${config.BASE_URL}/auth/login/`, {
+        method: 'POST',
+        body: JSON.stringify(values),
         headers: {
           'Content-Type': 'application/json',
         },
       }).then(data => {
-        console.log('ok');
-        console.log(data);
-        console.log(values);
+        const getData = async () => {
+          const tokens = await data.json()
+          if (tokens.datail) {
+            setError(true)
+          } else {
+            setAccess(tokens.access)
+            setRefresh(tokens.refresh)
+            router.push('/')
+          }
+        }
+
+        getData()
 
       }).catch(err => {
         console.log('error find');
 
         console.log(err);
-      })
+      }).finally(() => setLoading(false))
     }
   });
 
@@ -84,13 +102,18 @@ function FormSection() {
             </div>
           ) : null}
 
-          <button
+          {!loading ? <button
             type='submit'
             className='w-full bg-[hsl(154,59%,51%)] border-0 border-b-2 border-b-black/20 rounded-md p-4 text-white cursor-pointer'
           >
             ثبت نام
-          </button>
+          </button> :
+            <div className='w-full text-center bg-[hsl(154,59%,51%)] border-0 border-b-2 opacity-60 border-b-black/20 rounded-md p-4 text-white cursor-pointer'>
+              <Image className='w-[20px] mx-auto' alt='loading' src={loadingSvg} />
+            </div>
+          }
         </form>
+        {error && <h1 className='text-red-400 mt-3'>شماره تلفن یا رمز عبور اشتباه است</h1>}
       </div>
     </div>
   )

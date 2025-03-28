@@ -30,20 +30,22 @@ export default function Header() {
 
     const urlAccountMe = `${config.BASE_URL}/account/me/`;
 
-    fetch(urlAccountMe, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access}`,
-      },
-    }).then((data) => {
-      const fetchData = async () => {
-        const res = await data.json();
-        console.log(res);
-        setUsername(res.first_name + " " + res.last_name);
-      };
-      fetchData();
-    });
+    if (access)
+      fetch(urlAccountMe, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access}`,
+        },
+      }).then((data) => {
+        const fetchData = async () => {
+          const res = await data.json();
+          console.log(res);
+          if (res.first_name && res.last_name)
+            setUsername(res.first_name + " " + res.last_name);
+        };
+        fetchData();
+      });
   }, [refresh, access]);
 
   return (
