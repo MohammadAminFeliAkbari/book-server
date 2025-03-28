@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useFormik } from 'formik'
 import './signUpCss.css'
 import * as Yup from 'yup'
@@ -7,6 +7,7 @@ import config from '../../config'
 import { useRouter } from 'next/navigation'
 import loadingSvg from './loading.svg'
 import Image from 'next/image'
+import { AppContext, contextT } from '../../../context/AppContext'
 
 interface FormValues {
   first_name: string
@@ -38,6 +39,7 @@ function FormSection() {
   const [loading, setLoading] = useState<boolean>(false)
   const [doublicatePhoneNumber, setDoublicatePhoneNumber] = useState<boolean>(false)
   const router = useRouter()
+  const { setAccess, setRefresh } = useContext<contextT>(AppContext);
   const formik = useFormik<FormValues>({
     initialValues: {
       first_name: '',
@@ -47,33 +49,50 @@ function FormSection() {
     },
     validationSchema,
     onSubmit: async (values) => {
-      setLoading(() => true)
-      console.log(values);
-      const url = `${config.BASE_URL}/auth/signup/`;
+      setLoading(true);
+      try {
+        const urlSignUp = `${config.BASE_URL}/auth/signup/`;
 
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values)
-      }).then(res => {
-        setNetworkError(() => false)
-        console.log(res);
+        const res = await fetch(urlSignUp, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        });
+
         if (!res.ok) {
-          setDoublicatePhoneNumber(() => true)
-          setTimeout(() => {
-            setDoublicatePhoneNumber(() => false)
-          }, 3000);
+          setDoublicatePhoneNumber(true);
           return;
         }
-        router.push('/login')
-      })
-        .catch(err => {
-          console.log(err)
-          setNetworkError(() => true)
+
+        const urlLogin = `${config.BASE_URL}/auth/login/`;
+
+        fetch(urlLogin, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ phone_number: values.phone_number, password: values.password }),
+        }).then(data => {
+          const fetchToken = async () => {
+            const tokens = await data.json()
+            setAccess(tokens.access)
+            setRefresh(tokens.refresh)
+            console.log(tokens);
+          }
+
+          fetchToken()
         })
-      setLoading(() => false)
+
+        router.push('/');
+        
+      } catch (err) {
+        console.log(err);
+        setNetworkError(true);
+      } finally {
+        setLoading(false); // Ensure loading is set to false at the end  
+      }
     }
   });
 

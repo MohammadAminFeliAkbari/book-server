@@ -1,9 +1,10 @@
 'use client'
-import React from 'react'
+import React, { useContext } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import axios from 'axios'
 import config from '../../config'
+import { AppContext } from '../../../context/AppContext'
 
 interface FormValues {
   phone_number: string
@@ -23,29 +24,25 @@ const validationSchema = Yup.object().shape({
 function FormSection() {
   const formik = useFormik<FormValues>({
     initialValues: {
+      phone_number: '',
       password: '',
-      phone_number: ''
     },
     validationSchema,
     onSubmit: async (values) => {
-      try {
-        const response = await axios.post(`${config.BASE_URL}/auth/login`, values, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        console.log(response.data);
-        console.log(values);
+      axios.post(`${config.BASE_URL}/auth/login/`, values, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(data => {
         console.log('ok');
-      } catch (error) {
-        console.log('not ok');
-        if (axios.isAxiosError(error)) {
-          console.error("Axios error:", error.response?.data || error.message);
-        } else {
-          console.error("Unexpected error:", error);
-        }
-      }
+        console.log(data);
+        console.log(values);
+
+      }).catch(err => {
+        console.log('error find');
+
+        console.log(err);
+      })
     }
   });
 
