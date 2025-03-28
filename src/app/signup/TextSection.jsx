@@ -4,7 +4,7 @@ import './signUpCss.css'
 
 function TextSection () {
   return (
-    <div className='text-container text-gray-800 text-center drop-shadow-2xl'>
+    <div className='text-container mx-10 text-gray-800 text-center drop-shadow-2xl'>
       <h2 className='dark:text-gray-300 text-2xl text-center'>
         خوش امدید!
       </h2>

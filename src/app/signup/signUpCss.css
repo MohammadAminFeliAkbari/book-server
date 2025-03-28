@@ -32,9 +32,9 @@
   line-height: 1.5em;
 }
 
- 
-
-
+.number_input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
 
 .terms-text {
   margin-top: 10px;

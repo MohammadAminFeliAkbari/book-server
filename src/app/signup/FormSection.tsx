@@ -2,44 +2,64 @@
 import React from 'react'
 import { useFormik } from 'formik'
 import './signUpCss.css'
+import * as Yup from 'yup'
+import axios from 'axios'
+import config from '../../config'
 
 interface FormValues {
-  userName: string
+  first_name: string
+  last_name: string
+  phone_number: string
   password: string
 }
 
-// Validation function
-const validate = (values: FormValues) => {
-  const errors: Partial<Record<keyof FormValues, string>> = {}
+// Validation function  
+const validationSchema = Yup.object().shape({
+  first_name: Yup.string()
+    .required('نام الزامی است')  // Required message in Persian  
+    .min(3, 'نام کاربری باید حداقل ۳ کاراکتر باشد') // Minimum length message  
+    .max(20, 'نام کاربری نمی‌تواند بیشتر از ۲۰ کاراکتر باشد'), // Maximum length message  
+  password: Yup.string()
+    .required('رمز عبور الزامی است') // Required message in Persian  
+    .min(6, 'رمز عبور باید حداقل ۶ کاراکتر باشد'), // Minimum length message  
+  last_name: Yup.string()
+    .required('نام خانوادگی الزامی است')  // Required message in Persian  
+    .min(3, 'نام کاربری باید حداقل ۳ کاراکتر باشد') // Minimum length message  
+    .max(20, 'نام کاربری نمی‌تواند بیشتر از ۲۰ کاراکتر باشد'), // Maximum length message  
+  phone_number: Yup.string()
+    .required('شماره تلفن الزامی است') // Required message in Persian  
+    .matches(/^(\+98|0)?9\d{9}$/, 'شماره تلفن نامعتبر است') // Regex validation with error message  
+});
 
-  if (!values.userName) {
-    errors.userName = 'نام کاربری نباید خالی باشد'
-  } else if (values.userName.length > 15) {
-    errors.userName = 'Must be 15 characters or less'
-  }
-
-  if (!values.password) {
-    errors.password = 'رمز عبور لازم است'
-  } else if (values.password.length < 8) {
-    errors.password = 'رمز عبور نباید کمتر از 8 کاراکتر باشد'
-  }
-
-  return errors
-}
-
-function FormSection () {
-  // const [error, setError] = useState<string>('')
-
+function FormSection() {
   const formik = useFormik<FormValues>({
     initialValues: {
-      userName: '',
-      password: ''
+      first_name: '',
+      last_name: '',
+      phone_number: '',
+      password: '',
     },
-    validate,
-    onSubmit: () => {
-      // Handle submission logic here
+    validationSchema,
+    onSubmit: async (values) => {
+      console.log(values);
+      const url = `${config.BASE_URL}/auth/signup`;
+
+      fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values)
+      }).then(res => {
+        console.log(res);
+        console.log('ok');
+
+      })
+        .catch(err => console.log(err))
+
     }
-  })
+  });
 
   return (
     <div className='section-container mt-[50px]'>
@@ -49,25 +69,27 @@ function FormSection () {
             type='text'
             placeholder='نام کاربری'
             className='w-full p-4 dark:bg-gray-300 mb-2 border border-light-gray text-gray-800 rounded-md focus:outline-none'
-            name='userName'
-            id='userName'
-            onChange={formik.handleChange}
-            value={formik.values.userName}
+            id='first_name'
+            {...formik.getFieldProps('first_name')}
           />
-          {/* {formik.errors.userName || error ? (
-            <div className='text-red-500 dark:text-red-500 text-right flex gap-4 text-md mb-2 ml-10'>
-              <button
-                type='button' // Use type="button" to prevent form submission
-                onClick={handleForgotPassword}
-                className='text-sm font-medium text-primary-600 text-center hover:underline dark:text-gray-400 text-gray-600'
-              >
-                فراموشی رمز؟
-              </button>
-              {error
-                ? '(!نام کاربری دیگری استفاده کنید) این یوزرنیم قبلا استفاده شده'
-                : formik.errors.userName}
+          {formik.touched.first_name && formik.errors.first_name ? ( // Show error only if field has been touched  
+            <div className='text-red-400 text-right'>
+              {formik.errors.first_name}
             </div>
-          ) : null} */}
+          ) : null}
+          <input
+            className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+            type='last_name'
+            placeholder='نام خانوادگی'
+            id='last_name'
+            {...formik.getFieldProps('last_name')}
+          />
+          {formik.touched.last_name && formik.errors.last_name ? ( // Show error only if field has been touched  
+            <div className='text-red-400 text-right'>
+              {formik.errors.last_name}
+            </div>
+          ) : null}
+
           <input
             className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
             type='password'
@@ -75,13 +97,30 @@ function FormSection () {
             name='password'
             id='password'
             onChange={formik.handleChange}
+            onBlur={formik.handleBlur} // Keep track of field blur for validation  
             value={formik.values.password}
           />
-          {formik.errors.password ? (
-            <div className='text-red-500 text-right'>
+          {formik.touched.password && formik.errors.password ? ( // Show error only if field has been touched  
+            <div className='text-red-400 text-right'>
               {formik.errors.password}
             </div>
           ) : null}
+
+          <input
+            className='w-full number_input p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+            type='number'
+            placeholder='شماره تلفن'
+            id='phone_number'
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur} // Keep track of field blur for validation  
+            value={formik.values.phone_number}
+          />
+          {formik.touched.phone_number && formik.errors.phone_number ? ( // Show error only if field has been touched  
+            <div className='text-red-400 text-right'>
+              {formik.errors.phone_number}
+            </div>
+          ) : null}
+
           <button
             type='submit'
             className='w-full bg-[hsl(154,59%,51%)] border-0 border-b-2 border-b-black/20 rounded-md p-4 text-white cursor-pointer'
@@ -94,4 +133,4 @@ function FormSection () {
   )
 }
 
-export default FormSection
+export default FormSection;  

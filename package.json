@@ -15,7 +15,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "swiper": "^11.2.6",
-    "typewriter": "^9.2.0"
+    "typewriter": "^9.2.0",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

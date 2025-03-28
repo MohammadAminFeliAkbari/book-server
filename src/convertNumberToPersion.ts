@@ -1,5 +1,5 @@
 // Helper function to convert numbers to Persian numerals
-export function toPersianNumber (num: number): string {
+export function toPersianNumber (num: string): string {
   if (typeof num !== 'number' || isNaN(num)) {
     return ''
   }
