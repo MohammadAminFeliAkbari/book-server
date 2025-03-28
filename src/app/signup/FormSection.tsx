@@ -1,10 +1,12 @@
 'use client'
-import React from 'react'
+import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import './signUpCss.css'
 import * as Yup from 'yup'
-import axios from 'axios'
 import config from '../../config'
+import { useRouter } from 'next/navigation'
+import loadingSvg from './loading.svg'
+import Image from 'next/image'
 
 interface FormValues {
   first_name: string
@@ -32,6 +34,10 @@ const validationSchema = Yup.object().shape({
 });
 
 function FormSection() {
+  const [networkError, setNetworkError] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [doublicatePhoneNumber, setDoublicatePhoneNumber] = useState<boolean>(false)
+  const router = useRouter()
   const formik = useFormik<FormValues>({
     initialValues: {
       first_name: '',
@@ -41,23 +47,33 @@ function FormSection() {
     },
     validationSchema,
     onSubmit: async (values) => {
+      setLoading(() => true)
       console.log(values);
-      const url = `${config.BASE_URL}/auth/signup`;
+      const url = `${config.BASE_URL}/auth/signup/`;
 
       fetch(url, {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(values)
       }).then(res => {
+        setNetworkError(() => false)
         console.log(res);
-        console.log('ok');
-
+        if (!res.ok) {
+          setDoublicatePhoneNumber(() => true)
+          setTimeout(() => {
+            setDoublicatePhoneNumber(() => false)
+          }, 3000);
+          return;
+        }
+        router.push('/login')
       })
-        .catch(err => console.log(err))
-
+        .catch(err => {
+          console.log(err)
+          setNetworkError(() => true)
+        })
+      setLoading(() => false)
     }
   });
 
@@ -120,14 +136,20 @@ function FormSection() {
               {formik.errors.phone_number}
             </div>
           ) : null}
-
-          <button
+          {!loading ? <button
             type='submit'
             className='w-full bg-[hsl(154,59%,51%)] border-0 border-b-2 border-b-black/20 rounded-md p-4 text-white cursor-pointer'
           >
             ثبت نام
-          </button>
+          </button> :
+            <div className='w-full text-center bg-[hsl(154,59%,51%)] border-0 border-b-2 opacity-60 border-b-black/20 rounded-md p-4 text-white cursor-pointer'>
+              <Image className='w-[20px] mx-auto' alt='loading' src={loadingSvg} />
+            </div>
+          }
+
         </form>
+        {networkError && <h1 className='text-center mt-3 text-red-400'>network error</h1>}
+        {doublicatePhoneNumber && <h1 className='text-center mt-3 text-red-400'>شماره تلفن تکراری است!</h1>}
       </div>
     </div>
   )
