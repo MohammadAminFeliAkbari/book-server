@@ -9,7 +9,7 @@ export default function Header() {
   const [headerVisible, setHeaderVisible] = useState(false);
   const [username, setUsername] = useState("");
 
-  const { refresh, access } = useContext(AppContext);
+  const { refresh, access, setAccess, setRefresh } = useContext(AppContext);
   const handleScroll = () => {
     if (window.scrollY > 100) {
       setHeaderVisible(true);
@@ -19,6 +19,9 @@ export default function Header() {
   };
 
   useEffect(() => {
+    setAccess(localStorage.getItem("access"));
+    setRefresh(localStorage.getItem("refresh"));
+
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -26,26 +29,49 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    console.log("refresh now!!!");
+    if (refresh && access) {
+      const urlAccountMe = `${config.BASE_URL}/account/me/`;
+      if (access)
+        fetch(urlAccountMe, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access}`,
+          },
+        }).then((data) => {
+          const fetchData = async () => {
+            const res = await data.json();
+            console.log(res);
 
-    const urlAccountMe = `${config.BASE_URL}/account/me/`;
+            if (res.detail) {
+              const urlRefresh = `${config.BASE_URL}/auth/refresh/`;
 
-    if (access)
-      fetch(urlAccountMe, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access}`,
-        },
-      }).then((data) => {
-        const fetchData = async () => {
-          const res = await data.json();
-          console.log(res);
-          if (res.first_name && res.last_name)
-            setUsername(res.first_name + " " + res.last_name);
-        };
-        fetchData();
-      });
+              fetch(urlRefresh, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ refresh }),
+              })
+                .then((data) => {
+                  const getRefresh = async () => {
+                    const tokens = await data.json();
+                    setRefresh(tokens.refresh);
+                    setAccess(tokens.access);
+                    localStorage.setItem("refresh", tokens.refresh);
+                    localStorage.setItem("access", tokens.access);
+                  };
+                  getRefresh();
+                })
+                .catch((err) => console.log(err));
+            } else {
+              if (res.first_name && res.last_name)
+                setUsername(res.first_name + " " + res.last_name);
+            }
+          };
+          fetchData();
+        });
+    }
   }, [refresh, access]);
 
   return (
@@ -53,6 +79,14 @@ export default function Header() {
       <header className="dark:bg-gray-800 dark:text-gray-400 p-2">
         <nav className="border-gray-200 py-1 bg-gray-100 bg-opacity-5 dark:bg-gray-800">
           <div className="flex flex-wrap justify-between items-center ">
+            <button
+              onClick={() => {
+                console.log(access);
+                console.log(refresh);
+              }}
+            >
+              print tokens
+            </button>
             <div className="flex items-center lg:order-2">
               {username ? (
                 <h1>{username}</h1>

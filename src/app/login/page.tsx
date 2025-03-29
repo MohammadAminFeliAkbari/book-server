@@ -50,6 +50,8 @@ function FormSection() {
           } else {
             setAccess(tokens.access)
             setRefresh(tokens.refresh)
+            localStorage.setItem('access', tokens.access)
+            localStorage.setItem('refresh', tokens.refresh)
             router.push('/')
           }
         }

@@ -79,6 +79,8 @@ function FormSection() {
             const tokens = await data.json()
             setAccess(tokens.access)
             setRefresh(tokens.refresh)
+            localStorage.setItem('access', tokens.access)
+            localStorage.setItem('refresh', tokens.refresh)
             console.log(tokens);
           }
 
@@ -86,7 +88,7 @@ function FormSection() {
         })
 
         router.push('/');
-        
+
       } catch (err) {
         console.log(err);
         setNetworkError(true);
