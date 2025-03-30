@@ -45,7 +45,7 @@ function FormSection() {
       }).then(data => {
         const getData = async () => {
           const tokens = await data.json()
-          if (tokens.datail) {
+          if (tokens.detail) {
             setError(true)
           } else {
             setAccess(tokens.access)

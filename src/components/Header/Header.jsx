@@ -79,17 +79,9 @@ export default function Header() {
       <header className="dark:bg-gray-800 dark:text-gray-400 p-2">
         <nav className="border-gray-200 py-1 bg-gray-100 bg-opacity-5 dark:bg-gray-800">
           <div className="flex flex-wrap justify-between items-center ">
-            <button
-              onClick={() => {
-                console.log(access);
-                console.log(refresh);
-              }}
-            >
-              print tokens
-            </button>
             <div className="flex items-center lg:order-2">
               {username ? (
-                <h1>{username}</h1>
+                <button className="cursor-pointer px-2">{username}</button>
               ) : (
                 <>
                   <Link

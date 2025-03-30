@@ -15,7 +15,7 @@ type SwiperProps = {
   }
 }
 
-export default function Swiper ({ data }: SwiperProps) {
+export default function Swiper({ data }: SwiperProps) {
   if (!data) {
     return <div>No images available.</div>
   }
@@ -30,12 +30,12 @@ export default function Swiper ({ data }: SwiperProps) {
     >
       {data.front_image && (
         <SwiperSlide>
-          <img src={data.front_image} alt='Front cover' />
+          <img src={data.front_image} alt='Front cover' className='w-full' />
         </SwiperSlide>
       )}
       {data.back_image && (
         <SwiperSlide>
-          <img src={data.back_image} alt='Back cover' />
+          <img src={data.back_image} alt='Back cover' className='w-full' />
         </SwiperSlide>
       )}
     </SwiperComponent>
