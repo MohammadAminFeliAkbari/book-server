@@ -1,9 +1,10 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import axios from 'axios'
 import config from '../../config'
 import { province } from './province'
 import { category } from './category'
+import { AppContext } from '../../../context/AppContext'
 
 type BookData = {
   title: string
@@ -23,9 +24,11 @@ type ShowError = {
   province?: boolean // Optional, indicating if there's an error for this field
   front_image?: boolean // Optional, indicating if there's an error for this field
   back_image?: boolean // Optional, indicating if there's an error for this field
+  author?: boolean
 }
 
 const BookForm = () => {
+  const { access } = useContext(AppContext)
   const [showError, setError] = useState<ShowError>({})
   const [bookData, setBookData] = useState({
     title: '',
@@ -84,7 +87,8 @@ const BookForm = () => {
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${access}`
           }
         }
       )
@@ -102,7 +106,7 @@ const BookForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className={`max-w-md mx-auto mt-10 p-8 bg-white dark:bg-gray-800 shadow-lg rounded-lg transition duration-300 ease-in-out transform`}
+      className={`max-w-md mx-auto m-3 p-8 bg-white dark:bg-gray-800 shadow-lg rounded-lg transition duration-300 ease-in-out transform`}
       encType='multipart/form-data'
     >
       <h2 className='text-2xl font-bold text-center mb-6 text-gray-800 dark:text-gray-200'>
@@ -110,13 +114,12 @@ const BookForm = () => {
       </h2>
       <input
         type='text'
-        name='title'
-        value={bookData.title}
+        name='author'
+        value={bookData.author}
         onChange={handleChange}
-        placeholder='عنوان'
-        className={`${
-          showError?.title ? 'border border-red-500' : null
-        } block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+        placeholder='نویسنده'
+        className={`${showError?.author ? 'border border-red-500' : null
+          } block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
       />
       <input
         type='text'
@@ -124,16 +127,14 @@ const BookForm = () => {
         value={bookData.title}
         onChange={handleChange}
         placeholder='عنوان'
-        className={`${
-          showError?.title ? 'border border-red-500' : ''
-        } block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+        className={`${showError?.author ? 'border border-red-500' : ''
+          } block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
       />
       <select
         name='category'
         onChange={handleChange}
-        className={`${
-          showError?.category ? 'border border-red-500' : null
-        } bg-gray-50 w-full mb-3 border p-3 border-gray-300 text-gray-400 text-sm rounded-lg`}
+        className={`${showError?.category ? 'border border-red-500' : null
+          } bg-gray-50 w-full mb-3 border p-3 border-gray-300 text-gray-400 text-sm rounded-lg`}
         value={bookData.category} // Ensure the select is controlled
       >
         <option value=''>دسته بندی</option>
@@ -149,16 +150,14 @@ const BookForm = () => {
         value={bookData.sale_price}
         onChange={handleChange}
         placeholder='قیمت پیشنهادی'
-        className={`${
-          showError?.sale_price ? 'border border-red-500' : ''
-        } block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2`}
+        className={`${showError?.sale_price ? 'border border-red-500' : ''
+          } block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2`}
       />
       <select
         name='province'
         onChange={handleChange}
-        className={`${
-          showError?.province ? 'border border-red-500 ' : null
-        } bg-gray-50 w-full mb-3 border p-3 border-gray-300 text-gray-400 text-sm rounded-lg`}
+        className={`${showError?.province ? 'border border-red-500 ' : null
+          } bg-gray-50 w-full mb-3 border p-3 border-gray-300 text-gray-400 text-sm rounded-lg`}
         value={bookData.province} // Ensure the select is controlled
       >
         <option value=''>انتخاب شهرستان</option>
@@ -172,17 +171,15 @@ const BookForm = () => {
         type='file'
         name='front_image'
         onChange={handleChange}
-        className={`${
-          showError?.front_image ? 'border border-red-500' : null
-        } block w-full mb-4 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+        className={`${showError?.front_image ? 'border border-red-500' : null
+          } block w-full mb-4 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
       />
       <input
         type='file'
         name='back_image'
         onChange={handleChange}
-        className={`${
-          showError?.back_image ? 'border border-red-500' : null
-        } block w-full mb-4 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+        className={`${showError?.back_image ? 'border border-red-500' : null
+          } block w-full mb-4 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
       />
       <textarea
         name='description'
