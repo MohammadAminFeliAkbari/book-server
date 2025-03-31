@@ -1,10 +1,15 @@
 'use client'
-import React, { useContext, useState } from 'react'
-import axios from 'axios'
+import { useContext, useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { AppContext } from '../../../context/AppContext';
+import loadingSvg from '../signup/loading.svg'
+import Image from 'next/image';
+import { category } from './category';
+import { province } from './province';
+import axios from 'axios';
 import config from '../../config'
-import { province } from './province'
-import { category } from './category'
-import { AppContext } from '../../../context/AppContext'
+import { useRouter } from 'next/navigation';
 
 type BookData = {
   title: string
@@ -12,190 +17,231 @@ type BookData = {
   category: string
   sale_price: string
   province: string
-  front_image: null | string | File // Or specify proper type
-  back_image: null | string | File // Or specify proper type
+  front_image: File | null // Or specify proper type
+  back_image: File | null// Or specify proper type
   description: string
 }
 
 type ShowError = {
-  title?: boolean // Optional, indicating if there's an error for this field
-  category?: boolean // Optional, indicating if there's an error for this field
-  sale_price?: boolean // Optional, indicating if there's an error for this field
-  province?: boolean // Optional, indicating if there's an error for this field
-  front_image?: boolean // Optional, indicating if there's an error for this field
-  back_image?: boolean // Optional, indicating if there's an error for this field
+  title?: boolean
+  category?: boolean
+  sale_price?: boolean
+  province?: boolean
+  front_image?: boolean
+  back_image?: boolean
   author?: boolean
 }
 
 const BookForm = () => {
-  const { access } = useContext(AppContext)
-  const [showError, setError] = useState<ShowError>({})
-  const [bookData, setBookData] = useState({
-    title: '',
-    author: '',
-    category: '',
-    sale_price: '',
-    province: '',
-    front_image: null,
-    back_image: null,
-    description: ''
-  })
+  const router = useRouter()
+  const { access } = useContext(AppContext);
+  const [error, setError] = useState<ShowError>({});
+  const [loading, setLoading] = useState<boolean>(false)
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value, type } = e.target
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required('عنوان کتاب نباید خالی باشد'),
+    author: Yup.string().required('نویسنده نباید خالی باشد'),
+    category: Yup.string().required('Category is required'),
+    sale_price: Yup.string().required('قیمت کتاب نباید خالی باشد'),
+    province: Yup.string().required('Province is required'),
+    front_image: Yup.mixed()
+      .required('عکس روی کتاب نباید خالی باشد')
+      .test('fileFormat', 'فرمت فایل باید jpg یا png باشد', (value: any) => {
+        if (!value) return false; // If no file, return false (invalid)  
+        return value && ['image/jpeg', 'image/png'].includes(value.type);
+      }),
+    back_image: Yup.mixed()
+      .required('عکس پشت کتاب نباید خالی باشد')
+      .test('fileFormat', ' فرمت فایل باید jpg یا png باشد', (value: any) => {
+        if (!value) return false;
+        return value && ['image/jpeg', 'image/png'].includes(value.type);
+      }),
+    description: Yup.string()
+  });
 
-    // Check if the target is an HTMLInputElement
-    if (e.target instanceof HTMLInputElement && type === 'file') {
-      // Access files only if it's a file input
-      const file = e.target.files ? e.target.files[0] : null // Get the first file if it exists
+  const formik = useFormik<BookData>({
+    initialValues: {
+      title: '', //
+      author: '', // 
+      back_image: null,
+      category: 'واژه‌نامه‌ عمومی و تخصصی', // 
+      description: '',
+      front_image: null,
+      province: 'آذربایجان شرقی', // 
+      sale_price: '', //
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      setLoading(true)
+      console.log(values);
 
-      setBookData(prevData => ({
-        ...prevData,
-        [name]: file // Store the File object
-      }))
-    } else {
-      // For other input types like text or textarea
-      setBookData(prevData => ({
-        ...prevData,
-        [name]: value // Store string value
-      }))
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData()
-
-    // Assuming bookData is of type BookData
-    for (const key in bookData) {
-      if (Object.prototype.hasOwnProperty.call(bookData, key)) {
-        // Using key as a keyof BookData
-        formData.append(
-          key as keyof BookData,
-          bookData[key as keyof BookData] as string
-        ) // Cast to any for safety
-      }
-    }
-
-    try {
-      const response = await axios.post(
-        `${config.BASE_URL}/bookcase/books/`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${access}`
+      const post = async () => {
+        try {
+          const response = await axios.post(
+            `${config.BASE_URL}/bookcase/books/`,
+            values,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${access}`
+              }
+            }
+          )
+          console.log('Response:', response.data)
+          router.push('/book')
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            setError(() => error.response?.data)
+            console.log(error.response?.data)
+          } else {
+            console.error('Error:', error)
           }
+        } finally {
+          setLoading(false)
         }
-      )
-      console.log('Response:', response.data)
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setError(() => error.response?.data)
-        console.log(error.response?.data)
-      } else {
-        console.error('Error:', error)
       }
-    }
-  }
+
+      post()
+    },
+  });
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className={`max-w-md mx-auto m-3 p-8 bg-white dark:bg-gray-800 shadow-lg rounded-lg transition duration-300 ease-in-out transform`}
-      encType='multipart/form-data'
-    >
-      <h2 className='text-2xl font-bold text-center mb-6 text-gray-800 dark:text-gray-200'>
-        اضافه کردن کتاب جدید
-      </h2>
+    <form onSubmit={formik.handleSubmit} className='m-5 bg-gray-700 p-5 rounded'>
+      <h1 className='text-center text-[20px] mb-5'>افزودن کتاب</h1>
       <input
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
         type='text'
-        name='author'
-        value={bookData.author}
-        onChange={handleChange}
         placeholder='نویسنده'
-        className={`${showError?.author ? 'border border-red-500' : null
-          } block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+        id='author'
+        {...formik.getFieldProps('author')}
       />
+      {formik.touched.author && formik.errors.author ? ( // Show error only if field has been touched  
+        <div className='text-red-400 text-right'>
+          {formik.errors.author}
+        </div>
+      ) : null}
+
       <input
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
         type='text'
-        name='title'
-        value={bookData.title}
-        onChange={handleChange}
         placeholder='عنوان'
-        className={`${showError?.author ? 'border border-red-500' : ''
-          } block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+        id='title'
+        {...formik.getFieldProps('title')}
       />
-      <select
-        name='category'
-        onChange={handleChange}
-        className={`${showError?.category ? 'border border-red-500' : null
-          } bg-gray-50 w-full mb-3 border p-3 border-gray-300 text-gray-400 text-sm rounded-lg`}
-        value={bookData.category} // Ensure the select is controlled
-      >
-        <option value=''>دسته بندی</option>
-        {category.map((item: { value: string; display_name: string }) => (
-          <option key={item.value} value={item.value}>
-            {item.display_name} {/* Show the display name to the user */}
-          </option>
-        ))}
-      </select>
+      {formik.touched.title && formik.errors.title ? ( // Show error only if field has been touched  
+        <div className='text-red-400 text-right'>
+          {formik.errors.title}
+        </div>
+      ) : null}
+
       <input
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
         type='number'
-        name='sale_price'
-        value={bookData.sale_price}
-        onChange={handleChange}
         placeholder='قیمت پیشنهادی'
-        className={`${showError?.sale_price ? 'border border-red-500' : ''
-          } block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2`}
+        id='sale_price'
+        {...formik.getFieldProps('sale_price')}
       />
+      {formik.touched.sale_price && formik.errors.sale_price ? ( // Show error only if field has been touched  
+        <div className='text-red-400 text-right'>
+          {formik.errors.sale_price}
+        </div>
+      ) : null}
+
       <select
-        name='province'
-        onChange={handleChange}
-        className={`${showError?.province ? 'border border-red-500 ' : null
-          } bg-gray-50 w-full mb-3 border p-3 border-gray-300 text-gray-400 text-sm rounded-lg`}
-        value={bookData.province} // Ensure the select is controlled
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+        id='province'
+        {...formik.getFieldProps('province')}
       >
-        <option value=''>انتخاب شهرستان</option>
         {province.map((item: { value: string; display_name: string }) => (
           <option key={item.value} value={item.value}>
-            {item.display_name} {/* Show the display name to the user */}
+            {item.display_name}
           </option>
         ))}
       </select>
-      <input
-        type='file'
-        name='front_image'
-        onChange={handleChange}
-        className={`${showError?.front_image ? 'border border-red-500' : null
-          } block w-full mb-4 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-      />
-      <input
-        type='file'
-        name='back_image'
-        onChange={handleChange}
-        className={`${showError?.back_image ? 'border border-red-500' : null
-          } block w-full mb-4 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-      />
-      <textarea
-        name='description'
-        value={bookData.description}
-        onChange={handleChange}
-        placeholder='Description'
-        className='block w-full p-3 mb-4 border-2 border-gray-300 rounded-lg text-gray-700 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500'
-      ></textarea>
-      <button
-        type='submit'
-        className='w-full bg-blue-600 text-white p-3 rounded-lg font-semibold transition duration-150 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
+      {formik.touched.province && formik.errors.province ? (<div className='text-red-400 text-right'>
+        {formik.errors.province}
+      </div>
+      ) : null}
+
+      <select
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+        id='category'
+        {...formik.getFieldProps('category')}
       >
-        اضافه کردن
-      </button>
+        {category.map((item: { value: string; display_name: string }) => (
+          <option key={item.value} value={item.value}>
+            {item.display_name}
+          </option>
+        ))}
+      </select>
+      {formik.touched.category && formik.errors.category ? (<div className='text-red-400 text-right'>
+        {formik.errors.category}
+      </div>
+      ) : null}
+
+
+      <input
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+        type='file'
+        placeholder='عکس روی کتاب'
+        id='front_image'
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          const fileList = event.currentTarget.files; // Get the FileList  
+          if (fileList && fileList.length > 0) { // Check if fileList is not null and has at least one file  
+            const file = fileList[0]; // Access the first file  
+            formik.setFieldValue('front_image', file); // Set the file in Formik  
+          } else {
+            formik.setFieldValue('front_image', null); // Optionally set to null if no file is selected  
+          }
+        }}
+      />
+      {formik.touched.front_image && formik.errors.front_image ? ( // Show error only if field has been touched  
+        <div className='text-red-400 text-right'>
+          {formik.errors.front_image}
+        </div>
+      ) : null}
+
+      <input
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+        type='file'
+        placeholder='عکس پشت کتاب'
+        id='back_image'
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          const fileList = event.currentTarget.files; // Get the FileList  
+          if (fileList && fileList.length > 0) { // Check if fileList is not null and has at least one file  
+            const file = fileList[0]; // Access the first file  
+            formik.setFieldValue('back_image', file); // Set the file in Formik  
+          } else {
+            formik.setFieldValue('back_image', null); // Optionally set to null if no file is selected  
+          }
+        }}
+      />
+      {formik.touched.back_image && formik.errors.back_image ? ( // Show error only if field has been touched  
+        <div className='text-red-400 text-right'>
+          {formik.errors.back_image}
+        </div>
+      ) : null}
+
+      <textarea
+        placeholder='توضیح اضافه'
+        {...formik.getFieldProps('description')}
+        className='w-full h-32 p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+      />
+
+      {!loading ? <button
+        type='submit'
+        className='w-full bg-[hsl(154,59%,51%)] border-0 border-b-2 border-b-black/20 rounded-md p-4 text-white cursor-pointer'
+      >
+        اضافه کردن کتاب
+      </button> :
+        <div className='w-full text-center bg-[hsl(154,59%,51%)] border-0 border-b-2 opacity-60 border-b-black/20 rounded-md p-4 text-white cursor-pointer'>
+          <Image className='w-[20px] mx-auto' alt='loading' src={loadingSvg} />
+        </div>
+      }
+      {/* {error && <h1 className='text-red-400 mt-3'>شماره تلفن یا رمز عبور اشتباه است</h1>} */}
     </form>
   )
-}
+};
+
 
 export default BookForm

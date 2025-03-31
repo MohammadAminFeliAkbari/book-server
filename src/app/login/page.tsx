@@ -108,7 +108,7 @@ function FormSection() {
             type='submit'
             className='w-full bg-[hsl(154,59%,51%)] border-0 border-b-2 border-b-black/20 rounded-md p-4 text-white cursor-pointer'
           >
-            ثبت نام
+            ورود
           </button> :
             <div className='w-full text-center bg-[hsl(154,59%,51%)] border-0 border-b-2 opacity-60 border-b-black/20 rounded-md p-4 text-white cursor-pointer'>
               <Image className='w-[20px] mx-auto' alt='loading' src={loadingSvg} />
