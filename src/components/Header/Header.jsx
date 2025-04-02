@@ -3,9 +3,10 @@ import Link from "next/link";
 import React, { useState, useEffect, useContext } from "react";
 import { AppContext } from "../../../context/AppContext";
 import config from "../../config";
+import Drawer from "./Drawer";
 
 export default function Header() {
-  const [hidden, setHidden] = useState(true);
+  const [hidden, setHidden] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(false);
   const [username, setUsername] = useState("");
 
@@ -78,12 +79,12 @@ export default function Header() {
     <>
       <header className="dark:bg-gray-800 dark:text-gray-400 ">
         <nav className="border-gray-200 p-4 bg-gray-100 bg-opacity-5 dark:bg-gray-800">
-          <div className="flex flex-wrap justify-between items-center ">
-            <div className="flex items-center lg:order-2">
+          <div className="flex flex-wrap justify-between items-center">
+            <div className="flex items-center lg:order-2 justify-between">
               {username ? (
                 <button className="cursor-pointer px-2">{username}</button>
               ) : (
-                <>
+                <div>
                   <Link
                     href={"/login"}
                     onClick={() => setHidden(true)}
@@ -98,12 +99,12 @@ export default function Header() {
                   >
                     ثبت نام
                   </Link>{" "}
-                </>
+                </div>
               )}
               <button
                 data-collapse-toggle="mobile-menu-2"
                 type="button"
-                className="inline-flex left-4 absolute items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden dark:hover:bg-gray-700 hover:bg-gray-200 dark:outline-none dark:hover:text-gray-500 mr-2 transition-all focus:outline-none focus:ring-1 focus:ring-gray-600 dark:text-gray-400"
+                className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden dark:hover:bg-gray-700 hover:bg-gray-200 dark:outline-none dark:hover:text-gray-500 mr-2 transition-all focus:outline-none focus:ring-1 focus:ring-gray-600 dark:text-gray-400"
                 aria-controls="mobile-menu-2"
                 aria-expanded={!hidden}
                 onClick={() => setHidden((prev) => !prev)}
@@ -124,9 +125,7 @@ export default function Header() {
               </button>
             </div>
             <div
-              className={`${
-                hidden ? "hidden" : ""
-              } justify-between items-center w-full lg:flex lg:w-auto lg:order-1`}
+              className={`hidden lg:block justify-between items-center w-full lg:w-auto lg:order-1`}
               id="mobile-menu-2"
             >
               <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0 gap-3">
@@ -145,6 +144,7 @@ export default function Header() {
             </div>
           </div>
         </nav>
+        <Drawer open={hidden} setOpen={setHidden} />
       </header>
 
       <h1
