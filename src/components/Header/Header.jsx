@@ -64,10 +64,10 @@ export default function Header() {
   }, [refresh, access]);
 
   return (
-    <header className="flex gap-2 items-center w-full px-2 py-3 dark:bg-gray-800 dark:text-gray-400 ">
+    <header className="flex gap-2 items-center w-full px-2 py-3 dark:bg-gray-800 bg-gray-200 dark:text-gray-400 ">
       <button
         onClick={() => setHidden((pre) => !pre)}
-        className="hover:bg-gray-600 rounded-full transition-all hover:text-gray-400"
+        className="dark:hover:bg-gray-600 text-gray-600 hover:text-gray-700 hover:bg-gray-300 rounded-full transition-all dark:hover:text-gray-400"
       >
         <svg
           className="w-6 h-6 m-1"
@@ -83,13 +83,13 @@ export default function Header() {
         </svg>
       </button>
 
-      <div className="flex p-2 flex-1 relative items-center bg-gray-700 text-white rounded-md ">
+      <div className="flex p-2 flex-1 relative items-center dark:bg-gray-700 bg-gray-100 dark:text-white rounded-md ">
         <input
           type="text"
           className="text-[12px] outline-none flex-1 pl-8"
           placeholder="چیزی بنویسید..."
         />
-        <span className="text-white absolute left-0">
+        <span className="dark:text-white text-gray-500 absolute left-0">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5 m-2" // Tailwind classes to control size

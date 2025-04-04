@@ -28,7 +28,9 @@ const MyDrawer = ({ open, setOpen }) => {
     >
       <list>
         <div className="h-full flex flex-col">
-          <h1 className="text-center p-3 text-gray-200">کتاب بان</h1>
+          <h1 className="text-center p-3 text-gray-800 dark:text-gray-200">
+            کتاب بان
+          </h1>
           <div className="border-b-1 text-gray-400 w-full"></div>
           <button className="flex cursor-pointer py-2 dark:text-gray-300 gap-1 items-center justify-center text-[15px] ">
             <svg

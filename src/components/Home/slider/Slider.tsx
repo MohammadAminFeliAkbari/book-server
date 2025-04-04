@@ -15,6 +15,7 @@ interface Book {
   sale_price: number; // Adjust type based on actual API response  
   author: string;
   province: string;
+  id:string
 }
 
 export default function TopFooter() {
@@ -40,9 +41,8 @@ export default function TopFooter() {
     <div className='w-full flex items-center justify-center'>
       <Swiper
         slidesPerView={3}
-        spaceBetween={30}
+        spaceBetween={20}
         freeMode={true}
-        // pagination={{ clickable: true }}
         breakpoints={{
           640: {
             slidesPerView: 1,
@@ -63,11 +63,13 @@ export default function TopFooter() {
         {data.map((item, index) => (
           <SwiperSlide key={index}>
             <Card
+              id={item.id}
               title={item.title}
               front_image={item.front_image}
               sale_price={item.sale_price}
               author={item.author}
               province={item.province}
+              
             />
           </SwiperSlide>
         ))}
