@@ -4,8 +4,10 @@ import config from '../../../config'
 import { Item } from '../page'
 import Swiper from './Swiper'
 import { toPersianNumber } from '@/convertNumberToPersion'
+import Properties from './Properties'
+import Cards from '../../../components/Home/slider/Slider'
 
-export default async function Page (props: { params: Promise<{ id: number }> }) {
+export default async function Page(props: { params: Promise<{ id: number }> }) {
   console.log(props)
 
   const { id } = await props.params
@@ -13,42 +15,39 @@ export default async function Page (props: { params: Promise<{ id: number }> }) 
 
   const data: Item = response.data
   return (
-    <div className='border m-3 dark:bg-gray-700 bg-gray-100 dark:border-gray-600 rounded p-5 flex flex-col gap-5'>
-      <div className='top gap-2 flex items-center dark:text-gray-300 mx-5'>
-        <span style={{ fontSize: '16px' }}>نام کتاب:</span>
-        <h2 style={{ fontSize: '20px' }}>{data.title}</h2>
+    <div className='border-b-1 dark:bg-gray-700 bg-white dark:border-gray-600 border-gray-400 flex flex-col w-full gap-3 min-h-[1000px]'>
+      {/* image slider */}
+      <div className='w-full'>
+        <Swiper data={data} />
       </div>
-      <div className='flex justify-center items-center'>
-        <div className='img w-[90%]'>
-          <Swiper data={data} />
+      {/* title author price */}
+      <div className='w-full p-3 flex justify-between'>
+        <div className='flex flex-col'>
+          <h1 className='text-[18px] text-[#000000]'>{data.title}</h1>
+          <h3 className='text-[14px] text-[#919191]'>{data.author}</h3>
         </div>
-      </div>
-      <div className='border dark:border-gray-600'></div>
-      <div className='description'>
-        <h4 className='mb-3 mr-3'>توضیحات</h4>
-        <div className='border dark:border-gray-600'></div>
-        <div className='flex gap-1 items-center px-4 py-2'>
-          <h1 style={{ fontSize: '12px' }} className='dark:text-gray-200'>
-            شهر :
-          </h1>
-          <h2 style={{ fontSize: '15px' }} className='dark:text-gray-300'>
-            {data.province}
-          </h2>
-        </div>
-
-        <div className='flex gap-1 items-center px-4 py-2 '>
-          <h1 style={{ fontSize: '12px' }} className='dark:text-gray-200'>
-            دیگر توضیحات :
-          </h1>
-          <h2 style={{ fontSize: '15px' }} className='dark:text-gray-300'>
-            {data.description}
-          </h2>
-        </div>
+        <button className='text-[#52CC6D] text-xl/relaxed'>{toPersianNumber(data.sale_price)} تومان</button>
       </div>
 
-      <button className='w-full bg-green-600 text-white p-2 rounded-lg'>
-        {toPersianNumber(data.sale_price)} هزارتومان{' '}
-      </button>
+      <Properties category={data.category} description={data.description} province={data.province} />
+
+      {/* offer */}
+      <div className='flex flex-col gap-3'>
+        <div className='m-3'>
+          <h2 className='my-1 dark:text-gray-300 text-[#121212] text-[16px]'>موردعلاقه</h2>
+          <Cards />
+        </div>
+
+        <div className='m-3'>
+          <h2 className='my-1 dark:text-gray-300  text-[#121212] text-[16px]' >موردعلاقه</h2>
+          <Cards />
+        </div>
+
+        <div className='m-3'>
+          <h2 className='my-1 dark:text-gray-300 text-[#121212] text-[16px]'>بیشترین فروش</h2>
+          <Cards />
+        </div>
+      </div>
     </div>
   )
 }

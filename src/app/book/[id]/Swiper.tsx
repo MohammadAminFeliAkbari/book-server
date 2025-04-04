@@ -1,43 +1,52 @@
 'use client'
-import React from 'react'
-import { Swiper as SwiperComponent, SwiperSlide } from 'swiper/react'
-import { Navigation } from 'swiper/modules'
+import React from 'react';
+import { Swiper as SWIPER, SwiperSlide } from 'swiper/react';
+import { Pagination } from 'swiper/modules';
 
-// Import Swiper styles
-import 'swiper/css'
-import 'swiper/css/pagination'
-import 'swiper/css/navigation'
+// Import Swiper styles  
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 type SwiperProps = {
   data: {
-    front_image: string
-    back_image: string
-  }
-}
+    front_image: string;
+    back_image: string;
+  };
+};
 
 export default function Swiper({ data }: SwiperProps) {
-  if (!data) {
-    return <div>No images available.</div>
+  // Check for images availability  
+  if (!data || (!data.front_image && !data.back_image)) {
+    return <div>No images available.</div>;
   }
 
   return (
-    <SwiperComponent
+    <SWIPER
       pagination={{
-        dynamicBullets: true
+        dynamicBullets: true, // You can enable this if needed  
       }}
-      navigation={true} // Enable navigation arrows
-      modules={[Navigation]} // Register the Navigation module
+      modules={[Pagination]}
+      className="mySwiper"
     >
       {data.front_image && (
         <SwiperSlide>
-          <img src={data.front_image} alt='Front cover' className='w-full' />
+          <img
+            src={data.front_image}
+            alt='Front cover'
+            className='w-full h-[344px] object-cover'
+          />
         </SwiperSlide>
       )}
       {data.back_image && (
         <SwiperSlide>
-          <img src={data.back_image} alt='Back cover' className='w-full' />
+          <img
+            src={data.back_image}
+            alt='Back cover'
+            className='w-full h-[344px] object-cover'
+          />
         </SwiperSlide>
       )}
-    </SwiperComponent>
-  )
-}
+    </SWIPER>
+  );
+}  
