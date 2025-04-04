@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { toPersianNumber } from '@/convertNumberToPersion'
 
-function Properties({ province, description,category }: {category:string, description: string, province: string }) {
+function Properties({ province, description, category }: { category: string, description: string, province: string }) {
     const [activePage, setActivePage] = useState<boolean>(false)
     return (
         <div>
