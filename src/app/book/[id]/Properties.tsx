@@ -4,6 +4,7 @@ import { toPersianNumber } from '@/convertNumberToPersion'
 
 function Properties({ province, description, category }: { category: string, description: string, province: string }) {
     const [activePage, setActivePage] = useState<boolean>(false)
+
     return (
         <div>
             <div className='w-full flex items-center justify-center cursor-pointer'>

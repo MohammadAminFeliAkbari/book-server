@@ -6,20 +6,21 @@ import Swiper from './Swiper'
 import { toPersianNumber } from '@/convertNumberToPersion'
 import Properties from './Properties'
 import Cards from '../../../components/Home/slider/Slider'
+import Nav from './ButtonBuy'
 
 export default async function Page(props: { params: Promise<{ id: number }> }) {
   console.log(props)
-
   const { id } = await props.params
   const response = await axios.get(`${config.BASE_URL}/bookcase/books/${id}`)
 
   const data: Item = response.data
   return (
-    <div className='border-b-1 dark:bg-gray-700 bg-white dark:border-gray-600 border-gray-400 flex flex-col w-full gap-3 min-h-[1000px]'>
+    <div className='relative border-b-1 dark:bg-gray-700 bg-white dark:border-gray-600 border-gray-400 flex flex-col w-full gap-3 min-h-[1000px]'>
       {/* image slider */}
       <div className='w-full'>
         <Swiper data={data} />
       </div>
+
       {/* title author price */}
       <div className='w-full p-3 flex justify-between'>
         <div className='flex flex-col'>
@@ -48,6 +49,8 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
           <Cards />
         </div>
       </div>
-    </div>
+
+      <Nav/>
+    </div >
   )
 }

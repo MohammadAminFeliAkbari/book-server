@@ -9,12 +9,17 @@ import { Button } from "@mui/material";
 export default function Header() {
   const [hidden, setHidden] = useState(false);
   const [username, setUsername] = useState("");
+  const [hiddenName, setHiddenName] = useState(false);
 
   const { refresh, access, setAccess, setRefresh } = useContext(AppContext);
 
   useEffect(() => {
     setAccess(localStorage.getItem("access"));
     setRefresh(localStorage.getItem("refresh"));
+
+    setInterval(() => {
+      setHiddenName(false);
+    }, 10000);
   }, []);
 
   useEffect(() => {
@@ -54,8 +59,10 @@ export default function Header() {
                 })
                 .catch((err) => console.log(err));
             } else {
-              if (res.first_name && res.last_name)
+              if (res.first_name && res.last_name) {
                 setUsername(res.first_name + " " + res.last_name);
+                setHiddenName(true);
+              }
             }
           };
           fetchData();
@@ -64,7 +71,7 @@ export default function Header() {
   }, [refresh, access]);
 
   return (
-    <header className="flex gap-2 items-center w-full px-2 py-3 dark:bg-gray-800 bg-gray-200 dark:text-gray-400 ">
+    <header className="relative flex gap-2 items-center w-full px-2 py-3 dark:bg-gray-800 bg-gray-200 dark:text-gray-400 ">
       <button
         onClick={() => setHidden((pre) => !pre)}
         className="dark:hover:bg-gray-600 text-gray-600 hover:text-gray-700 hover:bg-gray-300 rounded-full transition-all dark:hover:text-gray-400"
@@ -102,7 +109,19 @@ export default function Header() {
           </svg>
         </span>
       </div>
-      <Drawer open={hidden} setOpen={setHidden} />
+      <Drawer open={hidden} setOpen={setHidden} username={username} />
+
+      {username && hiddenName ? (
+        <div className="absolute pr-4 flex gap-2 items-center justify-center top-1 right-1 p-3 bg-green-400 text-white rounded-4xl">
+          <button
+            onClick={() => setHiddenName(false)}
+            className="hover:text-red-400 transition-[200] p-2 cursor-pointer"
+          >
+            ×
+          </button>
+          <h1>{username} خوش آمدی!!</h1>
+        </div>
+      ) : null}
     </header>
   );
 }
