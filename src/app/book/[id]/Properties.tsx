@@ -19,32 +19,32 @@ function Properties({ province, description, category }: { category: string, des
                 :
                 <div className='flex flex-col w-full p-5 gap-3'>
                     <div className='flex justify-between items-center'>
-                        <h1 className='text-[#000000]'>تعدادصفحات</h1>
+                        <h1 className='text-[#000000] dark:text-gray-200'>تعدادصفحات</h1>
                         {/* <h2 className='text-[#919191]'>{toPersianNumber(210)}</h2> */}
-                        <h2 className='text-[#919191]'>unknown</h2>
+                        <h2 className='text-[#919191] dark:text-gray-400'>unknown</h2>
                     </div>
                     <div className='flex justify-between items-center'>
-                        <h1 className='text-[#000000]'>منتشرکننده</h1>
-                        <h2 className='text-[#919191]'>unknown</h2>
+                        <h1 className='text-[#000000] dark:text-gray-200'>منتشرکننده</h1>
+                        <h2 className='text-[#919191] dark:text-gray-400'>unknown</h2>
                     </div>
                     <div className='flex justify-between items-center'>
-                        <h1 className='text-[#000000]'>زبان کتاب</h1>
-                        <h2 className='text-[#919191]'>unknown</h2>
+                        <h1 className='text-[#000000] dark:text-gray-200'>زبان کتاب</h1>
+                        <h2 className='text-[#919191] dark:text-gray-400'>unknown</h2>
                     </div>
 
                     <div className='flex justify-between items-center'>
-                        <h1 className='text-[#000000]'>شهر</h1>
-                        <h2 className='text-[#919191]'>{province}</h2>
+                        <h1 className='text-[#000000] dark:text-gray-200'>شهر</h1>
+                        <h2 className='text-[#919191] dark:text-gray-400'>{province}</h2>
                     </div>
 
                     <div className='flex justify-between items-center'>
-                        <h1 className='text-[#000000]'>دسته بندی</h1>
-                        <h2 className='text-[#919191]'>{category}</h2>
+                        <h1 className='text-[#000000] dark:text-gray-200'>دسته بندی</h1>
+                        <h2 className='text-[#919191] dark:text-gray-400'>{category}</h2>
                     </div>
 
-                    <h1 className='text-[#000000]'>دیگرتوضیحات</h1>
+                    <h1 className='text-[#000000] dark:text-gray-200'>دیگرتوضیحات</h1>
 
-                    <p className='text-[#919191] mx-2'>{description}</p>
+                    <p className='text-[#919191] mx-2 dark:text-gray-400'>{description}</p>
                 </div>
             }
         </div>
