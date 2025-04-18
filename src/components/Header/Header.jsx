@@ -3,12 +3,10 @@ import Link from 'next/link'
 import React, { useState, useEffect, useContext } from 'react'
 import { AppContext } from '../../../context/AppContext'
 import config from '../../config'
-import Drawer from './Drawer'
 import { Button } from '@mui/material'
 import Buttons_Main from './Buttons'
 
 export default function Header () {
-  const [hidden, setHidden] = useState(false)
   const [username, setUsername] = useState('')
   const [hiddenName, setHiddenName] = useState(false)
 
@@ -73,30 +71,13 @@ export default function Header () {
 
   return (
     <header className='relative flex gap-2 items-center w-full px-2 py-3 dark:bg-gray-800 bg-gray-200 dark:text-gray-400 '>
-      <button
-        onClick={() => setHidden(pre => !pre)}
-        className='dark:hover:bg-gray-600 text-gray-600 hover:text-gray-700 hover:bg-gray-300 rounded-full transition-all dark:hover:text-gray-400'
-      >
-        <svg
-          className='w-6 h-6 m-1'
-          fill='currentColor'
-          viewBox='0 0 20 20'
-          xmlns='http://www.w3.org/2000/svg'
-        >
-          <path
-            fillRule='evenodd'
-            d='M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z'
-            clipRule='evenodd'
-          />
-        </svg>
-      </button>
+      <h2 className='hidden xl:block'>hello</h2>
       <Link
         href={'/'}
-        class='text-center mx-auto text-blue-500 font-bold shadow-md border-b-2 border-gray-700'
+        className='text-center mx-auto text-blue-500 font-bold'
       >
         کتاب بان
       </Link>
-      <Drawer open={hidden} setOpen={setHidden} username={username} />
 
       {username && hiddenName ? (
         <div className='absolute pr-4 flex gap-2 items-center justify-center top-1 right-1 p-3 bg-green-400 text-white rounded-4xl'>
@@ -110,7 +91,7 @@ export default function Header () {
         </div>
       ) : null}
 
-      {username && <Buttons_Main />}
+      {<Buttons_Main />}
     </header>
   )
 }

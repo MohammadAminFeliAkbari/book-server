@@ -1,79 +1,112 @@
-'use client';
-import { Navigation, Pagination, Scrollbar, A11y, FreeMode } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import Card from './Card';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
-import { useEffect, useState } from 'react';
+'use client'
+import { Pagination, FreeMode } from 'swiper/modules'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import Card from './Card'
+import 'swiper/css'
+import 'swiper/css/pagination'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
-// Define a type for the book data  
-interface Book {
-  title: string;
-  front_image: string;
-  sale_price: number; // Adjust type based on actual API response  
-  author: string;
-  province: string;
-  id:string
+// Define types for the book data
+interface Category {
+  id: number
+  title: string
 }
 
-export default function TopFooter() {
-  const [data, setData] = useState<Book[]>([]); // State to hold array of Book  
+interface Book {
+  title: string
+  front_image: string
+  sale_price: number
+  author: string
+  province: string
+}
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `http://141.11.21.237:8000/api/v1/bookcase/books/`
-        );
-        if (!response.ok) throw new Error('Network response was not OK');
-        const data: Book[] = await response.json(); // Parse JSON with type assertion  
-        setData(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
+interface Item {
+  id: string
+  category: Category
+  title: string
+  front_image: string
+  sale_price: number
+  author: string
+  province: string
+}
+
+export default function TopFooter ({ data }: { data: Item[] }) {
+  console.log(data);
+  
+  const filteredData = data.filter(
+    item =>
+      item.category.id === 14 ||
+      item.category.id === 8 ||
+      item.category.id === 9
+  )
+
+  // Create a map to store items by their category
+  const categories = filteredData.reduce(
+    (acc: Record<number, Item[]>, item) => {
+      const categoryId = item.category.id
+      if (!acc[categoryId]) {
+        acc[categoryId] = []
       }
-    };
-    fetchData();
-  }, []);
+      acc[categoryId].push(item)
+      return acc
+    },
+    {}
+  )
 
   return (
-    <div className='w-full flex items-center justify-center'>
-      <Swiper
-        slidesPerView={3}
-        spaceBetween={20}
-        freeMode={true}
-        breakpoints={{
-          640: {
-            slidesPerView: 1,
-            spaceBetween: 10,
-          },
-          768: {
-            slidesPerView: 2,
-            spaceBetween: 20,
-          },
-          1024: {
-            slidesPerView: 5,
-            spaceBetween: 30,
-          },
-        }}
-        modules={[FreeMode, Pagination]}
-        className="mySwiper"
-      >
-        {data.map((item, index) => (
-          <SwiperSlide key={index}>
-            <Card
-              id={item.id}
-              title={item.title}
-              front_image={item.front_image}
-              sale_price={item.sale_price}
-              author={item.author}
-              province={item.province}
-              
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+    <div className='flex flex-col gap-3'>
+      {Object.entries(categories).map(([categoryId, items]) => (
+        <div key={categoryId} className='p-4 flex flex-col gap-0.5'>
+          <div className='flex items-center justify-between'>
+            <h2 className='my-1 dark:text-gray-400 text-[#2b2a2a] text-[16px] font-bold'>
+              {items[0].category.title}
+            </h2>
+            <Link
+              href={`category/${categoryId}`}
+              className='light:text-gray-600 cursor-pointer hover:text-blue-500 text-[#02b1b1] dark:text-[#02c0c0] transition-all duration-200'
+            >
+            مشاهده همه{' >'}
+            </Link>
+          </div>
+          <div className='w-full flex items-center justify-center'>
+            <Swiper
+              slidesPerView={3}
+              spaceBetween={20}
+              freeMode={true}
+              breakpoints={{
+                640: {
+                  slidesPerView: 1,
+                  spaceBetween: 10
+                },
+                768: {
+                  slidesPerView: 5,
+                  spaceBetween: 20
+                },
+                1024: {
+                  slidesPerView: 7,
+                  spaceBetween: 30
+                }
+              }}
+              modules={[FreeMode, Pagination]}
+              className='mySwiper'
+            >
+              {items.map(item => (
+                <SwiperSlide key={item.id}>
+                  <Card
+                    id={item.id}
+                    title={item.title}
+                    front_image={item.front_image}
+                    sale_price={item.sale_price}
+                    author={item.author}
+                    province={item.province}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </div>
+      ))}
     </div>
-  );
-}  
+  )
+}

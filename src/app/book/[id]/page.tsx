@@ -5,18 +5,20 @@ import { Item } from '../page'
 import Swiper from './Swiper'
 import { toPersianNumber } from '@/convertNumberToPersion'
 import Properties from './Properties'
-import Cards from '../../../components/Home/slider/Slider'
 import Nav from './ButtonBuy'
+import TopFooter from '../../../components/Home/slider/Slider'
 
 export default async function Page (props: { params: Promise<{ id: number }> }) {
-  console.log(props)
   const { id } = await props.params
   const response = await axios.get(`${config.BASE_URL}/bookcase/books/${id}`)
+  const topfooterData = await axios.get(`${config.BASE_URL}/bookcase/books`)
+  console.log(topfooterData.data)
 
   const data: Item = response.data
+  console.log(id)
+
   return (
     <div className='relative border-b-1 dark:bg-gray-700 bg-white dark:border-gray-600 border-gray-400 flex flex-col w-full gap-3 min-h-[1000px]'>
-      {/* image slider */}
       <div className='w-full'>
         <Swiper data={data} />
       </div>
@@ -37,34 +39,12 @@ export default async function Page (props: { params: Promise<{ id: number }> }) 
       </div>
 
       <Properties
-        category={data.category}
+        category={data.category.title}
         description={data.description}
         province={data.province}
       />
 
-      {/* offer */}
-      <div className='flex flex-col gap-3'>
-        <div className='m-3'>
-          <h2 className='my-1 dark:text-gray-300 text-[#121212] text-[16px]'>
-            موردعلاقه
-          </h2>
-          <Cards />
-        </div>
-
-        <div className='m-3'>
-          <h2 className='my-1 dark:text-gray-300  text-[#121212] text-[16px] '>
-            موردعلاقه
-          </h2>
-          <Cards />
-        </div>
-
-        <div className='m-3'>
-          <h2 className='my-1 dark:text-gray-300 text-[#121212] text-[16px]'>
-            بیشترین فروش
-          </h2>
-          <Cards />
-        </div>
-      </div>
+      <TopFooter data={topfooterData.data.results} />
 
       <Nav />
     </div>

@@ -106,10 +106,10 @@ const BookForm = () => {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit} className='m-5 bg-gray-700 p-5 rounded'>
+    <form onSubmit={formik.handleSubmit} className='m-5 dark:bg-gray-700 p-5 rounded'>
       <h1 className='text-center text-[20px] mb-5'>افزودن کتاب</h1>
       <input
-        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 dark:border-light-gray border-gray-200 rounded-md focus:outline-none'
         type='text'
         placeholder='نویسنده'
         id='author'
@@ -122,7 +122,7 @@ const BookForm = () => {
       ) : null}
 
       <input
-        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 dark:border-light-gray border-gray-200 rounded-md focus:outline-none'
         type='text'
         placeholder='عنوان'
         id='title'
@@ -135,7 +135,7 @@ const BookForm = () => {
       ) : null}
 
       <input
-        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 dark:border-light-gray border-gray-200 rounded-md focus:outline-none'
         type='number'
         placeholder='قیمت پیشنهادی'
         id='sale_price'
@@ -148,7 +148,7 @@ const BookForm = () => {
       ) : null}
 
       <select
-        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 dark:border-light-gray border-gray-200 rounded-md focus:outline-none'
         id='province'
         {...formik.getFieldProps('province')}
       >
@@ -164,7 +164,7 @@ const BookForm = () => {
       ) : null}
 
       <select
-        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 dark:border-light-gray border-gray-200 rounded-md focus:outline-none'
         id='category'
         {...formik.getFieldProps('category')}
       >
@@ -181,7 +181,7 @@ const BookForm = () => {
 
 
       <input
-        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 dark:border-light-gray border-gray-200 rounded-md focus:outline-none'
         type='file'
         placeholder='عکس روی کتاب'
         id='front_image'
@@ -202,7 +202,7 @@ const BookForm = () => {
       ) : null}
 
       <input
-        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+        className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 dark:border-light-gray border-gray-200 rounded-md focus:outline-none'
         type='file'
         placeholder='عکس پشت کتاب'
         id='back_image'
@@ -225,7 +225,7 @@ const BookForm = () => {
       <textarea
         placeholder='توضیح اضافه'
         {...formik.getFieldProps('description')}
-        className='w-full h-32 p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
+        className='w-full h-32 p-4 mb-2 border dark:bg-gray-300 text-gray-800 dark:border-light-gray border-gray-200 rounded-md focus:outline-none'
       />
 
       {!loading ? <button

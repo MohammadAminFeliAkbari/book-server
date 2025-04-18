@@ -31,13 +31,13 @@ function Images_bottom_Header() {
       }}
     >
       <SwiperSlide>
-        <Image src={head1} alt="Slide 1" className="w-full h-[200px] rounded" />
+        <Image src={head1} alt="Slide 1" className="w-full h-[200px] md:h-[400px] rounded" />
       </SwiperSlide>
       <SwiperSlide>
-        <Image src={head2} alt="Slide 2" className="w-full h-[200px] rounded" />
+        <Image src={head2} alt="Slide 2" className="w-full h-[200px] md:h-[400px] rounded" />
       </SwiperSlide>
       <SwiperSlide>
-        <Image src={head3} alt="Slide 3" className="w-full h-[200px] rounded" />
+        <Image src={head3} alt="Slide 3" className="w-full h-[200px] rounded md:h-[400px]" />
       </SwiperSlide>
     </Swiper>
   );
