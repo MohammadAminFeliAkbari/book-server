@@ -32,7 +32,7 @@ export default function Nav () {
       transition={{ duration: 0.2 }}
       className='fixed bottom-0 z-10 flex w-full justify-center pt-3'
     >
-      <button className='p-3 w-full text-gray-100 bg-[#3dcd5c] dark:bg-green-800 cursor-pointer dark:text-gray-300'>
+      <button className='py-5 w-full text-gray-100 bg-[#3dcd5c] dark:bg-green-800 cursor-pointer dark:text-gray-300'>
         خرید
       </button>
     </motion.div>

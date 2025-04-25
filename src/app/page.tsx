@@ -15,7 +15,7 @@ export default async function Home () {
   const resultCategory = category.data
 
   return (
-    <div className='m-2'>
+    <div className='overflow-hidden'>
       <Image_bottom_Header />
       <Pupolar_Menu data={resultCategory}/>
       <TopFooter data={resultBook}/>

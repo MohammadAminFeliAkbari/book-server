@@ -18,7 +18,7 @@ export default function Popular_Menu ({
     <div className='w-full m-3 items-center justify-center'>
       <h1 className='mr-3'>دسته بندی محبوب</h1>
       <Swiper
-        slidesPerView={5} // Default number of slides
+        slidesPerView={4} // Default number of slides
         spaceBetween={30} // Space between slides
         freeMode={true} // Allows slides to be freely moved
         breakpoints={{
@@ -46,13 +46,11 @@ export default function Popular_Menu ({
             <SwiperSlide key={index}>
               <Link
                 href={`/category/${item.id}`}
-                className='flex flex-col justify-center items-center'
+                className='flex flex-col justify-center items-center gap-2'
               >
                 <Image className='w-12' src={educaton} alt='education icon' />
                 <h3 className='text-[#9E9E9E] text-[10px] text-center'>
-                  {item.title.length > 10
-                    ? item.title.substring(0, 10) + '...'
-                    : item.title}
+                  {item.title}
                 </h3>
               </Link>
             </SwiperSlide>

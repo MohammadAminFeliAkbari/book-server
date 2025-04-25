@@ -1,6 +1,6 @@
 'use client'
 import { useMotionValueEvent, motion, useScroll } from 'framer-motion'
-import { useState, useRef } from 'react'
+import { useState, useRef, useContext } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faHouse,
@@ -9,6 +9,7 @@ import {
   faMagnifyingGlass
 } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
+import { AppContext } from '../../../context/AppContext'
 
 export default function Buttons_Main () {
   const [hidden, setHidden] = useState(false)
@@ -33,12 +34,12 @@ export default function Buttons_Main () {
         hidden: { y: '90%' }
       }}
       transition={{ duration: 0.2 }}
-      className='fixed bottom-0 z-10 flex w-full justify-center pt-3'
+      className='fixed bottom-0 z-10 mt-1 flex w-full justify-center pt-3'
     >
       <div className='w-full flex justify-center items-center'>
         <motion.div
           className='flex items-center relative justify-center shadow-1xl gap-10 dark:text-gray-900 dark:bg-gray-400 bg-gray-100 border-b-2 border-gray-400 px-7 py-3 rounded-3xl'
-          whileHover={{ y: '-40px', cursor: 'pointer' }} // Move up on hover
+          // whileHover={{ y: '-40px', cursor: 'pointer' }} // Move up on hover
         >
           <Link href={'/darshbord'}  className='pt-1'>
             <FontAwesomeIcon className='text-xl' icon={faUser} />

@@ -11,11 +11,15 @@ import TopFooter from '../../../components/Home/slider/Slider'
 export default async function Page (props: { params: Promise<{ id: number }> }) {
   const { id } = await props.params
   const response = await axios.get(`${config.BASE_URL}/bookcase/books/${id}`)
-  const topfooterData = await axios.get(`${config.BASE_URL}/bookcase/books`)
+  const topfooterData = await axios.get(
+    `${config.BASE_URL}/bookcase/books?page_size=100`
+  )
   console.log(topfooterData.data)
 
   const data: Item = response.data
   console.log(id)
+
+  console.log(data)
 
   return (
     <div className='relative border-b-1 dark:bg-gray-700 bg-white dark:border-gray-600 border-gray-400 flex flex-col w-full gap-3 min-h-[1000px]'>
@@ -42,6 +46,12 @@ export default async function Page (props: { params: Promise<{ id: number }> }) 
         category={data.category.title}
         description={data.description}
         province={data.province}
+        first_name={data.created_by.first_name}
+        last_name={data.created_by.last_name}
+        eitaa_id={data.created_by.eitaa_id}
+        phone_number={data.created_by.phone_number}
+        show_phone_number={data.created_by.show_phone_number}
+        telegram_id={data.created_by.telegram_id}
       />
 
       <TopFooter data={topfooterData.data.results} />

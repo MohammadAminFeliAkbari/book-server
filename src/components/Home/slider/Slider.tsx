@@ -63,7 +63,7 @@ export default function TopFooter ({ data }: { data: Item[] }) {
               {items[0].category.title}
             </h2>
             <Link
-              href={`category/${categoryId}`}
+              href={`/category/${categoryId}`}
               className='light:text-gray-600 cursor-pointer hover:text-blue-500 text-[#02b1b1] dark:text-[#02c0c0] transition-all duration-200'
             >
             مشاهده همه{' >'}
