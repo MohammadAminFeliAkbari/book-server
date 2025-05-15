@@ -4,7 +4,6 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import Card from './Card'
 import 'swiper/css'
 import 'swiper/css/pagination'
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
 // Define types for the book data

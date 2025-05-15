@@ -2,7 +2,6 @@ import React from 'react'
 import Image_bottom_Header from '../components/Home/Images_bottom_Header'
 import Pupolar_Menu from '../components/Home/Popular_Menu'
 import TopFooter from '../components/Home/slider/Slider'
-import Link from 'next/link'
 import axios from 'axios'
 import confing from '../config'
 

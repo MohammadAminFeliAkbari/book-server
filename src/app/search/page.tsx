@@ -8,6 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import config from '../../config'
 import Empty from './empty.json'
 import Lottie from 'lottie-react'
+import { motion } from 'framer-motion'
 
 interface Post {
   id: number
@@ -18,19 +19,20 @@ interface Post {
   front_image: string
 }
 
-const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1 }
+}
+
+const Infinite = () => {
   const [posts, setPosts] = useState<Post[]>([])
   const [hasMore, setHasMore] = useState(true)
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [footerData, setFooterData] = useState([])
-
-  // Function to fetch posts
   const fetchPosts = async (pageNum: number, search?: string) => {
     setLoading(true)
-    setError(null)
 
     try {
       const { data } = await axios.get(
@@ -38,27 +40,23 @@ const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
           search || ''
         }`
       )
-      // On search, reset posts to the new data
+
       if (search && pageNum === 1) {
         setPosts(data.results)
       } else {
         setPosts(prevPosts => [...prevPosts, ...data.results])
       }
 
-      // Simulate end of data
       setHasMore(data.results.length === 10)
     } catch (err) {
-      console.error(err) // Log actual error for debugging
-      // setError('Failed to load posts. Please try again later.')
+      console.error(err)
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    setLoading(true)
     fetchPosts(page, searchTerm)
-    setLoading(false)
   }, [page, searchTerm])
 
   useEffect(() => {
@@ -66,147 +64,135 @@ const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
       const data = await axios.get(
         `${config.BASE_URL}/bookcase/books/?page_size=100`
       )
-
-      console.log(data.data.results)
-
       setFooterData(data.data.results)
     }
 
     fetch_footerData()
   }, [])
 
-  const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchTerm.length > 0) {
-      // Reset for a new search
       setPosts([])
       setHasMore(true)
-      setPage(1) // Reset to page 1 for search
-      // await fetchPosts(1, searchTerm)
-      setSearchTerm('') // Clear the search input after search
+      setPage(1)
     }
   }
 
   return (
-    <div>
+    <div className='px-4'>
+      {/* Search Input */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className='relative my-4'
+      >
+        <input
+          type='text'
+          placeholder='جستجو...'
+          className='w-full px-4 py-3 rounded-lg border dark:border-gray-600 border-gray-300 focus:border-blue-500 focus:outline-none shadow-sm dark:bg-gray-900 dark:text-white'
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
+          onKeyDown={handleKeyDown}
+        />
+        {searchTerm && (
+          <button
+            onClick={() => setSearchTerm('')}
+            className='absolute top-3 left-3 text-xl text-gray-500 hover:text-red-500'
+          >
+            ×
+          </button>
+        )}
+      </motion.div>
+
+      {/* Posts Grid */}
       <InfiniteScroll
         dataLength={posts.length}
-        next={() => setPage(prevPage => prevPage + 1)}
+        next={() => setPage(prev => prev + 1)}
         hasMore={hasMore}
-        loader={
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-0.5 m-2'>
-            {new Array(6).fill(null).map((_, index) => (
-              <div
-                key={index}
-                className='flex m-1 bg-white relative p-2 shadow-md rounded-md dark:bg-gray-800 animate-pulse'
-              >
-                <div className='flex-shrink-0'>
-                  <div className='rounded w-[100px] h-[140px] dark:bg-gray-500 bg-gray-300'></div>
-                </div>
-                <div className='p-3 flex flex-col justify-between w-full'>
-                  <div className='flex flex-col'>
-                    <div className='h-4 w-3/4 dark:bg-gray-500 bg-gray-300 rounded mb-2'></div>
-                    <div className='h-3 w-1/2 dark:bg-gray-500 bg-gray-300 rounded'></div>
-                  </div>
-                  <div className='absolute flex gap-3 right-3 px-2 py-1 bottom-3 rounded-full dark:bg-gray-500 bg-gray-300 opacity-50'>
-                    <div className='h-3 w-1/3 dark:bg-gray-500 bg-gray-300 rounded'></div>
-                  </div>
-                </div>
-                <h3 className='absolute bottom-4 left-4'>
-                  <div className='h-4 w-1/2 dark:bg-gray-500 bg-gray-300 rounded'></div>
-                </h3>
-              </div>
-            ))}
-          </div>
+        loader={<LoadingSkeleton />}
+        endMessage={
+          <div className='text-center py-4 text-gray-400'>پایان لیست</div>
         }
-        endMessage={<div className='text-center text-gray-500'></div>}
       >
-        <div className='relative m-2'>
-          <input
-            type='text'
-            className='w-full px-4 py-3 border-b-2 dark:border-gray-600 border-gray-300 outline-none focus:border-blue-500 transition duration-200'
-            placeholder='جستجو..'
-            onChange={e => setSearchTerm(e.target.value)}
-            value={searchTerm}
-            onKeyDown={handleKeyDown}
-          />
-          {searchTerm && (
-            <button
-              onClick={() => setSearchTerm('')}
-              className='absolute top-3 left-3 text-xl text-gray-600 hover:text-gray-800 transition duration-200'
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+          {posts.map((post, index) => (
+            <motion.div
+              key={index}
+              variants={cardVariants}
+              initial='hidden'
+              animate='visible'
+              transition={{ duration: 0.3, delay: index * 0.05 }}
             >
-              ×
-            </button>
-          )}
-        </div>
-        {error && <div className='text-red-500 text-center'>{error}</div>}
-        {loading && posts.length === 0 ? (
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-0.5 m-2'>
-            {new Array(3).fill(null).map((_, index) => (
-              <div
-                key={index}
-                className='flex m-1 bg-white relative p-2 shadow-md rounded-md dark:bg-gray-800 animate-pulse'
-              >
-                <div className='flex-shrink-0'>
-                  <div className='rounded w-[100px] h-[140px] dark:bg-gray-500 bg-gray-300'></div>
-                </div>
-                <div className='p-3 flex flex-col justify-between w-full'>
-                  <div className='flex flex-col'>
-                    <div className='h-4 w-3/4 dark:bg-gray-500 bg-gray-300 rounded mb-2'></div>
-                    <div className='h-3 w-1/2 dark:bg-gray-500 bg-gray-300 rounded'></div>
-                  </div>
-                  <div className='absolute flex gap-3 right-3 px-2 py-1 bottom-3 rounded-full dark:bg-gray-500 bg-gray-300 opacity-50'>
-                    <div className='h-3 w-1/3 dark:bg-gray-500 bg-gray-300 rounded'></div>
-                  </div>
-                </div>
-                <h3 className='absolute bottom-4 left-4'>
-                  <div className='h-4 w-1/2 dark:bg-gray-500 bg-gray-300 rounded'></div>
-                </h3>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-0.5 m-2'>
-            {posts.map((post, index) => (
               <Link
-                key={index}
-                className='flex m-1 bg-white relative p-2 shadow-md rounded-md dark:bg-gray-800'
                 href={`/book/${post.id}`}
+                className='bg-white dark:bg-gray-800 rounded-xl shadow-md p-3 flex gap-3 hover:shadow-xl transition duration-300'
               >
-                <div className='flex-shrink-0'>
-                  <img
-                    src={post.front_image}
-                    className='rounded w-[100px] h-[140px]'
-                    alt={post.title}
-                  />
-                </div>
-                <div className='p-3 flex flex-col justify-between relative'>
+                <img
+                  src={post.front_image}
+                  alt={post.title}
+                  className='w-[100px] h-[140px] object-cover rounded-lg'
+                />
+                <div className='flex flex-col justify-between flex-grow'>
                   <div>
-                    <h2 className='text-gray-800 text-[16px] dark:text-gray-300'>
+                    <h2 className='text-lg font-semibold text-gray-800 dark:text-white'>
                       {post.title}
                     </h2>
-                    <h3 className='text-gray-500 text-[14px] dark:text-gray-400'>
+                    <h3 className='text-sm text-gray-500 dark:text-gray-400'>
                       {post.author}
                     </h3>
                   </div>
-                  <div className='text-[10px] dark:bg-gray-700 absolute flex gap-3 right-3 px-2 py-1 bottom-3 rounded-full bg-gray-300'>
-                    <h4 className=''>{post.province}</h4>
+                  <div className='flex justify-between items-end mt-2'>
+                    <span className='text-xs px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded-full'>
+                      {post.province}
+                    </span>
+                    <span className='text-sm text-gray-700 dark:text-gray-300'>
+                      {toPersianNumber(post.sale_price)}{' '}
+                      <span className='text-xs'>تومان</span>
+                    </span>
                   </div>
                 </div>
-                <h3 className='absolute bottom-4 left-4 dark:text-gray-300'>
-                  {toPersianNumber(post.sale_price)}
-                  <span className='text-gray-400 text-[10px]'> تومان</span>
-                </h3>
               </Link>
-            ))}
-          </div>
-        )}
+            </motion.div>
+          ))}
+        </div>
       </InfiniteScroll>
 
-      {posts.length == 0 && <Lottie animationData={Empty} loop={true} />}
+      {/* Empty State */}
+      {posts.length === 0 && !loading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className='flex justify-center items-center mt-12'
+        >
+          <Lottie animationData={Empty} loop={true} style={{ width: 300 }} />
+        </motion.div>
+      )}
 
-      <TopFooter data={footerData} />
+      {/* Footer */}
+      <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}>
+        <TopFooter data={footerData} />
+      </motion.div>
     </div>
   )
 }
 
 export default Infinite
+
+const LoadingSkeleton = () => (
+  <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 py-4'>
+    {Array.from({ length: 6 }).map((_, index) => (
+      <div
+        key={index}
+        className='bg-white dark:bg-gray-800 rounded-xl p-3 flex gap-3 shadow animate-pulse'
+      >
+        <div className='w-[100px] h-[140px] bg-gray-300 dark:bg-gray-700 rounded-lg'></div>
+        <div className='flex flex-col justify-between flex-grow space-y-2'>
+          <div className='h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4'></div>
+          <div className='h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/2'></div>
+          <div className='h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/4'></div>
+        </div>
+      </div>
+    ))}
+  </div>
+)

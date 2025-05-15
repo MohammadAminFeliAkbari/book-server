@@ -1,5 +1,4 @@
 'use client'
-import React from 'react'
 import './signUpCss.css'
 
 function TextSection () {

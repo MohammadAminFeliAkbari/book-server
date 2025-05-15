@@ -10,7 +10,7 @@ import { province } from './province'
 import axios from 'axios'
 import config from '../../config'
 import { useRouter } from 'next/navigation'
-import { URL } from 'url'
+import { motion } from 'framer-motion'
 
 type BookData = {
   title: string
@@ -18,57 +18,48 @@ type BookData = {
   category: string
   sale_price: string
   province: string
-  front_image: File | null // Or specify proper type
-  back_image: File | null // Or specify proper type
+  front_image: File | null
+  back_image: File | null
   description: string
-}
-
-type ShowError = {
-  title?: boolean
-  category?: boolean
-  sale_price?: boolean
-  province?: boolean
-  front_image?: boolean
-  back_image?: boolean
-  author?: boolean
 }
 
 const BookForm = () => {
   const router = useRouter()
   const { access } = useContext(AppContext)
-  const [error, setError] = useState<ShowError>({})
-  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('عنوان کتاب نباید خالی باشد'),
     author: Yup.string().required('نویسنده نباید خالی باشد'),
-    category: Yup.string().required('Category is required'),
+    category: Yup.string().required('دسته بندی نباید خالی باشد'),
     sale_price: Yup.string().required('قیمت کتاب نباید خالی باشد'),
-    province: Yup.string().required('Province is required'),
-    front_image: Yup.mixed()
+    province: Yup.string().required('استان نباید خالی باشد'),
+    front_image: Yup.mixed() // 👈 Explicitly type as File
       .required('عکس روی کتاب نباید خالی باشد')
-      .test('fileFormat', 'فرمت فایل باید jpg یا png باشد', (value: any) => {
-        if (!value) return false // If no file, return false (invalid)
-        return value && ['image/jpeg', 'image/png'].includes(value.type)
-      }),
-    back_image: Yup.mixed()
-      .required('عکس پشت کتاب نباید خالی باشد')
-      .test('fileFormat', ' فرمت فایل باید jpg یا png باشد', (value: any) => {
+      .test('fileFormat', 'فرمت فایل باید jpg یا png باشد', value => {
         if (!value) return false
-        return value && ['image/jpeg', 'image/png'].includes(value.type)
+        return ['image/jpeg', 'image/png'].includes((value as File).type)
+      }),
+    back_image: Yup.mixed() // 👈 Explicitly type as File
+      .required('عکس پشت کتاب نباید خالی باشد')
+      .test('fileFormat', 'فرمت فایل باید jpg یا png باشد', value => {
+        if (!value) return false
+        return ['image/jpeg', 'image/png'].includes((value as File).type)
       }),
     description: Yup.string()
   })
+
   const formik = useFormik<BookData>({
     initialValues: {
-      title: '', //
-      author: '', //
+      title: '',
+      author: '',
       back_image: null,
-      category: 'واژه‌نامه‌ عمومی و تخصصی', //
+      category: 'واژه‌نامه‌ عمومی و تخصصی',
       description: '',
       front_image: null,
-      province: 'آذربایجان شرقی', //
-      sale_price: '' //
+      province: 'آذربایجان شرقی',
+      sale_price: ''
     },
     validationSchema,
     onSubmit: values => {
@@ -76,6 +67,13 @@ const BookForm = () => {
 
       const post = async () => {
         try {
+          
+          // const formData = new FormData()
+          // for (const key in values) {
+          //   const value = (values as any)[key]
+          //   formData.append(key, value)
+          // }
+
           const response = await axios.post(
             `${config.BASE_URL}/bookcase/books/`,
             values,
@@ -90,7 +88,7 @@ const BookForm = () => {
           router.push('/book')
         } catch (error) {
           if (axios.isAxiosError(error)) {
-            setError(() => error.response?.data)
+            setError(true)
             console.log(error.response?.data)
           } else {
             console.error('Error:', error)
@@ -105,179 +103,143 @@ const BookForm = () => {
   })
 
   return (
-    <form
+    <motion.form
       onSubmit={formik.handleSubmit}
-      className='m-5 dark:bg-gray-700 p-5 rounded-4xl bg-gray-200'
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className='m-5 dark:bg-gray-800 bg-white p-6 rounded-3xl shadow-xl'
     >
-      <h1 className='text-center text-[20px] mb-5 text-gray-700'>
+      <h1 className='text-center text-[22px] font-bold mb-5 text-gray-700 dark:text-white'>
         افزودن کتاب
       </h1>
 
-      
-      <input
-        className='w-full p-4 mb-2 dark:bg-gray-300 text-gray-800 dark:border-light-gray border-[#999] rounded-3xl border-2 focus:outline-none'
-        type='text'
-        placeholder='عنوان'
-        id='title'
-        {...formik.getFieldProps('title')}
-      />
-      {formik.touched.title && formik.errors.title ? ( // Show error only if field has been touched
-        <div className='text-red-400 text-right'>{formik.errors.title}</div>
-      ) : null}
-
-      <input
-        className='w-full p-4 mb-2 border-2 dark:bg-gray-300 text-gray-800 dark:border-light-gray border-[#999] rounded-3xl focus:outline-none'
-        type='text'
-        placeholder='نویسنده'
-        id='author'
-        {...formik.getFieldProps('author')}
-      />
-      {formik.touched.author && formik.errors.author ? ( // Show error only if field has been touched
-        <div className='text-red-400 text-right'>{formik.errors.author}</div>
-      ) : null}
-
-      <input
-        className='w-full p-4 mb-2 border-[#999] rounded-3xl border-2 dark:bg-gray-300 text-gray-800 dark:border-light-gray focus:outline-none'
-        type='number'
-        placeholder='قیمت پیشنهادی'
-        id='sale_price'
-        {...formik.getFieldProps('sale_price')}
-      />
-      {formik.touched.sale_price && formik.errors.sale_price ? ( // Show error only if field has been touched
-        <div className='text-red-400 text-right'>
-          {formik.errors.sale_price}
+      {/* TEXT INPUTS */}
+      {[
+        { id: 'title', placeholder: 'عنوان', type: 'text' },
+        { id: 'author', placeholder: 'نویسنده', type: 'text' },
+        { id: 'sale_price', placeholder: 'قیمت پیشنهادی', type: 'number' }
+      ].map(({ id, placeholder, type }) => (
+        <div key={id} className='mb-3'>
+          <input
+            type={type}
+            placeholder={placeholder}
+            id={id}
+            {...formik.getFieldProps(id)}
+            className='w-full p-4 border dark:bg-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400'
+          />
+          {formik.touched[id as keyof BookData] &&
+          formik.errors[id as keyof BookData] ? (
+            <div className='text-red-400 text-right text-sm mt-1'>
+              {formik.errors[id as keyof BookData]}
+            </div>
+          ) : null}
         </div>
-      ) : null}
+      ))}
 
-      <select
-        className='w-full mb-2 border-[#999] rounded-3xl border-2 dark:bg-gray-300 text-gray-800 dark:border-light-gray p-4 focus:outline-none'
-        id='province'
-        {...formik.getFieldProps('province')}
-      >
-        {province.map((item: { value: string; display_name: string }) => (
-          <option key={item.value} value={item.value}>
-            {item.display_name}
-          </option>
-        ))}
-      </select>
-      {formik.touched.province && formik.errors.province ? (
-        <div className='text-red-400 text-right'>{formik.errors.province}</div>
-      ) : null}
+      {/* SELECTS */}
+      {[
+        { id: 'province', data: province },
+        { id: 'category', data: category }
+      ].map(({ id, data }) => (
+        <div key={id} className='mb-3'>
+          <select
+            id={id}
+            {...formik.getFieldProps(id)}
+            className='w-full p-4 border dark:bg-gray-700 rounded-xl focus:outline-none'
+          >
+            {data.map((item: { value: string; display_name: string }) => (
+              <option key={item.value} value={item.value}>
+                {item.display_name}
+              </option>
+            ))}
+          </select>
+          {formik.touched[id as keyof BookData] &&
+          formik.errors[id as keyof BookData] ? (
+            <div className='text-red-400 text-right text-sm mt-1'>
+              {formik.errors[id as keyof BookData]}
+            </div>
+          ) : null}
+        </div>
+      ))}
 
-      <select
-        className='w-full p-4 mb-2 border-[#999] rounded-3xl border-2 dark:bg-gray-300 text-gray-800 dark:border-light-gray focus:outline-none'
-        id='category'
-        {...formik.getFieldProps('category')}
-      >
-        {category.map((item: { value: string; display_name: string }) => (
-          <option key={item.value} value={item.value}>
-            {item.display_name}
-          </option>
-        ))}
-      </select>
-      {formik.touched.category && formik.errors.category ? (
-        <div className='text-red-400 text-right'>{formik.errors.category}</div>
-      ) : null}
-
-      <div className='flex gap-3 m-2 justify-between'>
-        {formik.values.front_image ? (
-          <div className='w-full'>
-            <img
-              src={window.URL.createObjectURL(formik.values.front_image)}
-              alt='Book Front Image'
-              className='rounded-2xl w-full h-80'
-            />
-          </div>
-        ) : (
-          <div className='w-full relative'>
+      {/* IMAGE PREVIEW */}
+      <div className='flex gap-4 mb-4'>
+        {[
+          { key: 'front_image', label: 'تصویر روی کتاب' },
+          { key: 'back_image', label: 'تصویر پشت کتاب' }
+        ].map(img => (
+          <div className='w-1/2 relative' key={img.key}>
+            {formik.values[img.key as keyof BookData] ? (
+              <img
+                src={URL.createObjectURL(
+                  formik.values[img.key as keyof BookData] as File
+                )}
+                alt={img.label}
+                className='w-full h-40 object-cover rounded-xl shadow-md'
+              />
+            ) : (
+              <div className='w-full h-40 border rounded-xl flex items-center justify-center text-sm text-gray-400'>
+                {img.label}
+              </div>
+            )}
             <input
-              className='w-full h-80 p-4 mb-2 text-transparent border-[#999] rounded-3xl border-2 dark:bg-gray-300 dark:border-light-gray focus:outline-none'
               type='file'
               accept='image/*'
-              placeholder='عکس روی کتاب'
-              title=''
-              id='front_image'
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                const fileList = event.currentTarget.files // Get the FileList
-                if (fileList && fileList.length > 0) {
-                  // Check if fileList is not null and has at least one file
-                  const file = fileList[0] // Access the first file
-                  formik.setFieldValue('front_image', file) // Set the file in Formik
-                } else {
-                  formik.setFieldValue('front_image', null) // Optionally set to null if no file is selected
-                }
+              id={img.key}
+              onChange={e => {
+                const file = e.currentTarget.files?.[0] || null
+                formik.setFieldValue(img.key, file)
               }}
-            />
-
-            <h5 className='absolute top-10 text-[12px] right-6 text-gray-500'>
-              تصویر روی کتاب را انتخاب کنید
-            </h5>
-          </div>
-        )}
-
-        {formik.values.back_image ? (
-          <div className='w-full'>
-            <img
-              src={window.URL.createObjectURL(formik.values.back_image)}
-              alt='Book Front Image'
-              className='w-full rounded-2xl h-80'
+              className='absolute inset-0 opacity-0 cursor-pointer'
             />
           </div>
-        ) : (
-          <div className='w-full relative'>
-            <input
-              className='w-full h-80 p-4 mb-2 text-transparent border-[#999] rounded-3xl border-2 dark:bg-gray-300 dark:border-light-gray focus:outline-none'
-              type='file'
-              accept='image/*'
-              placeholder='عکس پشت کتاب'
-              title=' yout text'
-              id='back_image'
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                const fileList = event.currentTarget.files // Get the FileList
-                if (fileList && fileList.length > 0) {
-                  // Check if fileList is not null and has at least one file
-                  const file = fileList[0] // Access the first file
-                  formik.setFieldValue('back_image', file) // Set the file in Formik
-                } else {
-                  formik.setFieldValue('back_image', null) // Optionally set to null if no file is selected
-                }
-              }}
-            />
-
-            <h5 className='absolute top-10 text-[12px] right-6 text-gray-500'>
-              تصویر پشت کتاب را انتخاب کنید
-            </h5>
-          </div>
-        )}
+        ))}
       </div>
-      {(formik.touched.back_image && formik.errors.back_image) ||
-      (formik.touched.front_image && formik.values.front_image) ? ( // Show error only if field has been touched
-        <div className='text-red-400 text-right'>
-          <h3>{formik.errors.back_image}</h3>
-          <h3>{formik.errors.front_image}</h3>
-        </div>
-      ) : null}
 
+      {/* IMAGE ERRORS */}
+      {(formik.errors.front_image || formik.errors.back_image) && (
+        <div className='text-red-400 text-right text-sm mb-3'>
+          <p>{formik.errors.front_image as string}</p>
+          <p>{formik.errors.back_image as string}</p>
+        </div>
+      )}
+
+      {/* DESCRIPTION */}
       <textarea
         placeholder='توضیح اضافه'
         {...formik.getFieldProps('description')}
-        className='w-full h-32 p-4 mb-2 border-[#999] rounded-3xl border-2 dark:bg-gray-300 text-gray-800 dark:border-light-gray focus:outline-none'
+        className='w-full h-28 p-4 mb-4 border rounded-xl focus:outline-none dark:bg-gray-700'
       />
 
-      {!loading ? (
-        <button
-          type='submit'
-          className='w-full bg-[hsl(154,59%,51%)] border-0 border-b-2 border-b-black/20 rounded-md p-4 text-white cursor-pointer'
+      {/* SUBMIT BUTTON */}
+      <motion.button
+        type='submit'
+        whileTap={{ scale: 0.98 }}
+        disabled={loading}
+        className={`w-full py-4 text-white rounded-xl ${
+          loading
+            ? 'bg-green-400 cursor-not-allowed opacity-70'
+            : 'bg-green-500 hover:bg-green-600 transition'
+        }`}
+      >
+        {loading ? (
+          <Image className='w-[24px] mx-auto' alt='loading' src={loadingSvg} />
+        ) : (
+          'اضافه کردن کتاب'
+        )}
+      </motion.button>
+
+      {error && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className='text-red-500 text-center mt-4'
         >
-          اضافه کردن کتاب
-        </button>
-      ) : (
-        <div className='w-full text-center  bg-[hsl(154,59%,51%)] border-0 border-b-2 opacity-60 border-b-black/20 rounded-md p-4 text-white cursor-pointer'>
-          <Image className='w-[20px] mx-auto' alt='loading' src={loadingSvg} />
-        </div>
+          ابتدا باید وارد شوید
+        </motion.p>
       )}
-      {error && <h1 className='text-red-400 mt-3'>باید ابتدا وارد شوید</h1>}
-    </form>
+    </motion.form>
   )
 }
 

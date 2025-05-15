@@ -18,7 +18,7 @@ export default function Nav () {
 
   return (
     <motion.div
-      animate={hidden ? 'hidden' : 'visible'}
+      animate={ 'visible'}
       initial='visible'
       whileHover={hidden ? 'peeking' : 'visible'}
       onFocusCapture={hidden ? () => setHidden(false) : undefined}

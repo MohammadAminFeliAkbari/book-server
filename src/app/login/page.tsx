@@ -13,14 +13,13 @@ interface FormValues {
   password: string
 }
 
-// Validation function  
 const validationSchema = Yup.object().shape({
   password: Yup.string()
-    .required('رمز عبور الزامی است') // Required message in Persian  
-    .min(6, 'رمز عبور باید حداقل ۶ کاراکتر باشد'), // Minimum length message  
+    .required('رمز عبور الزامی است')
+    .min(6, 'رمز عبور باید حداقل ۶ کاراکتر باشد'),
   phone_number: Yup.string()
-    .required('شماره تلفن الزامی است') // Required message in Persian  
-    .matches(/^(\+98|0)?9\d{9}$/, 'شماره تلفن نامعتبر است') // Regex validation with error message  
+    .required('شماره تلفن الزامی است')
+    .matches(/^(\+98|0)?9\d{9}$/, 'شماره تلفن نامعتبر است')
 });
 
 function FormSection() {
@@ -28,6 +27,7 @@ function FormSection() {
   const [loading, setLoading] = useState(false)
   const { setRefresh, setAccess } = useContext(AppContext)
   const router = useRouter()
+
   const formik = useFormik<FormValues>({
     initialValues: {
       phone_number: '',
@@ -36,89 +36,136 @@ function FormSection() {
     validationSchema,
     onSubmit: async (values) => {
       setLoading(true)
-      fetch(`${config.BASE_URL}/auth/login/`, {
-        method: 'POST',
-        body: JSON.stringify(values),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then(data => {
-        const getData = async () => {
-          const tokens = await data.json()
-          if (tokens.detail) {
-            setError(true)
-          } else {
-            setAccess(tokens.access)
-            setRefresh(tokens.refresh)
-            localStorage.setItem('access', tokens.access)
-            localStorage.setItem('refresh', tokens.refresh)
-            router.push('/')
-          }
+      setError(false)
+      try {
+        const response = await fetch(`${config.BASE_URL}/auth/login/`, {
+          method: 'POST',
+          body: JSON.stringify(values),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        const tokens = await response.json()
+        if (tokens.detail) {
+          setError(true)
+        } else {
+          setAccess(tokens.access)
+          setRefresh(tokens.refresh)
+          localStorage.setItem('access', tokens.access)
+          localStorage.setItem('refresh', tokens.refresh)
+          router.push('/')
         }
-
-        getData()
-
-      }).catch(err => {
-        console.log('error find');
-
-        console.log(err);
-      }).finally(() => setLoading(false))
+      } catch (err) {
+        console.error('Login error:', err)
+        setError(true)
+      } finally {
+        setLoading(false)
+      }
     }
   });
 
   return (
-    <div className='section-container mt-[50px]'>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900 p-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+          <div className="p-8">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">ورود به حساب کاربری</h1>
+              <p className="text-gray-600 dark:text-gray-300">لطفا اطلاعات خود را وارد کنید</p>
+            </div>
 
-      <div className='mt-5 p-5 bg-gray-300 dark:bg-gray-700 focus:left-[50%] dark:shadow-2xl hover:scale-105 transition-all rounded-lg border-b-4 border-gray-300 m-5'>
-        <h1 className='text-center text-xl m-2 mb-5'>ورود</h1>
+            <form onSubmit={formik.handleSubmit} className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <input
+                    type="tel"
+                    placeholder="شماره تلفن"
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border rtl:text-2xl ${
+                      formik.touched.phone_number && formik.errors.phone_number 
+                        ? 'border-red-500' 
+                        : 'border-gray-300 dark:border-gray-600'
+                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                    id="phone_number"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.phone_number}
+                  />
+                  {formik.touched.phone_number && formik.errors.phone_number && (
+                    <div className="text-red-500 text-sm mt-1 text-right animate-fadeIn">
+                      {formik.errors.phone_number}
+                    </div>
+                  )}
+                </div>
 
-        <input
-          className='w-full number_input p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
-          type='number'
-          placeholder='شماره تلفن'
-          id='phone_number'
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur} // Keep track of field blur for validation  
-          value={formik.values.phone_number}
-        />
-        {formik.touched.phone_number && formik.errors.phone_number ? ( // Show error only if field has been touched  
-          <div className='text-red-400 text-right'>
-            {formik.errors.phone_number}
+                <div>
+                  <input
+                    type="password"
+                    placeholder="رمز عبور"
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
+                      formik.touched.password && formik.errors.password 
+                        ? 'border-red-500' 
+                        : 'border-gray-300 dark:border-gray-600'
+                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                    id="password"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.password}
+                  />
+                  {formik.touched.password && formik.errors.password && (
+                    <div className="text-red-500 text-sm mt-1 text-right animate-fadeIn">
+                      {formik.errors.password}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
+                  loading ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
+              >
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <Image
+                      src={loadingSvg}
+                      alt="Loading"
+                      width={20}
+                      height={20}
+                      className="animate-spin mr-2"
+                    />
+                    در حال ورود...
+                  </div>
+                ) : (
+                  'ورود به حساب'
+                )}
+              </button>
+
+              {error && (
+                <div className="animate-bounce bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 p-3 rounded-lg text-center">
+                  شماره تلفن یا رمز عبور اشتباه است
+                </div>
+              )}
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-gray-600 dark:text-gray-300">
+                حساب کاربری ندارید؟{' '}
+                <a
+                  href="/signup"
+                  className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-colors"
+                >
+                  ثبت نام کنید
+                </a>
+              </p>
+            </div>
           </div>
-        ) : null}
-
-        <form onSubmit={formik.handleSubmit}>
-          <input
-            className='w-full p-4 mb-2 border dark:bg-gray-300 text-gray-800 border-light-gray rounded-md focus:outline-none'
-            type='password'
-            placeholder='رمز عبور'
-            name='password'
-            id='password'
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur} // Keep track of field blur for validation  
-            value={formik.values.password}
-          />
-          {formik.touched.password && formik.errors.password ? ( // Show error only if field has been touched  
-            <div className='text-red-400 text-right'>
-              {formik.errors.password}
-            </div>
-          ) : null}
-
-          {!loading ? <button
-            type='submit'
-            className='w-full bg-[hsl(154,59%,51%)] border-0 border-b-2 border-b-black/20 rounded-md p-4 text-white cursor-pointer'
-          >
-            ورود
-          </button> :
-            <div className='w-full text-center bg-[hsl(154,59%,51%)] border-0 border-b-2 opacity-60 border-b-black/20 rounded-md p-4 text-white cursor-pointer'>
-              <Image className='w-[20px] mx-auto' alt='loading' src={loadingSvg} />
-            </div>
-          }
-        </form>
-        {error && <h1 className='text-red-400 mt-3'>شماره تلفن یا رمز عبور اشتباه است</h1>}
+        </div>
       </div>
     </div>
   )
 }
 
-export default FormSection;  
+export default FormSection;
