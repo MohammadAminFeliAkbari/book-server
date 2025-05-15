@@ -7,6 +7,7 @@ import { Pagination } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/navigation'
+import Image from 'next/image'
 
 type SwiperProps = {
   data: {
@@ -32,7 +33,7 @@ export default function Swiper ({ data }: SwiperProps) {
       {data.front_image && (
         <SwiperSlide>
           <div className='p-10'>
-            <img
+            <Image
               src={data.front_image}
               alt='Front cover'
               className='w-full h-full object-cover'
@@ -44,7 +45,7 @@ export default function Swiper ({ data }: SwiperProps) {
         
         <SwiperSlide>
           <div className='p-10'>
-            <img
+            <Image
               src={data.back_image}
               alt='Front cover'
               className='w-full h-full object-cover'

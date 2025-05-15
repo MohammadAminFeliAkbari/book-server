@@ -1,7 +1,6 @@
 import React from 'react'
 import axios from 'axios'
 import config from '../../../config'
-import { Item } from '../page'
 import Swiper from './Swiper'
 import { toPersianNumber } from '@/convertNumberToPersion'
 import Properties from './Properties'
@@ -16,7 +15,24 @@ export default async function Page (props: { params: Promise<{ id: number }> }) 
   )
   console.log(topfooterData.data)
 
-  const data: Item = response.data
+  const data: {
+    title: string
+    author: string
+    sale_price: number
+    category: { title: string }
+    description: string
+    province: string
+    front_image: string
+    back_image: string
+    created_by: {
+      last_name: string
+      first_name: string
+      eitaa_id: string
+      phone_number: string
+      show_phone_number: boolean
+      telegram_id: string
+    }
+  } = response.data
   console.log(id)
 
   console.log(data)
