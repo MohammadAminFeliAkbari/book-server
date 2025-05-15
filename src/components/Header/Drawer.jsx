@@ -2,10 +2,6 @@ import React, { useContext, useState } from 'react'
 
 import {
   Drawer as MUIDrawer,
-  Button,
-  List,
-  ListItem,
-  ListItemText
 } from '@mui/material'
 import Link from 'next/link'
 

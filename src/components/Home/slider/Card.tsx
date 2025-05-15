@@ -1,7 +1,7 @@
-import Image from 'next/image'
 import { toPersianNumber } from '../../../convertNumberToPersion'
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface CardProps {
   title: string
@@ -16,14 +16,15 @@ const Card: React.FC<CardProps> = ({
   id,
   title,
   front_image,
-  author,
   province,
   sale_price
 }) => {
   return (
-    <Link href={`/book/${id}`} className='relative flex flex-col gap-1 p-2 m-0.5 shadow-md rounded h-[300px]'>
-      {/* <Image src={front_image} alt='' width={152} height={0} /> */}
-      <img src={front_image} className='h-[200px] w-[150px]' />
+    <Link
+      href={`/book/${id}`}
+      className='relative flex flex-col gap-1 p-2 m-0.5 shadow-md rounded h-[300px]'
+    >
+      <Image src={front_image} alt='عکس روی کتاب' width={200} height={150} />
       <h4 className='absolute top-3 right-3 bg-gray-500 p\x-2 p-1 rounded-md text-xs font-medium text-white'>
         {'>'} {province}
       </h4>

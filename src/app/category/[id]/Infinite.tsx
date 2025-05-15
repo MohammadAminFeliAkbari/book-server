@@ -1,21 +1,31 @@
 'use client'
+import Image from 'next/image'
 import { toPersianNumber } from '../../../convertNumberToPersion'
 import axios from 'axios'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
+type post = {
+  id: string
+  front_image: string
+  title: string
+  author: string
+  province: string
+  sale_price: number,
+}
+
 const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
-  const [posts, setPosts] = useState<any[]>([])
+  const [posts, setPosts] = useState<post[]>([])
   const [hasMore, setHasMore] = useState(true)
   const [page, setPage] = useState(1)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  // const [loading, setLoading] = useState(true)
+  // const [error, setError] = useState('')
 
   // Function to fetch posts
   const fetchPosts = async (pageNum: number) => {
-    setLoading(true)
-    setError('') // Reset any previous error
+    // setLoading(true)
+    // setError('') // Reset any previous error
 
     try {
       const { data } = await axios.get(
@@ -27,10 +37,11 @@ const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
       if (data.results.length < 10) {
         setHasMore(false)
       }
-    } catch (err) {
-      setError('Failed to load posts. Please try again later.')
+    } catch (err: unknown) {
+      // if (err) setError('Failed to load posts. Please try again later.')
+      if (err) console.log(11)
     } finally {
-      setLoading(false)
+      // setLoading(false)
     }
   }
 
@@ -82,9 +93,11 @@ const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
             href={`/book/${post.id}`}
           >
             <div className='flex-shrink-0'>
-              <img
+              <Image
+                width={100}
+                height={140}
                 src={post.front_image}
-                className='rounded w-[100px] h-[140px]'
+                className='rounded'
                 alt={post.title} // Use the title as an alt text for better accessibility
               />
             </div>

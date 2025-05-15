@@ -13,8 +13,7 @@ function Properties ({
   first_name,
   last_name,
   eitaa_id,
-  phone_number,
-  show_phone_number
+  phone_number
 }: {
   category: string
   description: string

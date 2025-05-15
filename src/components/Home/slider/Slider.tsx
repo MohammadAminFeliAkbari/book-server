@@ -12,14 +12,6 @@ interface Category {
   title: string
 }
 
-interface Book {
-  title: string
-  front_image: string
-  sale_price: number
-  author: string
-  province: string
-}
-
 interface Item {
   id: string
   category: Category

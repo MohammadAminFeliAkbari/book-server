@@ -6,7 +6,8 @@ import {
   faHouse,
   faCartShopping,
   faUser,
-  faMagnifyingGlass
+  faMagnifyingGlass,
+  faArrowAltCircleDown
 } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link'
 
@@ -84,7 +85,7 @@ export default function Buttons_Main () {
               ) : (
                 <>
                   <FontAwesomeIcon
-                    icon={tab.icon}
+                    icon={tab.icon ? tab.icon : faArrowAltCircleDown}
                     className={`text-xl transition-colors ${
                       activeTab === tab.id
                         ? 'text-blue-500 dark:text-purple-400'
