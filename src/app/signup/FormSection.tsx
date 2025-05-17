@@ -3,7 +3,6 @@ import React, { useContext, useState } from 'react'
 import { useFormik } from 'formik'
 import './signUpCss.css'
 import * as Yup from 'yup'
-import config from '../../config'
 import { useRouter } from 'next/navigation'
 import loadingSvg from './loading.svg'
 import Image from 'next/image'
@@ -58,7 +57,7 @@ function FormSection () {
       if ((eeita.length != 0 && telegram.length != 0) || get_id == 'yes') {
         setLoading(true)
         try {
-          const urlSignUp = `${config.BASE_URL}/auth/signup/`
+          const urlSignUp = `/auth/signup/`
           const value_submit = [
             {
               ...values,
@@ -81,7 +80,7 @@ function FormSection () {
             return
           }
 
-          const urlLogin = `${config.BASE_URL}/auth/login/`
+          const urlLogin = `/auth/login/`
 
           fetch(urlLogin, {
             method: 'POST',
