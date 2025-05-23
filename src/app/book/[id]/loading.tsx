@@ -1,36 +1,68 @@
 import React from 'react'
 
-function loading() {
-    return (<div
-        role='status'
-        className=' p-4 border border-gray-200 rounded-sm shadow-sm animate-pulse md:p-6 dark:border-gray-700'
-    >
-        <div className='flex items-center justify-center h-48 mb-4 bg-gray-300 rounded-sm dark:bg-gray-700'>
-            <svg
-                className='w-10 h-10 text-gray-200 dark:text-gray-600'
-                aria-hidden='true'
-                xmlns='http://www.w3.org/2000/svg'
-                fill='currentColor'
-                viewBox='0 0 16 20'
-            >
-                <path d='M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z' />
-                <path d='M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z' />
-            </svg>
+export default function Loading() {
+  return (
+    <div className='relative border-b-1 dark:bg-gray-700 bg-white dark:border-gray-600 border-gray-400 flex flex-col w-full gap-3 min-h-[1000px]'>
+      {/* Image Swiper Skeleton */}
+      <div className='w-full h-[400px] bg-gray-200 dark:bg-gray-600 animate-pulse'></div>
+
+      {/* Title, Author, Price Skeleton */}
+      <div className='w-full p-3 flex justify-between'>
+        <div className='flex flex-col gap-2'>
+          <div className='h-6 w-48 bg-gray-300 dark:bg-gray-500 rounded animate-pulse'></div>
+          <div className='h-4 w-32 bg-gray-200 dark:bg-gray-400 rounded animate-pulse'></div>
         </div>
-        <div className='h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-48 mb-4'></div>
-        <div className='h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5'></div>
-        <div className='h-2 bg-gray-200 rounded-full dark:bg-gray-700 mb-2.5'></div>
-        <div className='h-2 bg-gray-200 rounded-full dark:bg-gray-700'></div>
-        <div className='flex items-center mt-4'>
-            <div>
-                <div className='h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-32 mb-2'></div>
-                <div className='w-48 h-2 bg-gray-200 rounded-full dark:bg-gray-700'></div>
+        <div className='h-8 w-24 bg-gray-300 dark:bg-gray-500 rounded animate-pulse'></div>
+      </div>
+
+      {/* Properties Skeleton */}
+      <div className='p-3 space-y-4'>
+        <div className='space-y-2'>
+          <div className='h-5 w-20 bg-gray-300 dark:bg-gray-500 rounded animate-pulse'></div>
+          <div className='h-4 bg-gray-200 dark:bg-gray-400 rounded animate-pulse w-full'></div>
+          <div className='h-4 bg-gray-200 dark:bg-gray-400 rounded animate-pulse w-3/4'></div>
+        </div>
+        
+        <div className='space-y-2'>
+          <div className='h-5 w-20 bg-gray-300 dark:bg-gray-500 rounded animate-pulse'></div>
+          <div className='h-4 bg-gray-200 dark:bg-gray-400 rounded animate-pulse w-full'></div>
+          <div className='h-4 bg-gray-200 dark:bg-gray-400 rounded animate-pulse w-3/4'></div>
+        </div>
+
+        <div className='space-y-3'>
+          <div className='h-5 w-28 bg-gray-300 dark:bg-gray-500 rounded animate-pulse'></div>
+          <div className='flex items-center gap-3'>
+            <div className='h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-500 animate-pulse'></div>
+            <div className='flex-1 space-y-2'>
+              <div className='h-4 bg-gray-200 dark:bg-gray-400 rounded animate-pulse w-32'></div>
+              <div className='h-3 bg-gray-200 dark:bg-gray-400 rounded animate-pulse w-24'></div>
             </div>
+          </div>
+          <div className='flex gap-3'>
+            <div className='h-8 w-24 bg-gray-300 dark:bg-gray-500 rounded animate-pulse'></div>
+            <div className='h-8 w-24 bg-gray-300 dark:bg-gray-500 rounded animate-pulse'></div>
+          </div>
         </div>
-        <span className='sr-only'>Loading...</span>
+      </div>
+
+      {/* Top Footer Skeleton */}
+      <div className='p-3'>
+        <div className='h-6 w-32 bg-gray-300 dark:bg-gray-500 rounded animate-pulse mb-4'></div>
+        <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4'>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div key={index} className='flex flex-col gap-2'>
+              <div className='h-40 bg-gray-200 dark:bg-gray-400 rounded animate-pulse'></div>
+              <div className='h-4 bg-gray-200 dark:bg-gray-400 rounded animate-pulse w-3/4'></div>
+              <div className='h-4 bg-gray-200 dark:bg-gray-400 rounded animate-pulse w-1/2'></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation Button Skeleton */}
+      <div className='sticky bottom-0 p-3 bg-white dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600'>
+        <div className='h-12 w-full bg-gray-300 dark:bg-gray-500 rounded-lg animate-pulse'></div>
+      </div>
     </div>
-
-    )
+  )
 }
-
-export default loading

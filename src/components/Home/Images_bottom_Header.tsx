@@ -1,6 +1,6 @@
 'use client'
 import React from "react";
-import head1 from "../../assets/head1.jpg"; // Ensure the correct path  
+import head1 from "../../assets/head1.jpg";
 import head2 from "../../assets/head2.jpg";
 import head3 from "../../assets/head3.jpg";
 import Image from "next/image";

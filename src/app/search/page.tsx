@@ -8,10 +8,9 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import config from '../../config'
-import Empty from './empty.json'
-import Lottie from 'lottie-react'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
 
 interface Post {
   id: number
@@ -35,13 +34,14 @@ const Infinite = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [footerData, setFooterData] = useState([])
 
-  // Use the API_URL from environment variables or config
+  const ClientOnlyLottie = dynamic(() => import('./ClientOnlyLottie'), {
+    ssr: false
+  })
+
   const fetchPosts = async (pageNum: number, search?: string) => {
     setLoading(true)
 
     try {
-      console.log('is ok')
-
       const { data } = await axios.get(
         `${
           config.BASE_URL
@@ -59,6 +59,7 @@ const Infinite = () => {
       setHasMore(data.results.length === 10)
     } catch (err) {
       console.error(err)
+      setHasMore(false)
     } finally {
       setLoading(false)
     }
@@ -132,7 +133,7 @@ const Infinite = () => {
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
           {posts.map((post, index) => (
             <motion.div
-              key={post.id}
+              key={index}
               variants={cardVariants}
               initial='hidden'
               animate='visible'
@@ -143,10 +144,10 @@ const Infinite = () => {
                 className='bg-white dark:bg-gray-800 rounded-xl shadow-md p-3 flex gap-3 hover:shadow-xl transition duration-300'
               >
                 <Image
-                  src={post.front_image || '/placeholder.svg'}
+                  src={post.front_image}
                   alt={post.title}
-                  width={100}
-                  height={100}
+                  width={10000}
+                  height={1400000}
                   className='w-[100px] h-[140px] object-cover rounded-lg'
                 />
                 <div className='flex flex-col justify-between flex-grow'>
@@ -181,7 +182,7 @@ const Infinite = () => {
           animate={{ opacity: 1 }}
           className='flex justify-center items-center mt-12'
         >
-          <Lottie animationData={Empty} loop={true} style={{ width: 300 }} />
+          <ClientOnlyLottie />
         </motion.div>
       )}
 
@@ -199,7 +200,7 @@ export default Infinite
 
 const LoadingSkeleton = () => (
   <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 py-4'>
-    {Array.from({ length: 6 }).map((_, index) => (
+    {Array.from({ length: 2 }).map((_, index) => (
       <div
         key={index}
         className='bg-white dark:bg-gray-800 rounded-xl p-3 flex gap-3 shadow animate-pulse'

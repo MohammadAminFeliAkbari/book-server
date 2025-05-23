@@ -95,9 +95,9 @@ const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
             <div className='flex-shrink-0'>
               <Image
                 width={100}
-                height={140}
+                height={10}
                 src={post.front_image}
-                className='rounded'
+                className='rounded w-[100px] h-[160px]'
                 alt={post.title} // Use the title as an alt text for better accessibility
               />
             </div>

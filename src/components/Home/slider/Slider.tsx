@@ -44,7 +44,7 @@ export default function TopFooter ({ data }: { data: Item[] }) {
             </h2>
             <Link
               href={`/category/${categoryId}`}
-              className='light:text-gray-600 cursor-pointer hover:text-blue-500 text-[#02b1b1] dark:text-[#02c0c0] transition-all duration-200'
+              className='light:text-gray-600 text-[12px] cursor-pointer hover:text-blue-500 text-[#02b1b1] dark:text-[#02c0c0] transition-all duration-200'
             >
               مشاهده همه{' >'}
             </Link>

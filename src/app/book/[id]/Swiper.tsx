@@ -35,8 +35,8 @@ export default function Swiper ({ data }: SwiperProps) {
           <div className='p-10'>
             <Image
               src={data.front_image}
-              width={100}
-              height={100}
+              width={10000}
+              height={100000}
               alt='Front cover'
               className='w-full h-full object-cover'
             />
@@ -49,8 +49,8 @@ export default function Swiper ({ data }: SwiperProps) {
           <div className='p-10'>
             <Image
               src={data.back_image}
-              width={100}
-              height={100}
+              width={10000}
+              height={10000}
               alt='Front cover'
               className='w-full h-full object-cover'
             />
