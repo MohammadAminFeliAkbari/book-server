@@ -7,7 +7,7 @@ import loadingSvg from '../signup/loading.svg'
 import Image from 'next/image'
 import { category } from './category'
 import { province } from './province'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import config from '../../config'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
@@ -79,6 +79,7 @@ const BookForm = () => {
       })
 
       const post = async () => {
+        // Inside your function...
         try {
           await axios.post(`${config.BASE_URL}/bookcase/books/`, values, {
             headers: {
@@ -88,14 +89,16 @@ const BookForm = () => {
           })
           router.push('/book')
         } catch (error) {
-          
-          const errors_value = error?.response.data
+          const axiosError = error as AxiosError<Record<string, string[]>>
+          const errors_value = axiosError.response?.data
 
           const allErrors: string[] = []
 
-          for (const key in errors_value) {
-            if (errors_value.hasOwnProperty(key)) {
-              allErrors.push(...errors_value[key])
+          if (errors_value) {
+            for (const key in errors_value) {
+              if (Object.prototype.hasOwnProperty.call(errors_value, key)) {
+                allErrors.push(...errors_value[key])
+              }
             }
           }
 
@@ -104,7 +107,6 @@ const BookForm = () => {
           setLoading(false)
         }
       }
-
       post()
     }
   })

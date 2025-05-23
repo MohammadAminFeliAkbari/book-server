@@ -8,7 +8,7 @@ import loadingSvg from './loading.svg'
 import Image from 'next/image'
 import { AppContext, contextT } from '../../../context/AppContext'
 import Link from 'next/link'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import config from '../../config'
 
 interface FormValues {
@@ -75,8 +75,9 @@ function FormSection () {
         localStorage.setItem('refresh', tokens.refresh)
 
         router.push('/')
-      } catch (err: unknown) {
-        const errors_value = err.response.data
+      } catch (error) {
+        const err = error as AxiosError<Record<string, string[]>>
+        const errors_value = err.response?.data
 
         const allErrors: string[] = []
 
