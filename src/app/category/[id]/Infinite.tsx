@@ -12,7 +12,7 @@ type post = {
   title: string
   author: string
   province: string
-  sale_price: number,
+  sale_price: number
 }
 
 const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
@@ -29,8 +29,9 @@ const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
 
     try {
       const { data } = await axios.get(
-        `http://141.11.21.237:8000/api/v1/bookcase/books/?category=${categoryNumber}&page=${pageNum}&page_size=10`
+        `/api/v1/bookcase/books/?category=${categoryNumber}&page=${pageNum}&page_size=10`
       )
+
       setPosts(prevPosts => [...prevPosts, ...data.results])
 
       // Simulate end of data
