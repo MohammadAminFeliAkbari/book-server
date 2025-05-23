@@ -18,16 +18,9 @@ interface Item {
 }
 
 export default function TopFooter ({ data }: { data: Item[] }) {
-  console.log('top footer ')
-
-  console.log(data)
-
   const filteredData = data.filter(
     item => item.category === 14 || item.category === 8 || item.category === 9
   )
-
-  console.log(filteredData)
-
   // Create a map to store items by their category
   const categories = filteredData.reduce(
     (acc: Record<number, Item[]>, item) => {

@@ -15,7 +15,7 @@ export default function RootLayout ({
   return (
     <html lang='en'>
       <body className='max-w-[1200px] mx-auto bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans'>
-        <MainLayout> {children}</MainLayout>
+        <MainLayout>{children}</MainLayout>
       </body>
     </html>
   )

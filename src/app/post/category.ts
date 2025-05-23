@@ -1,70 +1,54 @@
 export const category = [
   {
-    value: 'واژه‌نامه‌ عمومی و تخصصی',
-    display_name: 'واژه‌نامه‌ عمومی و تخصصی'
+    value:'3',
+    display_name: 'چاپی غیر فارسی'
   },
   {
-    value: 'دائره‌المعارف',
-    display_name: 'دائره‌المعارف'
+    value:'4',
+    display_name: 'کودک و نوجوان'
   },
   {
-    value: 'فرهنگ‌ شرح‌حال',
-    display_name: 'فرهنگ‌ شرح‌حال'
+    value:'5',
+    display_name: 'زندگینامه و دایره المعارف'
   },
   {
-    value: 'کتابشناسی‌',
-    display_name: 'کتابشناسی‌'
+    value:'6',
+    display_name: 'علوم کاربردی، تکنولوژی و مهندسی'
   },
   {
-    value: 'اطلس‌',
-    display_name: 'اطلس‌'
+    value:'7',
+    display_name: 'تاریخ و جغرافیا'
   },
   {
-    value: 'سالنامه‌',
-    display_name: 'سالنامه‌'
+    value:'8',
+    display_name: 'فلسفه و روانشناسی'
   },
   {
-    value: 'چکیده‌ نامه‌',
-    display_name: 'چکیده‌ نامه‌'
+    value:'9',
+    display_name: 'درسی، کمک‌درسی و آزمون'
   },
   {
-    value: 'کتاب مدرسه',
-    display_name: 'کتاب مدرسه'
+    value: '10',
+    display_name: 'زبان'
   },
   {
-    value: 'کتاب کمک آموزشی',
-    display_name: 'کتاب کمک آموزشی'
+    value: '11',
+    display_name: 'هنر و سرگرمی'
   },
   {
-    value: 'کتاب کنکور',
-    display_name: 'کتاب کنکور'
+    value: '12',
+    display_name: 'دینی'
   },
   {
-    value: 'کتاب دانشگاهی',
-    display_name: 'کتاب دانشگاهی'
+    value: '13',
+    display_name: 'علوم اجتماعی'
   },
   {
-    value: 'هنری',
-    display_name: 'هنری'
+    value: '14',
+    display_name: 'شعر و ادبیات'
   },
   {
-    value: 'انگیزشی',
-    display_name: 'انگیزشی'
-  },
-  {
-    value: 'مجموعه اشعار',
-    display_name: 'مجموعه اشعار'
-  },
-  {
-    value: 'زندگینامه',
-    display_name: 'زندگینامه'
-  },
-  {
-    value: 'مجموعه خاطرات',
-    display_name: 'مجموعه خاطرات'
-  },
-  {
-    value: 'داستانی',
-    display_name: 'داستانی'
+    value: '15',
+    display_name: 'دانشگاهی'
   }
 ]

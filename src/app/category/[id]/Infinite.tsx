@@ -39,7 +39,7 @@ const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
       }
     } catch (err: unknown) {
       // if (err) setError('Failed to load posts. Please try again later.')
-      if (err) console.log(11)
+      if (err) console.log()
     } finally {
       // setLoading(false)
     }

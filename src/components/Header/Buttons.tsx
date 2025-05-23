@@ -30,7 +30,7 @@ export default function Buttons_Main () {
     { id: 'search', icon: faMagnifyingGlass, href: '/search' },
     { id: 'post', icon: null, href: '/post' },
     { id: 'cart', icon: faCartShopping, href: '/' },
-    { id: 'profile', icon: faUser, href: '/darshbord' }
+    { id: 'profile', icon: faUser, href: '/dashboard' }
   ]
 
   return (

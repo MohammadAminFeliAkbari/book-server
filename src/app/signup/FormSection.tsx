@@ -8,12 +8,16 @@ import loadingSvg from './loading.svg'
 import Image from 'next/image'
 import { AppContext, contextT } from '../../../context/AppContext'
 import Link from 'next/link'
+import axios from 'axios'
+import config from '../../config'
 
 interface FormValues {
   first_name: string
   last_name: string
   phone_number: string
   password: string
+  telegram_id: string
+  eitaa_id: string
 }
 
 // Validation function
@@ -35,80 +39,56 @@ const validationSchema = Yup.object().shape({
 })
 
 function FormSection () {
-  const [networkError, setNetworkError] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const [doublicatePhoneNumber, setDoublicatePhoneNumber] =
-    useState<boolean>(false)
+  const [errors_, setError] = useState<string[]>()
   const router = useRouter()
   const { setAccess, setRefresh } = useContext<contextT>(AppContext)
-  const [get_id, set_get_id] = useState<'yes' | 'no'>('yes')
-  const [eeita, set_eeita] = useState('')
-  const [telegram, set_telegram] = useState('')
 
   const formik = useFormik<FormValues>({
     initialValues: {
       first_name: '',
       last_name: '',
       phone_number: '',
-      password: ''
+      password: '',
+      telegram_id: '',
+      eitaa_id: ''
     },
     validationSchema,
     onSubmit: async values => {
-      if ((eeita.length != 0 && telegram.length != 0) || get_id == 'yes') {
-        setLoading(true)
-        try {
-          const urlSignUp = `/auth/signup/`
-          const value_submit = [
-            {
-              ...values,
-              show_phone_number: get_id === 'yes',
-              eitaa_id: eeita,
-              telegram_id: telegram
-            }
-          ]
+      setLoading(true)
+      try {
+        const urlSignUp = `${config.BASE_URL}/auth/signup/`
 
-          const res = await fetch(urlSignUp, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(value_submit[0])
-          })
+        await axios.post(urlSignUp, values)
 
-          if (!res.ok) {
-            setDoublicatePhoneNumber(true)
-            return
+        // اگر ثبت‌نام موفق نبود (مثلاً status 400)، می‌ره به catch
+        const urlLogin = `${config.BASE_URL}/auth/login/`
+        const loginRes = await axios.post(urlLogin, {
+          phone_number: values.phone_number,
+          password: values.password
+        })
+
+        const tokens = loginRes.data
+        setAccess(tokens.access)
+        setRefresh(tokens.refresh)
+        localStorage.setItem('access', tokens.access)
+        localStorage.setItem('refresh', tokens.refresh)
+
+        router.push('/')
+      } catch (err: unknown) {
+        const errors_value = err.response.data
+
+        const allErrors: string[] = []
+
+        for (const key in errors_value) {
+          if (errors_value.hasOwnProperty(key)) {
+            allErrors.push(...errors_value[key])
           }
-
-          const urlLogin = `/auth/login/`
-
-          fetch(urlLogin, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              phone_number: values.phone_number,
-              password: values.password
-            })
-          }).then(data => {
-            const fetchToken = async () => {
-              const tokens = await data.json()
-              setAccess(tokens.access)
-              setRefresh(tokens.refresh)
-              localStorage.setItem('access', tokens.access)
-              localStorage.setItem('refresh', tokens.refresh)
-            }
-
-            fetchToken()
-          })
-
-          router.push('/')
-        } catch (err) {
-          setNetworkError(err?true:false)
-        } finally {
-          setLoading(false)
         }
+
+        setError(allErrors)
+      } finally {
+        setLoading(false)
       }
     }
   })
@@ -131,6 +111,7 @@ function FormSection () {
               <div className='space-y-4'>
                 <div>
                   <input
+                    autoComplete='off'
                     type='text'
                     placeholder='نام'
                     className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
@@ -147,7 +128,6 @@ function FormSection () {
                     </div>
                   )}
                 </div>
-
                 <div>
                   <input
                     type='text'
@@ -166,9 +146,9 @@ function FormSection () {
                     </div>
                   )}
                 </div>
-
                 <div>
                   <input
+                    autoComplete='off'
                     type='password'
                     placeholder='رمز عبور'
                     className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
@@ -185,91 +165,48 @@ function FormSection () {
                     </div>
                   )}
                 </div>
-
-                <div className='flex gap-2'>
-                  <div className='flex-1'>
-                    <input
-                      type='tel'
-                      placeholder='شماره تلفن'
-                      className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
-                        formik.touched.phone_number &&
-                        formik.errors.phone_number
-                          ? 'border-red-500'
-                          : 'border-gray-300 dark:border-gray-600'
-                      } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                      id='phone_number'
-                      {...formik.getFieldProps('phone_number')}
-                    />
-                    {formik.touched.phone_number &&
-                      formik.errors.phone_number && (
-                        <div className='text-red-500 text-sm mt-1 text-right animate-fadeIn'>
-                          {formik.errors.phone_number}
-                        </div>
-                      )}
-                  </div>
-
-                  <div className='flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg px-3'>
-                    <label
-                      htmlFor='phone_show_valid'
-                      className='text-xs font-medium text-gray-700 dark:text-gray-300 mr-2'
-                    >
-                      نمایش شماره:
-                    </label>
-                    <select
-                      name='get_id'
-                      className='bg-transparent border-none text-sm focus:outline-none focus:ring-0 text-gray-800 dark:text-white'
-                      onChange={() =>
-                        set_get_id(prev => (prev === 'yes' ? 'no' : 'yes'))
-                      }
-                      value={get_id}
-                    >
-                      <option value='yes'>بله</option>
-                      <option value='no'>خیر</option>
-                    </select>
-                  </div>
+                <div className='flex-1'>
+                  <input
+                    autoComplete='off'
+                    type='number'
+                    placeholder='شماره تلفن'
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
+                      formik.touched.phone_number && formik.errors.phone_number
+                        ? 'border-red-500'
+                        : 'border-gray-300 dark:border-gray-600'
+                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                    id='phone_number'
+                    {...formik.getFieldProps('phone_number')}
+                  />
+                  {formik.touched.phone_number &&
+                    formik.errors.phone_number && (
+                      <div className='text-red-500 text-sm mt-1 text-right animate-fadeIn'>
+                        {formik.errors.phone_number}
+                      </div>
+                    )}
+                </div>
+                <h2 className='text-sm'>موارد اختیاری</h2>
+                <div>
+                  <input
+                    autoComplete='off'
+                    type='text'
+                    placeholder='ایدی تلگرام'
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                    id='eitaa_id'
+                    {...formik.getFieldProps('eitaa_id')}
+                  />
                 </div>
 
-                {get_id === 'no' && (
-                  <>
-                    <div>
-                      <input
-                        type='text'
-                        placeholder='ایدی ایتا'
-                        className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
-                          eeita.length === 0
-                            ? 'border-red-500'
-                            : 'border-gray-300 dark:border-gray-600'
-                        } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                        onChange={e => set_eeita(e.target.value)}
-                        value={eeita}
-                      />
-                      {eeita.length === 0 && (
-                        <div className='text-red-500 text-sm mt-1 text-right animate-fadeIn'>
-                          ایدی ایتا اجباری است
-                        </div>
-                      )}
-                    </div>
-
-                    <div>
-                      <input
-                        type='text'
-                        placeholder='ایدی تلگرام'
-                        className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
-                          telegram.length === 0
-                            ? 'border-red-500'
-                            : 'border-gray-300 dark:border-gray-600'
-                        } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                        onChange={e => set_telegram(e.target.value)}
-                        value={telegram}
-                      />
-                      {telegram.length === 0 && (
-                        <div className='text-red-500 text-sm mt-1 text-right animate-fadeIn'>
-                          ایدی تلگرام اجباری است
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
+                <div>
+                  <input
+                    autoComplete='off'
+                    type='text'
+                    placeholder='ایدی ایتا'
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                    id='telegram_id'
+                    {...formik.getFieldProps('telegram_id')}
+                  />
+                </div>
               </div>
 
               <button
@@ -294,14 +231,20 @@ function FormSection () {
                   'ثبت نام'
                 )}
               </button>
-
-              {(networkError || doublicatePhoneNumber) && (
-                <div className='animate-bounce bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 p-3 rounded-lg text-center'>
-                  {networkError && 'خطای شبکه! لطفاً دوباره تلاش کنید.'}
-                  {doublicatePhoneNumber && 'شماره تلفن تکراری است!'}
-                </div>
-              )}
             </form>
+
+            {errors_ && errors_.length > 0 && (
+              <div className='mt-4 space-y-2 p-4 bg-gray-300 border border-red-300 rounded-md shadow-sm'>
+                {errors_.map((str, index) => (
+                  <div
+                    key={index}
+                    className='text-sm text-red-700 leading-relaxed font-medium animate-fadeIn'
+                  >
+                    {str}
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className='mt-6 text-center'>
               <p className='text-gray-600 dark:text-gray-300'>

@@ -1,5 +1,5 @@
 'use client'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { AppContext } from '../../../context/AppContext'
@@ -26,7 +26,7 @@ type BookData = {
 const BookForm = () => {
   const router = useRouter()
   const { access } = useContext(AppContext)
-  const [error, setError] = useState(false)
+  const [error_, setError] = useState<string[]>()
   const [loading, setLoading] = useState(false)
 
   const validationSchema = Yup.object().shape({
@@ -50,12 +50,16 @@ const BookForm = () => {
     description: Yup.string()
   })
 
+  useEffect(() => {
+    if (!access) router.push('/signup')
+  }, [])
+
   const formik = useFormik<BookData>({
     initialValues: {
       title: '',
       author: '',
       back_image: null,
-      category: 'واژه‌نامه‌ عمومی و تخصصی',
+      category: '5',
       description: '',
       front_image: null,
       province: 'آذربایجان شرقی',
@@ -64,35 +68,38 @@ const BookForm = () => {
     validationSchema,
     onSubmit: values => {
       setLoading(true)
+      console.log({
+        ...values,
+        publisher: '',
+        publish_year: '',
+        real_price: '',
+        condition: 'new',
+        translator: 'new',
+        page_number: '2'
+      })
 
       const post = async () => {
         try {
-          
-          // const formData = new FormData()
-          // for (const key in values) {
-          //   const value = (values as any)[key]
-          //   formData.append(key, value)
-          // }
-
-          const response = await axios.post(
-            `${config.BASE_URL}/bookcase/books/`,
-            values,
-            {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-                Authorization: `Bearer ${access}`
-              }
+          await axios.post(`${config.BASE_URL}/bookcase/books/`, values, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${access}`
             }
-          )
-          console.log('Response:', response.data)
+          })
           router.push('/book')
         } catch (error) {
-          if (axios.isAxiosError(error)) {
-            setError(true)
-            console.log(error.response?.data)
-          } else {
-            console.error('Error:', error)
+          
+          const errors_value = error?.response.data
+
+          const allErrors: string[] = []
+
+          for (const key in errors_value) {
+            if (errors_value.hasOwnProperty(key)) {
+              allErrors.push(...errors_value[key])
+            }
           }
+
+          setError(allErrors)
         } finally {
           setLoading(false)
         }
@@ -154,12 +161,6 @@ const BookForm = () => {
               </option>
             ))}
           </select>
-          {formik.touched[id as keyof BookData] &&
-          formik.errors[id as keyof BookData] ? (
-            <div className='text-red-400 text-right text-sm mt-1'>
-              {formik.errors[id as keyof BookData]}
-            </div>
-          ) : null}
         </div>
       ))}
 
@@ -171,7 +172,9 @@ const BookForm = () => {
         ].map(img => (
           <div className='w-1/2 relative' key={img.key}>
             {formik.values[img.key as keyof BookData] ? (
-              <img
+              <Image
+                width={100}
+                height={100}
                 src={URL.createObjectURL(
                   formik.values[img.key as keyof BookData] as File
                 )}
@@ -230,14 +233,17 @@ const BookForm = () => {
         )}
       </motion.button>
 
-      {error && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className='text-red-500 text-center mt-4'
-        >
-          ابتدا باید وارد شوید
-        </motion.p>
+      {error_ && error_.length > 0 && (
+        <div className='mt-4 space-y-2 p-4 bg-gray-300 border border-red-300 rounded-md shadow-sm'>
+          {error_.map((str, index) => (
+            <div
+              key={index}
+              className='text-sm text-red-700 leading-relaxed font-medium animate-fadeIn'
+            >
+              {str}
+            </div>
+          ))}
+        </div>
       )}
     </motion.form>
   )
