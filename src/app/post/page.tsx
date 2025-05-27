@@ -11,6 +11,7 @@ import axios, { AxiosError } from 'axios'
 import config from '../../config'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
+import toast, { Toaster } from 'react-hot-toast'
 
 type BookData = {
   title: string
@@ -87,7 +88,10 @@ const BookForm = () => {
               Authorization: `Bearer ${access}`
             }
           })
-          router.push('/book')
+          toast.success('کتاب شما بعد از تایید ادمین افزوده خواهد شد!')
+          setTimeout(() => {
+            router.push('/')
+          }, 5000)
         } catch (error) {
           const axiosError = error as AxiosError<Record<string, string[]>>
           const errors_value = axiosError.response?.data
@@ -117,7 +121,7 @@ const BookForm = () => {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className='m-5 dark:bg-gray-800 bg-white p-6 rounded-3xl shadow-xl'
+      className='m-5 dark:bg-gray-800 bg-white p-6 rounded-3xl shadow-xl relative'
     >
       <h1 className='text-center text-[22px] font-bold mb-5 text-gray-700 dark:text-white'>
         افزودن کتاب
@@ -234,6 +238,17 @@ const BookForm = () => {
           'اضافه کردن کتاب'
         )}
       </motion.button>
+
+      <Toaster
+        position='bottom-center'
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            fontSize: '12px',
+            padding: '8px 12px'
+          }
+        }}
+      />
 
       {error_ && error_.length > 0 && (
         <div className='mt-4 space-y-2 p-4 bg-gray-300 border border-red-300 rounded-md shadow-sm'>

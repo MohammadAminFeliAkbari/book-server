@@ -50,8 +50,15 @@ function FormSection () {
           }
         )
 
+        console.log(response.data.access);
+        console.log(response.data.refres);
+        
+
         setAccess(response.data.access)
         setRefresh(response.data.refresh)
+
+        localStorage.setItem('access' , response.data.access)
+        localStorage.setItem('refresh' , response.data.refresh)
 
         router.push('/')
       } catch (err: unknown) {
