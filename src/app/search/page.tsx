@@ -73,7 +73,7 @@ const Infinite = () => {
     const fetch_footerData = async () => {
       try {
         const data = await axios.get(
-          `http://141.11.21.237:8000/api/v1/bookcase/books/?page_size=100`
+          `${config.BASE_URL}/api/v1/bookcase/books/?page_size=100`
         )
         setFooterData(data.data.results)
       } catch (error) {
