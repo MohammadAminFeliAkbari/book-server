@@ -5,6 +5,7 @@ import axios from 'axios'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import config from '../../../config'
 
 type post = {
   id: string
@@ -24,12 +25,9 @@ const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
 
   // Function to fetch posts
   const fetchPosts = async (pageNum: number) => {
-    // setLoading(true)
-    // setError('') // Reset any previous error
-
     try {
       const { data } = await axios.get(
-        `/api/v1/bookcase/books/?category=${categoryNumber}&page=${pageNum}&page_size=10`
+        `${config.BASE_URL}/bookcase/books/?category=${categoryNumber}&page=${pageNum}&page_size=10`
       )
 
       setPosts(prevPosts => [...prevPosts, ...data.results])
