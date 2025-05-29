@@ -9,7 +9,11 @@ import { motion } from 'framer-motion'
 
 function Dashboard () {
   const { access } = useContext(AppContext)
-  const [data, setData] = useState(null)
+  const [data, setData] = useState<{
+    first_name: string
+    last_name: string
+    phone_number: string
+  }>()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const router = useRouter()
@@ -128,10 +132,9 @@ function Dashboard () {
           transition={{ duration: 0.5, delay: 0.2 }}
           className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
         >
-          {data &&
-            Object.entries(data).map(([key]) => (
+          {data && (
+            <>
               <motion.div
-                key={key}
                 whileHover={{
                   y: -5,
                   boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
@@ -139,10 +142,35 @@ function Dashboard () {
                 className='bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-100 dark:border-gray-700'
               >
                 <h3 className='text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider'>
-                  {key}
+                  {data.first_name}
                 </h3>
               </motion.div>
-            ))}
+
+              <motion.div
+                whileHover={{
+                  y: -5,
+                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+                }}
+                className='bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-100 dark:border-gray-700'
+              >
+                <h3 className='text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider'>
+                  {data.last_name}
+                </h3>
+              </motion.div>
+
+              <motion.div
+                whileHover={{
+                  y: -5,
+                  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
+                }}
+                className='bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-100 dark:border-gray-700'
+              >
+                <h3 className='text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider'>
+                  {data.phone_number}
+                </h3>
+              </motion.div>
+            </>
+          )}
         </motion.div>
 
         <motion.div
@@ -152,7 +180,7 @@ function Dashboard () {
           className='mt-12 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md'
         >
           <h2 className='text-xl font-bold text-gray-800 dark:text-gray-200 mb-4'>
-            تکمیل پروفایل
+            تکمیل پروفایل و بروزرسانی
           </h2>
           <div className='w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5'>
             <motion.div
@@ -162,9 +190,6 @@ function Dashboard () {
               className='bg-blue-600 dark:bg-blue-500 h-2.5 rounded-full'
             />
           </div>
-          <p className='mt-2 text-gray-600 dark:text-gray-400'>
-            پروفایل شما 65% تکمیل شده است
-          </p>
         </motion.div>
       </div>
     </motion.div>

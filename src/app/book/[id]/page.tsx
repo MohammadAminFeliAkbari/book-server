@@ -23,15 +23,23 @@ export default async function Page (props: { params: Promise<{ id: number }> }) 
     province: string
     front_image: string
     back_image: string
+    condition: string
+    page_number: string
+    publish_year: string
+    publisher: string
+    real_price: number
+    traslator: string
+    user_anonymous: boolean
     created_by: {
       last_name: string
       first_name: string
       eitaa_id: string
       phone_number: string
-      show_phone_number: boolean
       telegram_id: string
     }
   } = response.data
+
+  console.log('data is bottom')
 
   console.log(data)
 
@@ -64,8 +72,13 @@ export default async function Page (props: { params: Promise<{ id: number }> }) 
         last_name={data.created_by.last_name}
         eitaa_id={data.created_by.eitaa_id}
         phone_number={data.created_by.phone_number}
-        show_phone_number={data.created_by.show_phone_number}
         telegram_id={data.created_by.telegram_id}
+        page_number={data.page_number}
+        user_anonymous={data.user_anonymous}
+        publisher_year={data.publish_year}
+        publisher={data.publisher}
+        real_price={data.real_price}
+        translator={data.traslator}
       />
 
       <TopFooter data={topfooterData.data.results} />

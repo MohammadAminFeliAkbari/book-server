@@ -14,7 +14,12 @@ function Properties ({
   last_name,
   eitaa_id,
   phone_number,
-  show_phone_number
+  user_anonymous,
+  translator,
+  page_number,
+  publisher,
+  publisher_year,
+  real_price
 }: {
   category: string
   description: string
@@ -23,13 +28,15 @@ function Properties ({
   first_name: string
   last_name: string
   eitaa_id: string
-  show_phone_number: boolean
   phone_number: string
+  publisher_year: string
+  publisher: string
+  real_price: number
+  translator: string
+  page_number: string
+  user_anonymous: boolean
 }) {
   const [activePage, setActivePage] = useState<boolean>(false)
-  console.log(phone_number)
-  console.log(phone_number)
-
   return (
     <div>
       <div className='w-full flex items-center justify-center cursor-pointer'>
@@ -120,7 +127,7 @@ function Properties ({
             </div>
           )}
 
-          {show_phone_number && (
+          {user_anonymous && (
             <div className='flex justify-between items-center'>
               <h1 className='text-[#000000] dark:text-gray-200'>شماره تلفن</h1>
               <h2 className='text-[#919191] dark:text-gray-400'>
@@ -131,20 +138,73 @@ function Properties ({
         </div>
       ) : (
         <div className='flex flex-col w-full p-5 gap-3'>
-          <div className='flex justify-between items-center'>
-            <h1 className='text-[#000000] dark:text-gray-200'>شهر</h1>
-            <h2 className='text-[#919191] dark:text-gray-400'>{province}</h2>
-          </div>
-          <div className='flex justify-between items-center'>
-            <h1 className='text-[#000000] dark:text-gray-200'>دسته بندی</h1>
-            <h2 className='text-[#919191] dark:text-gray-400'>{category}</h2>
-          </div>
+          {province && (
+            <div className='flex justify-between items-center'>
+              <h1 className='text-[#000000] dark:text-gray-200'>شهر</h1>
+              <h2 className='text-[#919191] dark:text-gray-400'>{province}</h2>
+            </div>
+          )}
+          {category && (
+            <div className='flex justify-between items-center'>
+              <h1 className='text-[#000000] dark:text-gray-200'>دسته بندی</h1>
+              <h2 className='text-[#919191] dark:text-gray-400'>{category}</h2>
+            </div>
+          )}
 
-          <h1 className='text-[#000000] dark:text-gray-200'>دیگرتوضیحات</h1>
+          {translator && (
+            <div className='flex justify-between items-center'>
+              <h1 className='text-[#000000] dark:text-gray-200'>مترجم</h1>
+              <h2 className='text-[#919191] dark:text-gray-400'>
+                {translator}
+              </h2>
+            </div>
+          )}
 
-          <p className='text-[#919191] mx-2 dark:text-gray-400'>
-            {description}
-          </p>
+          {page_number && (
+            <div className='flex justify-between items-center'>
+              <h1 className='text-[#000000] dark:text-gray-200'>تعداد صفحات</h1>
+              <h2 className='text-[#919191] dark:text-gray-400'>
+                {page_number}
+              </h2>
+            </div>
+          )}
+
+          {publisher && (
+            <div className='flex justify-between items-center'>
+              <h1 className='text-[#000000] dark:text-gray-200'>منتشرکننده</h1>
+              <h2 className='text-[#919191] dark:text-gray-400'>{publisher}</h2>
+            </div>
+          )}
+
+          {real_price && (
+            <div className='flex justify-between items-center'>
+              <h1 className='text-[#000000] dark:text-gray-200'>
+                قیمت روی جلد
+              </h1>
+              <h2 className='text-[#919191] dark:text-gray-400'>
+                {toPersianNumber(real_price)}
+              </h2>
+            </div>
+          )}
+
+          {publisher_year && (
+            <div className='flex justify-between items-center'>
+              <h1 className='text-[#000000] dark:text-gray-200'>سال انتشار</h1>
+              <h2 className='text-[#919191] dark:text-gray-400'>
+                {publisher_year}
+              </h2>
+            </div>
+          )}
+
+          {description && (
+            <>
+              <h1 className='text-[#000000] dark:text-gray-200'>دیگرتوضیحات</h1>
+
+              <p className='text-[#919191] mx-2 dark:text-gray-400'>
+                {description}
+              </p>
+            </>
+          )}
         </div>
       )}
     </div>
