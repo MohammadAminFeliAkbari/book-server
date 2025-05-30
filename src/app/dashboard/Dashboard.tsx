@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 
 function Dashboard () {
-  const { access } = useContext(AppContext)
+  const { setAccess, setRefresh } = useContext(AppContext)
   const [data, setData] = useState<{
     first_name: string
     last_name: string
@@ -19,11 +19,16 @@ function Dashboard () {
   const router = useRouter()
 
   useEffect(() => {
+    const re = localStorage.getItem('refresh')
+    const ac = localStorage.getItem('access')
+    if (re) setRefresh(re)
+    if (ac) setAccess(ac)
+
     const fetchData = async () => {
       try {
         const response = await axios.get(`${config.BASE_URL}/account/me`, {
           headers: {
-            Authorization: `Bearer ${access}`,
+            Authorization: `Bearer ${ac}`,
             'Content-Type': 'application/json'
           }
         })
@@ -37,7 +42,7 @@ function Dashboard () {
     }
 
     fetchData()
-  }, [access, router])
+  }, [])
 
   if (loading) {
     return (
