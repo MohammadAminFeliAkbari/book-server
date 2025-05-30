@@ -173,11 +173,12 @@ function Dashboard () {
           )}
         </motion.div>
 
-        <motion.div
+        <motion.button
+          onClick={() => router.push('dashboard/update')}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className='mt-12 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md'
+          className='mt-12 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md w-full'
         >
           <h2 className='text-xl font-bold text-gray-800 dark:text-gray-200 mb-4'>
             تکمیل پروفایل و بروزرسانی
@@ -190,7 +191,7 @@ function Dashboard () {
               className='bg-blue-600 dark:bg-blue-500 h-2.5 rounded-full'
             />
           </div>
-        </motion.div>
+        </motion.button>
       </div>
     </motion.div>
   )
