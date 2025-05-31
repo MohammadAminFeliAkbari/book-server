@@ -16,7 +16,7 @@ type post = {
   sale_price: number
 }
 
-const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
+const Infinite = () => {
   const [posts, setPosts] = useState<post[]>([])
   const [hasMore, setHasMore] = useState(true)
   const [page, setPage] = useState(1)
@@ -25,8 +25,15 @@ const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
   const fetchPosts = async (pageNum: number) => {
     try {
       const { data } = await axios.get(
-        `${config.BASE_URL}/bookcase/books/?category=${categoryNumber}&page=${pageNum}&page_size=10`
+        `${config.BASE_URL}/bookcase/my-books/?page=${pageNum}&page_size=10`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access')}`
+          }
+        }
       )
+
+      console.log(data)
 
       setPosts(prevPosts => [...prevPosts, ...data.results])
 
@@ -36,9 +43,7 @@ const Infinite = ({ categoryNumber }: { categoryNumber: number }) => {
       }
     } catch (err: unknown) {
       // if (err) setError('Failed to load posts. Please try again later.')
-      if (err) console.log()
-    } finally {
-      // setLoading(false)
+      if (err) console.log(err)
     }
   }
 

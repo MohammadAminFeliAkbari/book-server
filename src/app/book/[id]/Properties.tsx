@@ -4,8 +4,9 @@ import { toPersianNumber } from '@/convertNumberToPersion'
 import Telegram_svg from './telegram.svg'
 import Image from 'next/image'
 import Eitaa_png from './eitaa-icon-colorful.png'
+import Link from 'next/link'
 
-function Properties ({
+function Properties({
   province,
   description,
   category,
@@ -19,7 +20,9 @@ function Properties ({
   page_number,
   publisher,
   publisher_year,
-  real_price
+  real_price,
+  id_book,
+  id_person
 }: {
   category: string
   description: string
@@ -35,6 +38,8 @@ function Properties ({
   translator: string
   page_number: string
   user_anonymous: boolean
+  id_book: number
+  id_person: number
 }) {
   const [activePage, setActivePage] = useState<boolean>(false)
   return (
@@ -42,28 +47,26 @@ function Properties ({
       <div className='w-full flex items-center justify-center cursor-pointer'>
         <button
           onClick={() => setActivePage(true)}
-          className={`w-[50%] cursor-pointer p-1 ${
-            activePage
-              ? 'text-[#52CC6D] border-b-[#77c488]'
-              : 'border-gray-300 text-gray-400'
-          } border-b-2`}
+          className={`w-[50%] cursor-pointer p-1 ${activePage
+            ? 'text-[#52CC6D] border-b-[#77c488]'
+            : 'border-gray-300 text-gray-400'
+            } border-b-2`}
         >
           مشخصات صاحبش
         </button>
         <button
           onClick={() => setActivePage(false)}
-          className={`w-[50%] cursor-pointer p-1 ${
-            !activePage
-              ? 'text-[#52CC6D] border-b-[#52CC6D]'
-              : 'border-gray-300 text-gray-400'
-          } border-b-2`}
+          className={`w-[50%] cursor-pointer p-1 ${!activePage
+            ? 'text-[#52CC6D] border-b-[#52CC6D]'
+            : 'border-gray-300 text-gray-400'
+            } border-b-2`}
         >
           مشخصات
         </button>
       </div>
       {activePage ? (
         <div className='flex flex-col w-full p-5 gap-3'>
-          <div className='flex flex-col justify-between items-center'>
+          <Link href={{ pathname: `/book/${id_book}/${id_person}`, query: { first_name, last_name } }} className='flex flex-col justify-between items-center'>
             <svg
               xmlns='http://www.w3.org/2000/svg'
               width='50'
@@ -84,7 +87,7 @@ function Properties ({
               <h2>{first_name}</h2>
               <h2>{last_name}</h2>
             </div>
-          </div>
+          </Link>
 
           <div className='flex justify-center items-center w-full gap-2'>
             {telegram_id && (

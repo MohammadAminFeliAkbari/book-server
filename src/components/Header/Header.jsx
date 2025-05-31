@@ -13,7 +13,6 @@ export default function Header () {
   const [loading, setLoading] = useState(true)
   const { refresh, access, setAccess, setRefresh } = useContext(AppContext)
 
-
   useEffect(() => {
     const storedAccess = localStorage.getItem('access')
     const storedRefresh = localStorage.getItem('refresh')
@@ -72,8 +71,6 @@ export default function Header () {
             // Clear invalid tokens
             setAccess(null)
             setRefresh(null)
-            localStorage.removeItem('access')
-            localStorage.removeItem('refresh')
           }
         }
       } finally {
@@ -84,7 +81,15 @@ export default function Header () {
     fetchUserData()
   }, [access, refresh, setAccess, setRefresh])
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const response = await axios.post(`${config.BASE_URL}/auth/logout`, {
+      refresh: refresh
+    })
+
+    console.log('logout is')
+
+    console.log(response)
+
     setAccess(null)
     setRefresh(null)
     setUsername('')
@@ -116,7 +121,7 @@ export default function Header () {
         )}
       </div>
 
-      <Toaster position='top-left'/>
+      <Toaster position='top-left' />
 
       {loading && (
         <div className='absolute inset-0 flex items-center justify-center bg-black bg-opacity-10'>

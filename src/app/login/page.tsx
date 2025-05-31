@@ -20,7 +20,7 @@ const validationSchema = Yup.object().shape({
     .matches(/^(\+98|0)?9\d{9}$/, 'شماره تلفن نامعتبر است'),
   password: Yup.string()
     .required('رمز عبور الزامی است')
-    .min(6, 'رمز عبور باید حداقل ۶ کاراکتر باشد')
+    .min(1, 'رمز عبور باید حداقل ۶ کاراکتر باشد')
 })
 
 function FormSection () {
@@ -50,15 +50,14 @@ function FormSection () {
           }
         )
 
-        console.log(response.data.access);
-        console.log(response.data.refres);
-        
+        console.log(response.data.access)
+        console.log(response.data.refres)
 
         setAccess(response.data.access)
         setRefresh(response.data.refresh)
 
-        localStorage.setItem('access' , response.data.access)
-        localStorage.setItem('refresh' , response.data.refresh)
+        localStorage.setItem('access', response.data.access)
+        localStorage.setItem('refresh', response.data.refresh)
 
         router.push('/')
       } catch (err: unknown) {

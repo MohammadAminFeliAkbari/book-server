@@ -7,7 +7,7 @@ import Properties from './Properties'
 import Nav from './ButtonBuy'
 import TopFooter from '../../../components/Home/slider/Slider'
 
-export default async function Page (props: { params: Promise<{ id: number }> }) {
+export default async function Page(props: { params: Promise<{ id: number }> }) {
   const { id } = await props.params
   const response = await axios.get(`${config.BASE_URL}/bookcase/books/${id}`)
   const topfooterData = await axios.get(
@@ -36,6 +36,7 @@ export default async function Page (props: { params: Promise<{ id: number }> }) 
       eitaa_id: string
       phone_number: string
       telegram_id: string
+      id: number
     }
   } = response.data
 
@@ -65,6 +66,8 @@ export default async function Page (props: { params: Promise<{ id: number }> }) 
       </div>
 
       <Properties
+        id_book={id}
+        id_person={data.created_by.id}
         category={data.category_title}
         description={data.description}
         province={data.province}
