@@ -14,6 +14,7 @@ type post = {
   author: string
   province: string
   sale_price: number
+  status : number
 }
 
 const Infinite = () => {
@@ -92,8 +93,9 @@ const Infinite = () => {
           <Link
             key={index} // It's important to add a key to each Link
             className='flex m-1 bg-white relative p-2 shadow-md rounded-md dark:bg-gray-800'
-            href={`/book/${post.id}`}
+            href={`/book/${post.id}?is_mine=true`}
           >
+            <h3 className='absolute top-0 left-0 m-4'>{post.status}</h3>
             <div className='flex-shrink-0'>
               <Image
                 width={100}

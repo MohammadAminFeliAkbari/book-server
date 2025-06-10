@@ -6,8 +6,9 @@ import axios from 'axios'
 import config from '../../config'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 
-function Dashboard () {
+function Dashboard() {
   const { setAccess, setRefresh } = useContext(AppContext)
   const [data, setData] = useState<{
     first_name: string
@@ -174,6 +175,16 @@ function Dashboard () {
                   {data.phone_number}
                 </h3>
               </motion.div>
+
+
+              <Link href={'/dashboard/mybook'}
+
+                className='bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-100 dark:border-gray-700'
+              >
+                <h3 className='text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider'>
+                  مشاهده کتاب های من
+                </h3>
+              </Link>
             </>
           )}
         </motion.div>

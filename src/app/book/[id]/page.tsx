@@ -40,10 +40,6 @@ export default async function Page(props: { params: Promise<{ id: number }> }) {
     }
   } = response.data
 
-  console.log('data is bottom')
-
-  console.log(data)
-
   return (
     <div className='relative border-b-1 dark:bg-gray-700 bg-white dark:border-gray-600 border-gray-400 flex flex-col w-full gap-3 min-h-[1000px]'>
       <div className='w-full'>
