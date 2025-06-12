@@ -1,12 +1,10 @@
 'use client'
 import { useMotionValueEvent, motion, useScroll } from 'framer-motion'
 import type { Variants } from 'framer-motion'
-import { useSearchParams } from 'next/navigation'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 
-export default function Nav() {
+export default function Nav({ isMine }: { isMine: boolean }) {
   const [hidden, setHidden] = useState(false)
-  const [isMine, setIsMine] = useState(false) // Initial state for isMine
   const { scrollY } = useScroll()
   const lastYRef = useRef(0)
 
@@ -17,26 +15,6 @@ export default function Nav() {
       lastYRef.current = y
     }
   })
-
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    // Get the value of 'is_mine' from the URL
-    const isMineParam = searchParams.get('is_mine')
-
-    // Determine the boolean state based on the parameter's presence
-    // If 'is_mine' is present (not null), consider it true.
-    // If you need specific values like '?is_mine=true', modify the logic.
-    // Example: const shouldBeMine = isMineParam === 'true';
-    const shouldBeMine = isMineParam !== null;
-
-    setIsMine(shouldBeMine);
-
-    // Optional: Log to verify the value
-    console.log('useEffect - is_mineParam:', isMineParam);
-    console.log('useEffect - isMine state:', shouldBeMine);
-
-  }, [searchParams]) // <--- IMPORTANT: Add searchParams to the dependency array
 
   return (
     <motion.div
