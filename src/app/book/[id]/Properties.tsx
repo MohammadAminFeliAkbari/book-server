@@ -42,170 +42,118 @@ function Properties({
   id_person: number
 }) {
   const [activePage, setActivePage] = useState<boolean>(false)
+
   return (
-    <div>
-      <div className='w-full flex items-center justify-center cursor-pointer'>
+    <div className="w-full max-w-3xl mx-auto">
+      {/* Switch Tabs */}
+      <div className="flex items-center justify-center cursor-pointer">
         <button
           onClick={() => setActivePage(true)}
-          className={`w-[50%] cursor-pointer p-1 ${activePage
-            ? 'text-[#52CC6D] border-b-[#77c488]'
-            : 'border-gray-300 text-gray-400'
-            } border-b-2`}
+          className={`w-1/2 cursor-pointer p-2 sm:p-3 text-center ${activePage
+            ? 'text-[#52CC6D] border-b-2 border-b-[#77c488]'
+            : 'border-b-2 border-gray-300 text-gray-400'
+            }`}
         >
           مشخصات صاحبش
         </button>
         <button
           onClick={() => setActivePage(false)}
-          className={`w-[50%] cursor-pointer p-1 ${!activePage
-            ? 'text-[#52CC6D] border-b-[#52CC6D]'
-            : 'border-gray-300 text-gray-400'
-            } border-b-2`}
+          className={`w-1/2 cursor-pointer p-2 sm:p-3 text-center ${!activePage
+            ? 'text-[#52CC6D] border-b-2 border-b-[#52CC6D]'
+            : 'border-b-2 border-gray-300 text-gray-400'
+            }`}
         >
           مشخصات
         </button>
       </div>
+
+      {/* Owner Info */}
       {activePage ? (
-        <div className='flex flex-col w-full p-5 gap-3'>
-          <Link href={{ pathname: `/book/${id_book}/${id_person}`, query: { first_name, last_name } }} className='flex flex-col justify-between items-center'>
+        <div className="flex flex-col w-full p-5 gap-4 sm:gap-6">
+          <Link href={{ pathname: `/book/${id_book}/${id_person}`, query: { first_name, last_name } }} className="flex flex-col justify-between items-center gap-2">
             <svg
               xmlns='http://www.w3.org/2000/svg'
-              width='50'
-              height='50'
+              width='60'
+              height='60'
               viewBox='0 0 100 100'
               fill='none'
               stroke='black'
               strokeWidth='2'
             >
               <circle cx='50' cy='30' r='20' fill='white' stroke='black' />
-              <path
-                d='M20 80 C30 60, 70 60, 80 80'
-                fill='none'
-                stroke='black'
-              />
+              <path d='M20 80 C30 60, 70 60, 80 80' fill='none' stroke='black' />
             </svg>
-            <div className='flex gap-1 text-[#919191] dark:text-gray-400'>
+            <div className="flex gap-1 text-[#919191] dark:text-gray-400 text-lg sm:text-xl">
               <h2>{first_name}</h2>
               <h2>{last_name}</h2>
             </div>
           </Link>
 
-          <div className='flex justify-center items-center w-full gap-2'>
+          <div className="flex justify-center items-center w-full gap-4">
             {telegram_id && (
-              <a
-                href={`tg://resolve?domain=${telegram_id}`}
-                className='text-[#919191] dark:text-gray-400'
-              >
-                <Image
-                  width={20}
-                  height={20}
-                  src={Telegram_svg}
-                  alt=''
-                  className=''
-                />
+              <a href={`tg://resolve?domain=${telegram_id}`} className="text-[#919191] dark:text-gray-400">
+                <Image width={30} height={30} src={Telegram_svg} alt='' />
               </a>
             )}
 
             {eitaa_id && (
-              <a
-                href={`https://eitaa.com/${eitaa_id}`}
-                className='text-[#919191] dark:text-gray-400'
-              >
-                <Image
-                  width={20}
-                  height={20}
-                  src={Eitaa_png}
-                  alt=''
-                  className=''
-                />
+              <a href={`https://eitaa.com/${eitaa_id}`} className="text-[#919191] dark:text-gray-400">
+                <Image width={30} height={30} src={Eitaa_png} alt='' />
               </a>
             )}
           </div>
 
           {eitaa_id && (
-            <div className='flex justify-between items-center'>
-              <h1 className='text-[#000000] dark:text-gray-200'>ایتا</h1>
-              <h2 className='text-[#919191] dark:text-gray-400 hover:underline'>
-                {eitaa_id}
-              </h2>
+            <div className="flex justify-between items-center text-base sm:text-lg">
+              <h1 className="text-[#000000] dark:text-gray-200">ایتا</h1>
+              <h2 className="text-[#919191] dark:text-gray-400 hover:underline">{eitaa_id}</h2>
             </div>
           )}
 
           {user_anonymous && (
-            <div className='flex justify-between items-center'>
-              <h1 className='text-[#000000] dark:text-gray-200'>شماره تلفن</h1>
-              <h2 className='text-[#919191] dark:text-gray-400'>
+            <div className="flex justify-between items-center text-base sm:text-lg">
+              <h1 className="text-[#000000] dark:text-gray-200">شماره تلفن</h1>
+              <h2 className="text-[#919191] dark:text-gray-400">
                 ۰{toPersianNumber(parseInt(phone_number)).split(',')}
               </h2>
             </div>
           )}
         </div>
       ) : (
-        <div className='flex flex-col w-full p-5 gap-3'>
+        // Book Info
+        <div className="flex flex-col w-full p-5 gap-4 sm:gap-6">
           {province && (
-            <div className='flex justify-between items-center'>
-              <h1 className='text-[#000000] dark:text-gray-200'>شهر</h1>
-              <h2 className='text-[#919191] dark:text-gray-400'>{province}</h2>
-            </div>
+            <Item title="شهر" value={province} />
           )}
+
           {category && (
-            <div className='flex justify-between items-center'>
-              <h1 className='text-[#000000] dark:text-gray-200'>دسته بندی</h1>
-              <h2 className='text-[#919191] dark:text-gray-400'>{category}</h2>
-            </div>
+            <Item title="دسته بندی" value={category} />
           )}
 
           {translator && (
-            <div className='flex justify-between items-center'>
-              <h1 className='text-[#000000] dark:text-gray-200'>مترجم</h1>
-              <h2 className='text-[#919191] dark:text-gray-400'>
-                {translator}
-              </h2>
-            </div>
+            <Item title="مترجم" value={translator} />
           )}
 
           {page_number && (
-            <div className='flex justify-between items-center'>
-              <h1 className='text-[#000000] dark:text-gray-200'>تعداد صفحات</h1>
-              <h2 className='text-[#919191] dark:text-gray-400'>
-                {page_number}
-              </h2>
-            </div>
+            <Item title="تعداد صفحات" value={page_number} />
           )}
 
           {publisher && (
-            <div className='flex justify-between items-center'>
-              <h1 className='text-[#000000] dark:text-gray-200'>منتشرکننده</h1>
-              <h2 className='text-[#919191] dark:text-gray-400'>{publisher}</h2>
-            </div>
+            <Item title="منتشرکننده" value={publisher} />
           )}
 
           {real_price && (
-            <div className='flex justify-between items-center'>
-              <h1 className='text-[#000000] dark:text-gray-200'>
-                قیمت روی جلد
-              </h1>
-              <h2 className='text-[#919191] dark:text-gray-400'>
-                {toPersianNumber(real_price)}
-              </h2>
-            </div>
+            <Item title="قیمت روی جلد" value={toPersianNumber(real_price)} />
           )}
 
           {publisher_year && (
-            <div className='flex justify-between items-center'>
-              <h1 className='text-[#000000] dark:text-gray-200'>سال انتشار</h1>
-              <h2 className='text-[#919191] dark:text-gray-400'>
-                {publisher_year}
-              </h2>
-            </div>
+            <Item title="سال انتشار" value={publisher_year} />
           )}
 
           {description && (
             <>
-              <h1 className='text-[#000000] dark:text-gray-200'>دیگرتوضیحات</h1>
-
-              <p className='text-[#919191] mx-2 dark:text-gray-400'>
-                {description}
-              </p>
+              <h1 className="text-[#000000] dark:text-gray-200 text-lg sm:text-xl">دیگر توضیحات</h1>
+              <p className="text-[#919191] mx-2 dark:text-gray-400 text-base sm:text-lg leading-relaxed">{description}</p>
             </>
           )}
         </div>
@@ -215,3 +163,11 @@ function Properties({
 }
 
 export default Properties
+
+// 🔹 کامپوننت نمایش اطلاعات هر آیتم
+const Item = ({ title, value }: { title: string, value: string | number }) => (
+  <div className="flex justify-between items-center text-base sm:text-lg">
+    <h1 className="text-[#000000] dark:text-gray-200">{title}</h1>
+    <h2 className="text-[#919191] dark:text-gray-400">{value}</h2>
+  </div>
+)

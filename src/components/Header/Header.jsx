@@ -7,11 +7,13 @@ import config from '../../config'
 import Buttons_Main from './Buttons'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
+import MyDrawer from './Drawer'
 
 export default function Header () {
   const [username, setUsername] = useState()
   const [loading, setLoading] = useState(true)
   const { refresh, access, setAccess, setRefresh } = useContext(AppContext)
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     const storedAccess = localStorage.getItem('access')
@@ -99,6 +101,10 @@ export default function Header () {
 
   return (
     <header className='relative flex items-center justify-between w-full px-6 py-4 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-md'>
+      <button onClick={() => setOpen(true)}>
+        <MyDrawer open={open} setOpen={setOpen} username={''} />
+        ddkdkdk
+      </button>
       <div className='flex items-center gap-4'>
         <Link
           className='text-2xl font-extrabold text-blue-600 dark:text-blue-400 tracking-wide hover:text-blue-700 dark:hover:text-blue-500 transition-colors duration-300'

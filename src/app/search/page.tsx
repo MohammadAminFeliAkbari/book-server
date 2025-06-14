@@ -3,14 +3,15 @@ import TopFooter from '@/components/Home/slider/Slider'
 import type React from 'react'
 
 import { toPersianNumber } from '../../convertNumberToPersion'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import config from '../../config'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
+import { useDebounce } from 'use-debounce'
 
 interface Post {
   id: number
@@ -33,6 +34,9 @@ const Infinite = () => {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [footerData, setFooterData] = useState([])
+  const controllerRef = useRef<AbortController | null>(null)
+
+  const [debouncedSearch] = useDebounce(searchTerm, 500)
 
   const ClientOnlyLottie = dynamic(() => import('./ClientOnlyLottie'), {
     ssr: false
@@ -41,11 +45,16 @@ const Infinite = () => {
   const fetchPosts = async (pageNum: number, search?: string) => {
     setLoading(true)
 
+    // لغو درخواست قبلی
+    if (controllerRef.current) controllerRef.current.abort()
+
+    const newController = new AbortController()
+    controllerRef.current = newController
+
     try {
       const { data } = await axios.get(
-        `${
-          config.BASE_URL
-        }/bookcase/books/?page=${pageNum}&page_size=10&search=${search || ''}`
+        `${config.BASE_URL}/bookcase/books/?page=${pageNum}&page_size=10&search=${search || ''}`,
+        { signal: newController.signal }
       )
 
       console.log(data)
@@ -58,23 +67,26 @@ const Infinite = () => {
 
       setHasMore(data.results.length === 10)
     } catch (err) {
-      console.error(err)
-      setHasMore(false)
+      const error = err as AxiosError<{ name: string }>;
+      if (error.name === 'CanceledError' || error.name === 'AbortError') {
+        console.log('درخواست لغو شد')
+      } else {
+        console.error(err)
+        setHasMore(false)
+      }
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchPosts(page, searchTerm)
-  }, [page, searchTerm])
+    fetchPosts(page, debouncedSearch)
+  }, [page, debouncedSearch])
 
   useEffect(() => {
     const fetch_footerData = async () => {
       try {
-        const data = await axios.get(
-          `${config.BASE_URL}/api/v1/bookcase/books/?page_size=100`
-        )
+        const data = await axios.get(`${config.BASE_URL}/api/v1/bookcase/books/?page_size=100`)
         setFooterData(data.data.results)
       } catch (error) {
         console.error('Failed to fetch footer data:', error)
@@ -107,7 +119,14 @@ const Infinite = () => {
           placeholder='جستجو...'
           className='w-full px-4 py-3 rounded-lg border dark:border-gray-600 border-gray-300 focus:border-blue-500 focus:outline-none shadow-sm dark:bg-gray-900 dark:text-white'
           value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
+          onChange={e => {
+            setSearchTerm(e.target.value)
+            if (e.target.value === '') {
+              setPosts([])
+              setHasMore(true)
+              setPage(1)
+            }
+          }}
           onKeyDown={handleKeyDown}
         />
         {searchTerm && (
@@ -133,7 +152,7 @@ const Infinite = () => {
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
           {posts.map((post, index) => (
             <motion.div
-              key={index}
+              key={post.id}
               variants={cardVariants}
               initial='hidden'
               animate='visible'

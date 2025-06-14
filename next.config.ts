@@ -3,7 +3,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['ketabbaan.ir'] // Configure allowed image domains
+    domains: ['141.11.21.237'] // Configure allowed image domains
   }
 }
 

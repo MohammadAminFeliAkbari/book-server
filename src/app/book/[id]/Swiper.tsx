@@ -7,6 +7,7 @@ import { Pagination } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/navigation'
+
 import Image from 'next/image'
 
 type SwiperProps = {
@@ -16,47 +17,46 @@ type SwiperProps = {
   }
 }
 
-export default function Swiper ({ data }: SwiperProps) {
-  // Check for images availability
+export default function Swiper({ data }: SwiperProps) {
   if (!data || (!data.front_image && !data.back_image)) {
-    return <div>No images available.</div>
+    return <div className='text-center p-4 text-gray-500'>تصویری موجود نیست</div>
   }
 
   return (
-    <SWIPER
-      pagination={{
-        dynamicBullets: true // You can enable this if needed
-      }}
-      modules={[Pagination]}
-      className='mySwiper'
-    >
-      {data.front_image && (
-        <SwiperSlide>
-          <div className='p-10'>
-            <Image
-              src={data.front_image}
-              width={10000}
-              height={100000}
-              alt='Front cover'
-              className='w-full h-full object-cover'
-            />
-          </div>
-        </SwiperSlide>
-      )}
-      {data.back_image && (
-        
-        <SwiperSlide>
-          <div className='p-10'>
-            <Image
-              src={data.back_image}
-              width={10000}
-              height={10000}
-              alt='Front cover'
-              className='w-full h-full object-cover'
-            />
-          </div>
-        </SwiperSlide>
-      )}
-    </SWIPER>
+    <div className='w-full max-w-2xl mx-auto'>
+      <SWIPER
+        pagination={{
+          dynamicBullets: true
+        }}
+        modules={[Pagination]}
+        className='mySwiper'
+      >
+        {data.front_image && (
+          <SwiperSlide>
+            <div className='relative w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-lg overflow-hidden'>
+              <Image
+                src={data.front_image}
+                alt='جلد جلو'
+                fill
+                className='object-contain'
+              />
+            </div>
+          </SwiperSlide>
+        )}
+
+        {data.back_image && (
+          <SwiperSlide>
+            <div className='relative w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-lg overflow-hidden'>
+              <Image
+                src={data.back_image}
+                alt='جلد پشت'
+                fill
+                className='object-contain'
+              />
+            </div>
+          </SwiperSlide>
+        )}
+      </SWIPER>
+    </div>
   )
 }
