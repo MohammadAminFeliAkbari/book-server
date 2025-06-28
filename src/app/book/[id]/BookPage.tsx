@@ -10,7 +10,7 @@ import Properties from './Properties'
 import Nav from './Nav'
 import TopFooter from '../../../components/Home/slider/Slider'
 
-type Tdata = {
+export type Tdata = {
   id: number
   title: string
   author: string
@@ -54,12 +54,12 @@ export default function BookPage({ id }: { id: number }) {
           }
         })
 
-        const topFooterResponse = await axios.get(`${config.BASE_URL}/bookcase/books?page_size=100`)
+        const topFooterResponse = await axios.get(`${config.BASE_URL}/bookcase/featured-categories/`)
 
         console.log(response.data);
 
         setData(response.data)
-        setTopFooterData(topFooterResponse.data.results)
+        setTopFooterData(topFooterResponse.data)
       } catch (error) {
         console.error('خطا در دریافت داده', error)
       } finally {

@@ -10,7 +10,7 @@ interface CardProps {
   author: string
   province: string
   sale_price: number
-  id: string
+  id: number
 }
 
 const Card: React.FC<CardProps> = ({

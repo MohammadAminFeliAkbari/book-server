@@ -5,45 +5,26 @@ import Card from './Card'
 import 'swiper/css'
 import 'swiper/css/pagination'
 import Link from 'next/link'
+import { Tdata } from '@/app/book/[id]/BookPage'
 
 interface Item {
   id: string
-  category: number
   title: string
-  front_image: string
-  sale_price: number
-  author: string
-  province: string
-  category_title: string
+  books: Tdata[]
 }
 
-export default function TopFooter ({ data }: { data: Item[] }) {
-  const filteredData = data.filter(
-    item => item.category === 14 || item.category === 8 || item.category === 9
-  )
-  // Create a map to store items by their category
-  const categories = filteredData.reduce(
-    (acc: Record<number, Item[]>, item) => {
-      const categoryId = item.category
-      if (!acc[categoryId]) {
-        acc[categoryId] = []
-      }
-      acc[categoryId].push(item)
-      return acc
-    },
-    {}
-  )
+export default function TopFooter({ data }: { data: Item[] }) {
 
   return (
     <div className='flex flex-col gap-3'>
-      {Object.entries(categories).map(([categoryId, items]) => (
-        <div key={categoryId} className='p-4 flex flex-col gap-0.5'>
+      {data.map((item, index) => (
+        <div key={index} className='p-4 flex flex-col gap-0.5'>
           <div className='flex items-center justify-between'>
             <h2 className='my-1 dark:text-gray-400 text-[#2b2a2a] text-[16px] font-bold'>
-              {items[0].category_title}
+              {item.title}
             </h2>
             <Link
-              href={`/category/${categoryId}`}
+              href={`/category/${item.id}`}
               className='light:text-gray-600 text-[12px] cursor-pointer hover:text-blue-500 text-[#02b1b1] dark:text-[#02c0c0] transition-all duration-200'
             >
               مشاهده همه{' >'}
@@ -71,15 +52,15 @@ export default function TopFooter ({ data }: { data: Item[] }) {
               modules={[FreeMode, Pagination]}
               className='mySwiper'
             >
-              {items.map(item => (
-                <SwiperSlide key={item.id}>
+              {item.books.map(book => (
+                <SwiperSlide key={book.id}>
                   <Card
-                    id={item.id}
-                    title={item.title}
-                    front_image={item.front_image}
-                    sale_price={item.sale_price}
-                    author={item.author}
-                    province={item.province}
+                    id={book.id}
+                    title={book.title}
+                    front_image={book.front_image}
+                    sale_price={book.sale_price}
+                    author={book.author}
+                    province={book.province}
                   />
                 </SwiperSlide>
               ))}

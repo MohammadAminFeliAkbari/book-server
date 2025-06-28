@@ -1,139 +1,104 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import React, { useState, useEffect, useContext } from 'react'
-import { AppContext } from '../../../context/AppContext'
-import config from '../../config'
-import Buttons_Main from './Buttons'
-import axios from 'axios'
-import toast, { Toaster } from 'react-hot-toast'
-import MyDrawer from './Drawer'
+import Link from "next/link";
+import React, { useState, useEffect, useContext, useCallback } from "react";
+import { AppContext } from "../../../context/AppContext";
+import config from "../../config";
+import Buttons_Main from "./Buttons";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import MyDrawer from "./Drawer";
 
-export default function Header () {
-  const [username, setUsername] = useState()
-  const [loading, setLoading] = useState(true)
-  const { refresh, access, setAccess, setRefresh } = useContext(AppContext)
-  const [open, setOpen] = useState(false)
+export default function Header() {
+  const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const { refresh, access, setAccess, setRefresh } = useContext(AppContext);
 
+  // ذخیره و بازیابی توکن از localStorage
   useEffect(() => {
-    const storedAccess = localStorage.getItem('access')
-    const storedRefresh = localStorage.getItem('refresh')
+    setAccess(localStorage.getItem("access"));
+    setRefresh(localStorage.getItem("refresh"));
+  }, [setAccess, setRefresh]);
 
-    if (storedAccess) setAccess(storedAccess)
-    if (storedRefresh) setRefresh(storedRefresh)
-  }, [setAccess, setRefresh])
+  const fetchUserData = useCallback(async () => {
+    if (!access) return setLoading(false);
 
-  // Fetch user data when tokens change
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (!access) {
-        setLoading(false)
-        return
+    try {
+      const { data } = await axios.get(`${config.BASE_URL}/account/me/`, {
+        headers: { Authorization: `Bearer ${access}` },
+      });
+
+      const fullName = [data.first_name, data.last_name].filter(Boolean).join(" ").trim();
+      if (fullName) {
+        setUsername(fullName);
+        toast.success(`${fullName} خوش آمدی!`, { duration: 5000 });
       }
+    } catch (err) {
+      const status = err?.response?.status;
 
-      try {
-        setLoading(true)
-        const res = await axios.get(`${config.BASE_URL}/account/me/`, {
-          headers: {
-            Authorization: `Bearer ${access}`
-          }
-        })
-
-        const { first_name, last_name } = res.data
-        const fullName = [first_name, last_name]
-          .filter(Boolean)
-          .join(' ')
-          .trim()
-
-        if (fullName) {
-          setUsername(fullName)
-          toast.success(`${fullName} خوش امدی!`, { duration: 5000 })
+      if (status === 401 && refresh) {
+        try {
+          const { data: tokenRes } = await axios.post(`${config.BASE_URL}/auth/refresh/`, { refresh });
+          localStorage.setItem("access", tokenRes.access);
+          setAccess(tokenRes.access);
+        } catch {
+          logout();
         }
-      } catch (err) {
-        console.error('Error fetching user info:', err)
-
-        // If unauthorized (401) and we have a refresh token
-        if (err.response?.status === 401 && refresh) {
-          try {
-            const tokenRes = await axios.post(
-              `${config.BASE_URL}/auth/refresh/`,
-              {
-                refresh
-              }
-            )
-
-            const { access: newAccess } = tokenRes.data
-            setAccess(newAccess)
-            localStorage.setItem('access', newAccess)
-
-            // Retry fetching user data with new token
-            await fetchUserData()
-          } catch (refreshError) {
-            console.error('Token refresh failed:', refreshError)
-            // Clear invalid tokens
-            setAccess(null)
-            setRefresh(null)
-          }
-        }
-      } finally {
-        setLoading(false)
       }
+    } finally {
+      setLoading(false);
     }
+  }, [access, refresh, setAccess]);
 
-    fetchUserData()
-  }, [access, refresh, setAccess, setRefresh])
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
 
-  const handleLogout = async () => {
-    const response = await axios.post(`${config.BASE_URL}/auth/logout`, {
-      refresh: refresh
-    })
-
-    console.log('logout is')
-
-    console.log(response)
-
-    setAccess(null)
-    setRefresh(null)
-    setUsername('')
-    localStorage.removeItem('access')
-    localStorage.removeItem('refresh')
-  }
+  const logout = async () => {
+    try {
+      await axios.post(`${config.BASE_URL}/auth/logout`, { refresh });
+    } catch {}
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    setAccess(null);
+    setRefresh(null);
+    setUsername("");
+  };
 
   return (
-    <header className='relative flex items-center justify-between w-full px-6 py-4 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-md'>
+    <header className="relative flex items-center justify-between w-full px-6 py-4 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-md">
       <button onClick={() => setOpen(true)}>
-        <MyDrawer open={open} setOpen={setOpen} username={''} />
-        ddkdkdk
+        <MyDrawer open={open} setOpen={setOpen} username={username} />
+        <span className="sr-only">Open Menu</span>
       </button>
-      <div className='flex items-center gap-4'>
-        <Link
-          className='text-2xl font-extrabold text-blue-600 dark:text-blue-400 tracking-wide hover:text-blue-700 dark:hover:text-blue-500 transition-colors duration-300'
-          href='/'
-        >
-          کتاب بان
-        </Link>
-      </div>
 
-      <div className='flex items-center gap-5'>
+      <Link
+        className="text-2xl font-extrabold text-blue-600 dark:text-blue-400 tracking-wide hover:text-blue-700 dark:hover:text-blue-500 transition-colors duration-300"
+        href="/"
+      >
+        کتاب بان
+      </Link>
+
+      <div className="flex items-center gap-5">
         <Buttons_Main />
-
         {username && (
           <button
-            onClick={handleLogout}
-            className='px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors'
+            onClick={logout}
+            className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
           >
             خروج
           </button>
         )}
       </div>
 
-      <Toaster position='top-left' />
+      <Toaster position="top-left" />
 
       {loading && (
-        <div className='absolute inset-0 flex items-center justify-center bg-black bg-opacity-10'>
-          <div className='animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500'></div>
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       )}
     </header>
-  )
+  );
 }
