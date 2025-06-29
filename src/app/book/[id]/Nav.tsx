@@ -7,9 +7,12 @@ import config from '../../../config'
 import { AppContext } from '../../../../context/AppContext'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
+import loadingSvg from '../../signup/loading.svg'
 
 export default function Nav({ isMine, book_id }: { isMine: boolean, book_id: number }) {
   const [hidden, setHidden] = useState(false)
+  const [loading, setLoading] = useState(false)
   const { scrollY } = useScroll()
   const lastYRef = useRef(0)
   const { access } = useContext(AppContext);
@@ -24,7 +27,7 @@ export default function Nav({ isMine, book_id }: { isMine: boolean, book_id: num
   })
 
   const buy_or_delete = () => {
-
+    setLoading(true)
     if (isMine)
       console.log('delete');
     else {
@@ -36,16 +39,16 @@ export default function Nav({ isMine, book_id }: { isMine: boolean, book_id: num
             ...(access && { Authorization: `Bearer ${access}` })
           }
         }
-      ).then(response => {
+      ).then(() => {
         toast.success('با موفقیت ثبت شد!')
         router.push('/')
-        console.log(response.data);
       }).catch((err) => {
-        toast.error('مشکلی پیش اماده بعدا دوباره امتحان کنید')
+        toast.error('باید ابتدا وارد شوید')
         console.error(err.response ? err.response.data : err.message);
       });
-
     }
+
+    setLoading(false)
   }
 
   return (
@@ -64,8 +67,15 @@ export default function Nav({ isMine, book_id }: { isMine: boolean, book_id: num
       transition={{ duration: 0.2 }}
       className='bottom-0 z-10  justify-center pt-3'
     >
-      <button onClick={buy_or_delete} className={`${isMine ? 'bg-red-500' : ' dark:bg-green-800  bg-[#3dcd5c]'} py-5 w-full text-gray-100 cursor-pointer dark:text-gray-300`}>
+      <button onClick={buy_or_delete} className={`${isMine ? 'bg-red-500' : ' dark:bg-green-800  bg-[#3dcd5c]'} ${loading ? 'flex justify-center opacity-35' : 'cursor-pointer'} py-5 w-full text-gray-100 dark:text-gray-300`}>
         {isMine ? 'حذف' : 'خرید'}
+        {loading ? <Image
+          src={loadingSvg}
+          alt='Loading'
+          width={20}
+          height={20}
+          className='animate-spin mr-2'
+        /> : ""}
       </button>
     </motion.div>
   )

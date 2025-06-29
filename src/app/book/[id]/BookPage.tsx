@@ -108,10 +108,10 @@ export default function BookPage({ id }: { id: number }) {
         real_price={data.real_price}
         translator={data.traslator}
       />
+      <Nav isMine={data.is_mine} book_id={data.id} />
 
       <TopFooter data={topFooterData} />
 
-      <Nav isMine={data.is_mine} book_id={data.id} />
     </div>
   )
 }

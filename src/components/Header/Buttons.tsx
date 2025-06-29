@@ -29,7 +29,7 @@ export default function Buttons_Main () {
     { id: 'home', icon: faHouse, href: '/' },
     { id: 'search', icon: faMagnifyingGlass, href: '/search' },
     { id: 'post', icon: null, href: '/post' },
-    { id: 'cart', icon: faCartShopping, href: '/' },
+    { id: 'cart', icon: faCartShopping, href: '/cart' },
     { id: 'profile', icon: faUser, href: '/dashboard' }
   ]
 
