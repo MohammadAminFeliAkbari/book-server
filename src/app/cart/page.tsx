@@ -1,7 +1,6 @@
 'use client'
 
 import axios from "axios"
-import config from '../../config'
 import { useContext, useEffect, useState } from "react"
 import { AppContext } from "../../../context/AppContext"
 import Image from "next/image"
@@ -9,6 +8,7 @@ import { toPersianNumber } from "@/convertNumberToPersion"
 import { Trash2 } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from "swiper/modules"
+import config from '../../config'
 
 export interface CartItem {
     id: number;
@@ -86,7 +86,7 @@ function Cart() {
 
     const delete_cart = async (cart_item_id: number) => {
         try {
-            await axios.post(`http://141.11.21.237:8000/api/v1/cart/remove/`, {
+            await axios.post(`${config.BASE_URL}/cart/remove/`, {
                 cart_item_id
             }, {
                 headers: {
@@ -178,13 +178,12 @@ function Cart() {
                             </SwiperSlide>
                         ))}
 
-                        {/* Navigation Buttons */}
-                        <button className={`prev-${order.id} absolute top-1/2 -left-4 z-10 transform -translate-y-1/2 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 rounded-full shadow hover:bg-gray-200 dark:hover:bg-gray-600 transition`}>
+                        {/* <button className={`prev-${order.id} absolute top-1/2 -left-4 z-10 transform -translate-y-1/2 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 rounded-full shadow hover:bg-gray-200 dark:hover:bg-gray-600 transition`}>
                             ❮
                         </button>
                         <button className={`next-${order.id} absolute top-1/2 -right-4 z-10 transform -translate-y-1/2 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 rounded-full shadow hover:bg-gray-200 dark:hover:bg-gray-600 transition`}>
                             ❯
-                        </button>
+                        </button> */}
                     </Swiper>
 
                 </div>
