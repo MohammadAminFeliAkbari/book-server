@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import loadingSvg from '../../signup/loading.svg'
 
-export default function Nav({ isMine, book_id }: { isMine: boolean, book_id: number }) {
+export default function Nav({ isMine, book_id, in_cart }: { isMine: boolean, book_id: number, in_cart: boolean }) {
   const [hidden, setHidden] = useState(false)
   const [loading, setLoading] = useState(false)
   const { scrollY } = useScroll()
@@ -27,28 +27,30 @@ export default function Nav({ isMine, book_id }: { isMine: boolean, book_id: num
   })
 
   const buy_or_delete = () => {
-    setLoading(true)
-    if (isMine)
-      console.log('delete');
+    if (in_cart)
+      router.push('/cart')
     else {
-      axios.post(`${config.BASE_URL}/cart/add/`,
-        { book_id: book_id },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            ...(access && { Authorization: `Bearer ${access}` })
+      setLoading(true)
+      if (isMine)
+        console.log('delete');
+      else {
+        axios.post(`${config.BASE_URL}/cart/add/`,
+          { book_id: book_id },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              ...(access && { Authorization: `Bearer ${access}` })
+            }
           }
-        }
-      ).then(() => {
-        toast.success('با موفقیت ثبت شد!')
-        router.push('/')
-      }).catch((err) => {
-        toast.error('باید ابتدا وارد شوید')
-        console.error(err.response ? err.response.data : err.message);
-      });
+        ).then(() => {
+          toast.success('با موفقیت ثبت شد!')
+          router.push('/cart')
+        }).catch(() => {
+          toast.error('باید ابتدا وارد شوید')
+        });
+      }
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   return (
@@ -67,8 +69,8 @@ export default function Nav({ isMine, book_id }: { isMine: boolean, book_id: num
       transition={{ duration: 0.2 }}
       className='bottom-0 z-10  justify-center pt-3'
     >
-      <button onClick={buy_or_delete} className={`${isMine ? 'bg-red-500' : ' dark:bg-green-800  bg-[#3dcd5c]'} ${loading ? 'flex justify-center opacity-35' : 'cursor-pointer'} py-5 w-full text-gray-100 dark:text-gray-300`}>
-        {isMine ? 'حذف' : 'خرید'}
+      <button onClick={buy_or_delete} className={`${isMine || in_cart ? 'bg-red-500' : ' dark:bg-green-800  bg-[#3dcd5c]'} ${loading ? 'flex justify-center opacity-35' : 'cursor-pointer'} py-5 w-full text-gray-100 dark:text-gray-300`}>
+        {isMine ? 'حذف' : in_cart ? 'حذف از لیست خرید' : 'خرید'}
         {loading ? <Image
           src={loadingSvg}
           alt='Loading'

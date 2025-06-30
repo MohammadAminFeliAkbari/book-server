@@ -28,6 +28,7 @@ export type Tdata = {
   traslator: string
   user_anonymous: boolean
   is_mine: boolean
+  in_cart:boolean
   created_by: {
     last_name: string
     first_name: string
@@ -108,7 +109,7 @@ export default function BookPage({ id }: { id: number }) {
         real_price={data.real_price}
         translator={data.traslator}
       />
-      <Nav isMine={data.is_mine} book_id={data.id} />
+      <Nav isMine={data.is_mine} in_cart={data.in_cart} book_id={data.id} />
 
       <TopFooter data={topFooterData} />
 

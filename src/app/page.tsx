@@ -14,6 +14,10 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       const bookRes = await axios.get(`${config.BASE_URL}/bookcase/featured-categories/`);
+      console.log('data is; ;DLkekei');
+      console.log(bookRes);
+
+
       // const catRes = await axios.get(`${config.BASE_URL}/bookcase/categories/`);
       setBooks(bookRes.data);
       // setCategories(catRes.data);
