@@ -23,10 +23,10 @@ const validationSchema = Yup.object().shape({
     .min(1, 'رمز عبور باید حداقل ۶ کاراکتر باشد')
 })
 
-function FormSection () {
+function FormSection() {
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { setRefresh, setAccess } = useContext(AppContext)
+  const { setAccess } = useContext(AppContext)
   const router = useRouter()
 
   const formik = useFormik<FormValues>({
@@ -54,9 +54,6 @@ function FormSection () {
         console.log(response.data.refres)
 
         setAccess(response.data.access)
-        setRefresh(response.data.refresh)
-
-        localStorage.setItem('access', response.data.access)
         localStorage.setItem('refresh', response.data.refresh)
 
         router.push('/')
@@ -90,11 +87,10 @@ function FormSection () {
                   <input
                     type='number'
                     placeholder='شماره تلفن'
-                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border rtl:text-2xl ${
-                      formik.touched.phone_number && formik.errors.phone_number
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border rtl:text-2xl ${formik.touched.phone_number && formik.errors.phone_number
                         ? 'border-red-500'
                         : 'border-gray-300 dark:border-gray-600'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                      } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                     id='phone_number'
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -112,11 +108,10 @@ function FormSection () {
                   <input
                     type='password'
                     placeholder='رمز عبور'
-                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
-                      formik.touched.password && formik.errors.password
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.password && formik.errors.password
                         ? 'border-red-500'
                         : 'border-gray-300 dark:border-gray-600'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                      } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                     id='password'
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -133,9 +128,8 @@ function FormSection () {
               <button
                 type='submit'
                 disabled={loading}
-                className={`w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
-                  loading ? 'opacity-70 cursor-not-allowed' : ''
-                }`}
+                className={`w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${loading ? 'opacity-70 cursor-not-allowed' : ''
+                  }`}
               >
                 {loading ? (
                   <div className='flex items-center justify-center'>

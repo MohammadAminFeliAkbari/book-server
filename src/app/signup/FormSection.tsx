@@ -38,11 +38,11 @@ const validationSchema = Yup.object().shape({
     .matches(/^(\+98|0)?9\d{9}$/, 'شماره تلفن نامعتبر است')
 })
 
-function FormSection () {
+function FormSection() {
   const [loading, setLoading] = useState<boolean>(false)
   const [errors_, setError] = useState<string[]>()
   const router = useRouter()
-  const { setAccess, setRefresh } = useContext<contextT>(AppContext)
+  const { setAccess } = useContext<contextT>(AppContext)
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -70,8 +70,6 @@ function FormSection () {
 
         const tokens = loginRes.data
         setAccess(tokens.access)
-        setRefresh(tokens.refresh)
-        localStorage.setItem('access', tokens.access)
         localStorage.setItem('refresh', tokens.refresh)
 
         router.push('/')
@@ -115,11 +113,10 @@ function FormSection () {
                     autoComplete='off'
                     type='text'
                     placeholder='نام'
-                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
-                      formik.touched.first_name && formik.errors.first_name
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.first_name && formik.errors.first_name
                         ? 'border-red-500'
                         : 'border-gray-300 dark:border-gray-600'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                      } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                     id='first_name'
                     {...formik.getFieldProps('first_name')}
                   />
@@ -133,11 +130,10 @@ function FormSection () {
                   <input
                     type='text'
                     placeholder='نام خانوادگی'
-                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
-                      formik.touched.last_name && formik.errors.last_name
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.last_name && formik.errors.last_name
                         ? 'border-red-500'
                         : 'border-gray-300 dark:border-gray-600'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                      } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                     id='last_name'
                     {...formik.getFieldProps('last_name')}
                   />
@@ -152,11 +148,10 @@ function FormSection () {
                     autoComplete='off'
                     type='password'
                     placeholder='رمز عبور'
-                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
-                      formik.touched.password && formik.errors.password
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.password && formik.errors.password
                         ? 'border-red-500'
                         : 'border-gray-300 dark:border-gray-600'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                      } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                     id='password'
                     {...formik.getFieldProps('password')}
                   />
@@ -171,11 +166,10 @@ function FormSection () {
                     autoComplete='off'
                     type='number'
                     placeholder='شماره تلفن'
-                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
-                      formik.touched.phone_number && formik.errors.phone_number
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.phone_number && formik.errors.phone_number
                         ? 'border-red-500'
                         : 'border-gray-300 dark:border-gray-600'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                      } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                     id='phone_number'
                     {...formik.getFieldProps('phone_number')}
                   />
@@ -213,9 +207,8 @@ function FormSection () {
               <button
                 type='submit'
                 disabled={loading}
-                className={`w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
-                  loading ? 'opacity-70 cursor-not-allowed' : ''
-                }`}
+                className={`w-full py-3 px-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${loading ? 'opacity-70 cursor-not-allowed' : ''
+                  }`}
               >
                 {loading ? (
                   <div className='flex items-center justify-center'>
