@@ -1,7 +1,7 @@
 // app/book/BookPage.tsx
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import config from '../../../config'
 import Swiper from './Swiper'
@@ -9,6 +9,8 @@ import { toPersianNumber } from '@/convertNumberToPersion'
 import Properties from './Properties'
 import Nav from './Nav'
 import TopFooter from '../../../components/Home/slider/Slider'
+import { AppContext } from '../../../../context/AppContext'
+import { useRouter } from 'next/navigation'
 
 export type Tdata = {
   id: number
@@ -28,7 +30,7 @@ export type Tdata = {
   traslator: string
   user_anonymous: boolean
   is_mine: boolean
-  in_cart:boolean
+  in_cart: boolean
   created_by: {
     last_name: string
     first_name: string
@@ -43,12 +45,12 @@ export default function BookPage({ id }: { id: number }) {
   const [data, setData] = useState<Tdata>()
   const [topFooterData, setTopFooterData] = useState([])
   const [loading, setLoading] = useState(true)
+  const { access } = useContext(AppContext)
+  const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const access = localStorage.getItem('access')
-
         const response = await axios.get(`${config.BASE_URL}/bookcase/books/${id}`, {
           headers: {
             ...(access && { Authorization: `Bearer ${access}` })
@@ -61,8 +63,8 @@ export default function BookPage({ id }: { id: number }) {
 
         setData(response.data)
         setTopFooterData(topFooterResponse.data)
-      } catch (error) {
-        console.error('خطا در دریافت داده', error)
+      } catch {
+        router.push('networkError')
       } finally {
         setLoading(false)
       }
@@ -109,7 +111,7 @@ export default function BookPage({ id }: { id: number }) {
         real_price={data.real_price}
         translator={data.traslator}
       />
-      <Nav isMine={data.is_mine} in_cart={data.in_cart} book_id={data.id} />
+      <Nav isMine={data.is_mine} data={data} in_cart={data.in_cart} book_id={data.id} setData={setData} />
 
       <TopFooter data={topFooterData} />
 

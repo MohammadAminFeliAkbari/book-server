@@ -6,20 +6,22 @@ import Image_bottom_Header from '../components/Home/Images_bottom_Header';
 import TopFooter from '../components/Home/slider/Slider';
 import axios from 'axios';
 import config from '../config';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [books, setBooks] = useState([]);
   // const [categories, setCategories] = useState([]);
+  const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
-      const bookRes = await axios.get(`${config.BASE_URL}/bookcase/featured-categories/`);
-      console.log('data is; ;DLkekei');
-      console.log(bookRes);
-
-
+      await axios.get(`${config.BASE_URL}/bookcase/featured-categories/`)
+        .then((res) => {
+          setBooks(res.data)
+        }).catch(() => {
+          router.push('/networkError')
+        });
       // const catRes = await axios.get(`${config.BASE_URL}/bookcase/categories/`);
-      setBooks(bookRes.data);
       // setCategories(catRes.data);
     };
 

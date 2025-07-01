@@ -14,6 +14,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@lottiefiles/react-lottie-player": "^3.6.0",
     "@mui/icons-material": "^7.0.1",
     "@mui/material": "^7.0.2",
     "antd": "^5.24.8",

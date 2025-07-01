@@ -1,0 +1,16 @@
+/* حذف پس‌زمینه و سایه و استایل پیش‌فرض toast */
+.Toastify__toast {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+/* حذف استایل داخلی */
+.Toastify__toast-body {
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: inherit;
+  color: inherit;
+}

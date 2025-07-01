@@ -9,12 +9,11 @@ export default function MainLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const [refresh, setRefresh] = useState<string>('')
   const [access, setAccess] = useState<string>('')
 
   return (
     <AppContext.Provider
-      value={{ refresh, setRefresh, access, setAccess }}
+      value={{  access, setAccess }}
     >
       <div>
         <Header />

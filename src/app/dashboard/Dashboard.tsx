@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 
 function Dashboard() {
-  const { setAccess, setRefresh } = useContext(AppContext)
+  const { access } = useContext(AppContext)
   const [data, setData] = useState<{
     first_name: string
     last_name: string
@@ -20,22 +20,16 @@ function Dashboard() {
   const router = useRouter()
 
   useEffect(() => {
-    const re = localStorage.getItem('refresh')
-    const ac = localStorage.getItem('access')
-    if (re) setRefresh(re)
-    if (ac) setAccess(ac)
-
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${config.BASE_URL}/account/me`, {
+        const response = await axios.get(`${config.BASE_URL}/account/me/`, {
           headers: {
-            Authorization: `Bearer ${ac}`,
+            ...(access && { Authorization: `Bearer ${access}` }),
             'Content-Type': 'application/json'
           }
         })
         setData(response.data)
-      } catch (err) {
-        if (err) console.log()
+      } catch {
         setError(true)
       } finally {
         setLoading(false)

@@ -7,72 +7,60 @@ import config from "../../config";
 import Buttons_Main from "./Buttons";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-import MyDrawer from "./Drawer";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
-  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = useState(false);
-  const { refresh, access, setAccess, setRefresh } = useContext(AppContext);
+  const { setAccess, access } = useContext(AppContext);
+  const router = useRouter();
 
-  // ذخیره و بازیابی توکن از localStorage
-  useEffect(() => {
-    setAccess(localStorage.getItem("access"));
-    setRefresh(localStorage.getItem("refresh"));
-  }, [setAccess, setRefresh]);
+  const fetchUserData = async () => {
+    await axios
+      .post(`${config.BASE_URL}/auth/refresh/`, {
+        refresh: localStorage.getItem("refresh"),
+      })
+      .then((res) => {
+        const data = res.data;
 
-  const fetchUserData = useCallback(async () => {
-    if (!access) return setLoading(false);
-
-    try {
-      const { data } = await axios.get(`${config.BASE_URL}/account/me/`, {
-        headers: { Authorization: `Bearer ${access}` },
+        localStorage.setItem("refresh", data.refresh);
+        setAccess(data.access);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-
-      const fullName = [data.first_name, data.last_name].filter(Boolean).join(" ").trim();
-      if (fullName) {
-        setUsername(fullName);
-        toast.success(`${fullName} خوش آمدی!`, { duration: 5000 });
-      }
-    } catch (err) {
-      const status = err?.response?.status;
-
-      if (status === 401 && refresh) {
-        try {
-          const { data: tokenRes } = await axios.post(`${config.BASE_URL}/auth/refresh/`, { refresh });
-          localStorage.setItem("access", tokenRes.access);
-          setAccess(tokenRes.access);
-        } catch {
-          logout();
-        }
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [access, refresh, setAccess]);
+  };
 
   useEffect(() => {
     fetchUserData();
-  }, [fetchUserData]);
+  }, []);
 
   const logout = async () => {
     try {
-      await axios.post(`${config.BASE_URL}/auth/logout`, { refresh });
-    } catch {}
-    localStorage.removeItem("access");
-    localStorage.removeItem("refresh");
-    setAccess(null);
-    setRefresh(null);
-    setUsername("");
+      await axios.post(
+        `${config.BASE_URL}/auth/logout/`,
+        {
+          refresh: localStorage.getItem("refresh"),
+        },
+        {
+          headers: {
+            ...(access && { Authorization: `Bearer ${access}` }),
+            "Content-Type": "application/json",
+          },
+        }
+      );  
+      localStorage.removeItem("refresh");
+      setAccess(null);
+      toast.success("!باموفقیت خارج شدید");
+    } catch {
+      router.push("/networkError");
+    }
   };
 
   return (
     <header className="relative flex items-center justify-between w-full px-6 py-4 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-md">
-      <button onClick={() => setOpen(true)}>
-        <MyDrawer open={open} setOpen={setOpen} username={username} />
-        <span className="sr-only">Open Menu</span>
-      </button>
-
       <Link
         className="text-2xl font-extrabold text-blue-600 dark:text-blue-400 tracking-wide hover:text-blue-700 dark:hover:text-blue-500 transition-colors duration-300"
         href="/"
@@ -82,7 +70,7 @@ export default function Header() {
 
       <div className="flex items-center gap-5">
         <Buttons_Main />
-        {username && (
+        {access && (
           <button
             onClick={logout}
             className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
