@@ -13,8 +13,6 @@ interface FormValues {
   first_name: string
   last_name: string
   phone_number: string
-  telegram_id: string
-  eitaa_id: string
 }
 
 const validationSchema = Yup.object().shape({
@@ -42,8 +40,6 @@ function FormSection () {
       first_name: '',
       last_name: '',
       phone_number: '',
-      telegram_id: '',
-      eitaa_id: ''
     },
     validationSchema,
     onSubmit: async values => {
@@ -93,8 +89,6 @@ function FormSection () {
           first_name: response.data.first_name || '',
           last_name: response.data.last_name || '',
           phone_number: response.data.phone_number || '',
-          telegram_id: response.data.telegram_id || '',
-          eitaa_id: response.data.eitaa_id || ''
         })
       } catch (error) {
         const err = error as AxiosError<Record<string, string[]>>
@@ -222,45 +216,9 @@ function FormSection () {
                     <span className='w-4 h-0.5 bg-gray-300 dark:bg-gray-600 ml-2'></span>
                   </h2>
 
-                  {/* Telegram ID */}
-                  <div className='mb-4'>
-                    <label
-                      htmlFor='telegram_id'
-                      className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'
-                    >
-                      آیدی تلگرام
-                    </label>
-                    <div className='relative'>
-                      <input
-                        autoComplete='off'
-                        type='text'
-                        placeholder='username'
-                        className='pl-7 w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 dark:text-white'
-                        id='telegram_id'
-                        {...formik.getFieldProps('telegram_id')}
-                      />
-                    </div>
-                  </div>
+                  
 
-                  {/* Eitaa ID */}
-                  <div>
-                    <label
-                      htmlFor='eitaa_id'
-                      className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'
-                    >
-                      آیدی ایتا
-                    </label>
-                    <div className='relative'>
-                      <input
-                        autoComplete='off'
-                        type='text'
-                        placeholder='username'
-                        className='pl-7 w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 dark:text-white'
-                        id='eitaa_id'
-                        {...formik.getFieldProps('eitaa_id')}
-                      />
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
 

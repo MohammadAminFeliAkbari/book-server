@@ -3,9 +3,10 @@ import Image from 'next/image'
 import { toPersianNumber } from '../../../convertNumberToPersion'
 import axios from 'axios'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import config from '../../../config'
+import { AppContext } from '../../../../context/AppContext'
 
 type post = {
   id: string
@@ -14,13 +15,14 @@ type post = {
   author: string
   province: string
   sale_price: number
-  status : number
+  status: number
 }
 
 const Infinite = () => {
   const [posts, setPosts] = useState<post[]>([])
   const [hasMore, setHasMore] = useState(true)
   const [page, setPage] = useState(1)
+  const { access } = useContext(AppContext)
 
   // Function to fetch posts
   const fetchPosts = async (pageNum: number) => {
@@ -29,7 +31,7 @@ const Infinite = () => {
         `${config.BASE_URL}/bookcase/my-books/?page=${pageNum}&page_size=10`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('access')}`
+            ...(access && { Authorization: `Bearer ${access}` })
           }
         }
       )

@@ -1,3 +1,3 @@
 export default {
-  BASE_URL: 'https://ketabbaan.ir/api/v1'
+  BASE_URL: 'https://api.ketabbaan.ir/api/v1'
 }

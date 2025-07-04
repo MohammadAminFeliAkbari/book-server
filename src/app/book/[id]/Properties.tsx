@@ -1,21 +1,15 @@
 'use client'
 import React, { useState } from 'react'
 import { toPersianNumber } from '@/convertNumberToPersion'
-import Telegram_svg from './telegram.svg'
-import Image from 'next/image'
-import Eitaa_png from './eitaa-icon-colorful.png'
 import Link from 'next/link'
 
 function Properties({
   province,
   description,
   category,
-  telegram_id,
   first_name,
   last_name,
-  eitaa_id,
   phone_number,
-  user_anonymous,
   translator,
   page_number,
   publisher,
@@ -24,20 +18,17 @@ function Properties({
   id_book,
   id_person
 }: {
+  first_name: string
   category: string
   description: string
   province: string
-  telegram_id: string
-  first_name: string
   last_name: string
-  eitaa_id: string
   phone_number: string
   publisher_year: string
   publisher: string
   real_price: number
   translator: string
   page_number: string
-  user_anonymous: boolean
   id_book: number
   id_person: number
 }) {
@@ -89,35 +80,12 @@ function Properties({
             </div>
           </Link>
 
-          <div className="flex justify-center items-center w-full gap-4">
-            {telegram_id && (
-              <a href={`tg://resolve?domain=${telegram_id}`} className="text-[#919191] dark:text-gray-400">
-                <Image width={30} height={30} src={Telegram_svg} alt='' />
-              </a>
-            )}
-
-            {eitaa_id && (
-              <a href={`https://eitaa.com/${eitaa_id}`} className="text-[#919191] dark:text-gray-400">
-                <Image width={30} height={30} src={Eitaa_png} alt='' />
-              </a>
-            )}
+          <div className="flex justify-between items-center text-base sm:text-lg">
+            <h1 className="text-[#000000] dark:text-gray-200">شماره تلفن</h1>
+            <h2 className="text-[#919191] dark:text-gray-400">
+              ۰{toPersianNumber(parseInt(phone_number)).split(',')}
+            </h2>
           </div>
-
-          {eitaa_id && (
-            <div className="flex justify-between items-center text-base sm:text-lg">
-              <h1 className="text-[#000000] dark:text-gray-200">ایتا</h1>
-              <h2 className="text-[#919191] dark:text-gray-400 hover:underline">{eitaa_id}</h2>
-            </div>
-          )}
-
-          {user_anonymous && (
-            <div className="flex justify-between items-center text-base sm:text-lg">
-              <h1 className="text-[#000000] dark:text-gray-200">شماره تلفن</h1>
-              <h2 className="text-[#919191] dark:text-gray-400">
-                ۰{toPersianNumber(parseInt(phone_number)).split(',')}
-              </h2>
-            </div>
-          )}
         </div>
       ) : (
         // Book Info

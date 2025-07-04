@@ -85,7 +85,7 @@ function FormSection() {
               <div className='space-y-4'>
                 <div>
                   <input
-                    type='number'
+                    type='text'
                     placeholder='شماره تلفن'
                     className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border rtl:text-2xl ${formik.touched.phone_number && formik.errors.phone_number
                         ? 'border-red-500'

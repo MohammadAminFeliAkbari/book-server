@@ -16,8 +16,6 @@ interface FormValues {
   last_name: string
   phone_number: string
   password: string
-  telegram_id: string
-  eitaa_id: string
 }
 
 // Validation function
@@ -50,8 +48,6 @@ function FormSection() {
       last_name: '',
       phone_number: '',
       password: '',
-      telegram_id: '',
-      eitaa_id: ''
     },
     validationSchema,
     onSubmit: async values => {
@@ -164,7 +160,7 @@ function FormSection() {
                 <div className='flex-1'>
                   <input
                     autoComplete='off'
-                    type='number'
+                    type='text'
                     placeholder='شماره تلفن'
                     className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.phone_number && formik.errors.phone_number
                         ? 'border-red-500'
@@ -179,28 +175,6 @@ function FormSection() {
                         {formik.errors.phone_number}
                       </div>
                     )}
-                </div>
-                <h2 className='text-sm'>موارد اختیاری</h2>
-                <div>
-                  <input
-                    autoComplete='off'
-                    type='text'
-                    placeholder='ایدی تلگرام'
-                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                    id='eitaa_id'
-                    {...formik.getFieldProps('eitaa_id')}
-                  />
-                </div>
-
-                <div>
-                  <input
-                    autoComplete='off'
-                    type='text'
-                    placeholder='ایدی ایتا'
-                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                    id='telegram_id'
-                    {...formik.getFieldProps('telegram_id')}
-                  />
                 </div>
               </div>
 
