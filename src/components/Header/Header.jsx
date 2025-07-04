@@ -25,9 +25,6 @@ export default function Header() {
         localStorage.setItem("refresh", data.refresh);
         setAccess(data.access);
       })
-      .catch((err) => {
-        console.log(err);
-      })
       .finally(() => {
         setLoading(false);
       });
@@ -50,7 +47,7 @@ export default function Header() {
             "Content-Type": "application/json",
           },
         }
-      );  
+      );
       localStorage.removeItem("refresh");
       setAccess(null);
       toast.success("!باموفقیت خارج شدید");

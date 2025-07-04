@@ -50,9 +50,6 @@ function FormSection() {
           }
         )
 
-        console.log(response.data.access)
-        console.log(response.data.refres)
-
         setAccess(response.data.access)
         localStorage.setItem('refresh', response.data.refresh)
 

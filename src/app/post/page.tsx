@@ -86,10 +86,6 @@ const BookForm = () => {
     onSubmit: values => {
       setLoading(true)
 
-      console.log('value')
-
-      console.log(values)
-
       const post = async () => {
         // Inside your function...
         try {

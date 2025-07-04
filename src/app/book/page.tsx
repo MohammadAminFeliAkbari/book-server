@@ -21,8 +21,6 @@ const Page = async () => {
   const response = await axios.get(`${config.BASE_URL}/bookcase/books`)
   const books: Root = response.data.results
 
-  console.log(books)
-
   return (
     <ol className='flex flex-wrap flex-col justify-center gap-10 m-10  max-w-[1000px] mr-auto ml-auto'>
       {books.map((book, index) => (

@@ -41,8 +41,6 @@ export default function Nav({ isMine, book_id, in_cart, setData, data }: { data:
       toast.success('با موفقیت حذف شد!')
       setData({ ...data, in_cart: false })
 
-    } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false)
     }
@@ -75,13 +73,9 @@ export default function Nav({ isMine, book_id, in_cart, setData, data }: { data:
           ...(access && { Authorization: `Bearer ${access}` })
         }
       }
-    ).then((res) => {
-      console.log(res);
+    ).then(() => {
       toast.success('با موفقیت حذف شد')
       router.replace('/')
-    }).catch((err) => {
-      console.log(err);
-
     })
   }
   const delete_book = async () => {
@@ -92,12 +86,10 @@ export default function Nav({ isMine, book_id, in_cart, setData, data }: { data:
           ...(access && { Authorization: `Bearer ${access}` })
         }
       }
-    ).then((res) => {
-      console.log(res);
+    ).then(() => {
       toast.success('با موفقیت حذف شد')
       router.replace('/')
     }).catch((err) => {
-      console.log(err);
 
       if (err.response.data) {
         toast((t) => (

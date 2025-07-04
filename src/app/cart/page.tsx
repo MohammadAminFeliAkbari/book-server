@@ -76,10 +76,7 @@ function Cart() {
                     }
                 });
                 setData(response.data)
-                console.log(response.data);
 
-            } catch (error) {
-                console.log("خطا در گرفتن اطلاعات:", error)
             } finally {
                 setLoading(false)
             }
@@ -120,8 +117,6 @@ function Cart() {
 
                 }).filter((order) => order !== null))
 
-        } catch (error) {
-            console.log(error);
         } finally {
             setLoading(false)
         }
@@ -156,9 +151,6 @@ function Cart() {
                                 </h2>
                                 <h3>فروشنده: {order.seller.first_name} {order.seller.last_name}</h3>
                             </div>
-                            <button onClick={() => {
-                                console.log(data);
-                            }}>click me</button>
                             <Swiper
                                 modules={[Navigation]}
                                 navigation={{

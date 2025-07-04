@@ -28,15 +28,12 @@ export type Tdata = {
   publisher: string
   real_price: number
   traslator: string
-  user_anonymous: boolean
   is_mine: boolean
   in_cart: boolean
   created_by: {
     last_name: string
     first_name: string
-    eitaa_id: string
     phone_number: string
-    telegram_id: string
     id: number
   }
 }
@@ -58,8 +55,6 @@ export default function BookPage({ id }: { id: number }) {
         })
 
         const topFooterResponse = await axios.get(`${config.BASE_URL}/bookcase/featured-categories/`)
-
-        console.log(response.data);
 
         setData(response.data)
         setTopFooterData(topFooterResponse.data)
@@ -101,11 +96,8 @@ export default function BookPage({ id }: { id: number }) {
         province={data.province}
         first_name={data.created_by.first_name}
         last_name={data.created_by.last_name}
-        eitaa_id={data.created_by.eitaa_id}
         phone_number={data.created_by.phone_number}
-        telegram_id={data.created_by.telegram_id}
         page_number={data.page_number}
-        user_anonymous={data.user_anonymous}
         publisher_year={data.publish_year}
         publisher={data.publisher}
         real_price={data.real_price}

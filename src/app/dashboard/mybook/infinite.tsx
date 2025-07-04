@@ -36,17 +36,16 @@ const Infinite = () => {
         }
       )
 
-      console.log(data)
-
       setPosts(prevPosts => [...prevPosts, ...data.results])
 
       // Simulate end of data
       if (data.results.length < 10) {
         setHasMore(false)
       }
-    } catch (err: unknown) {
-      // if (err) setError('Failed to load posts. Please try again later.')
-      if (err) console.log(err)
+    } catch (err : unknown) {
+      if (err)
+        console.log();
+        
     }
   }
 
@@ -97,7 +96,7 @@ const Infinite = () => {
             className='flex m-1 bg-white relative p-2 shadow-md rounded-md dark:bg-gray-800'
             href={`/book/${post.id}`}
           >
-            <h3 className='absolute top-0 left-0 m-4'>{post.status}</h3>
+            <h3 className='absolute top-0 right-0 px-2 rounded bg-red-500 m-2'>{post.status == 1 ? 'درانتظار تایید' : post.status == 2 ? 'تایید شده': 'ردشده'   }</h3>
             <div className='flex-shrink-0'>
               <Image
                 width={100}

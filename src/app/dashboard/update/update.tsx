@@ -207,19 +207,6 @@ function FormSection () {
                       </div>
                     )}
                 </div>
-
-                {/* Optional Fields Section */}
-                <div className='pt-4 border-t border-gray-200 dark:border-gray-700'>
-                  <h2 className='text-sm font-medium text-gray-500 dark:text-gray-400 mb-4 flex items-center'>
-                    <span className='w-4 h-0.5 bg-gray-300 dark:bg-gray-600 mr-2'></span>
-                    موارد اختیاری
-                    <span className='w-4 h-0.5 bg-gray-300 dark:bg-gray-600 ml-2'></span>
-                  </h2>
-
-                  
-
-                  
-                </div>
               </div>
 
               {/* Submit Button */}

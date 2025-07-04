@@ -57,8 +57,6 @@ const Infinite = () => {
         { signal: newController.signal }
       )
 
-      console.log(data)
-
       if (search && pageNum === 1) {
         setPosts(data.results)
       } else {
@@ -69,7 +67,6 @@ const Infinite = () => {
     } catch (err) {
       const error = err as AxiosError<{ name: string }>;
       if (error.name === 'CanceledError' || error.name === 'AbortError') {
-        console.log('درخواست لغو شد')
       } else {
         console.error(err)
         setHasMore(false)
