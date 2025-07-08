@@ -29,7 +29,7 @@ const validationSchema = Yup.object().shape({
     .matches(/^(\+98|0)?9\d{9}$/, 'شماره تلفن نامعتبر است')
 })
 
-function FormSection () {
+function FormSection() {
   const [loading, setLoading] = useState<boolean>(false)
   const [errors_, setError] = useState<string[]>()
   const { access } = useContext<contextT>(AppContext)
@@ -139,11 +139,10 @@ function FormSection () {
                     autoComplete='off'
                     type='text'
                     placeholder='نام خود را وارد کنید'
-                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
-                      formik.touched.first_name && formik.errors.first_name
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.first_name && formik.errors.first_name
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
-                    } focus:outline-none focus:ring-2 focus:border-transparent transition-all text-gray-800 dark:text-white`}
+                      } focus:outline-none focus:ring-2 focus:border-transparent transition-all text-gray-800 dark:text-white`}
                     id='first_name'
                     {...formik.getFieldProps('first_name')}
                   />
@@ -165,11 +164,10 @@ function FormSection () {
                   <input
                     type='text'
                     placeholder='نام خانوادگی خود را وارد کنید'
-                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
-                      formik.touched.last_name && formik.errors.last_name
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.last_name && formik.errors.last_name
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
-                    } focus:outline-none focus:ring-2 focus:border-transparent transition-all text-gray-800 dark:text-white`}
+                      } focus:outline-none focus:ring-2 focus:border-transparent transition-all text-gray-800 dark:text-white`}
                     id='last_name'
                     {...formik.getFieldProps('last_name')}
                   />
@@ -192,11 +190,10 @@ function FormSection () {
                     autoComplete='off'
                     type='number'
                     placeholder='09xxxxxxxxx'
-                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${
-                      formik.touched.phone_number && formik.errors.phone_number
+                    className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.phone_number && formik.errors.phone_number
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
-                    } focus:outline-none focus:ring-2 focus:border-transparent transition-all text-gray-800 dark:text-white`}
+                      } focus:outline-none focus:ring-2 focus:border-transparent transition-all text-gray-800 dark:text-white`}
                     id='phone_number'
                     {...formik.getFieldProps('phone_number')}
                   />
@@ -213,9 +210,8 @@ function FormSection () {
               <button
                 type='submit'
                 disabled={loading}
-                className={`w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-lg transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-                  loading ? 'opacity-80 cursor-not-allowed' : ''
-                } relative overflow-hidden group`}
+                className={`w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-lg transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${loading ? 'opacity-80 cursor-not-allowed' : ''
+                  } relative overflow-hidden group`}
               >
                 <span className='absolute inset-0 bg-gradient-to-r from-blue-700 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300'></span>
                 <span className='relative z-10 flex items-center justify-center'>

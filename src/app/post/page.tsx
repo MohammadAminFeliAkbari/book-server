@@ -311,9 +311,8 @@ const BookForm = () => {
           </span>
           <svg
             xmlns='http://www.w3.org/2000/svg'
-            className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${
-              tradition ? 'rotate-180' : ''
-            }`}
+            className={`h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${tradition ? 'rotate-180' : ''
+              }`}
             viewBox='0 0 20 20'
             fill='currentColor'
           >
@@ -407,11 +406,10 @@ const BookForm = () => {
         type='submit'
         whileTap={{ scale: 0.98 }}
         disabled={loading}
-        className={`w-full py-3 px-6 rounded-lg font-medium text-white transition-colors duration-200 ${
-          loading
+        className={`w-full py-3 px-6 rounded-lg font-medium text-white transition-colors duration-200 ${loading
             ? 'bg-green-500 cursor-not-allowed opacity-80'
             : 'bg-green-600 hover:bg-green-700 shadow-md'
-        }`}
+          }`}
       >
         {loading ? (
           <div className='flex items-center justify-center space-x-2'>

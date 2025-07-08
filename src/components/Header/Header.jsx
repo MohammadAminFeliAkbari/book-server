@@ -23,7 +23,7 @@ export default function Header() {
         const data = res.data;
 
         localStorage.setItem("refresh", data.refresh);
-        setAccess(data.access);
+        setAccess(() => data.access);
       })
       .finally(() => {
         setLoading(false);
@@ -52,7 +52,7 @@ export default function Header() {
       setAccess(null);
       toast.success("!باموفقیت خارج شدید");
     } catch {
-      router.push("/networkError");
+      // router.push("/networkError");
     }
   };
 

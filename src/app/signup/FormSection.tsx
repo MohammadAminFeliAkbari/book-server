@@ -110,8 +110,8 @@ function FormSection() {
                     type='text'
                     placeholder='نام'
                     className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.first_name && formik.errors.first_name
-                        ? 'border-red-500'
-                        : 'border-gray-300 dark:border-gray-600'
+                      ? 'border-red-500'
+                      : 'border-gray-300 dark:border-gray-600'
                       } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                     id='first_name'
                     {...formik.getFieldProps('first_name')}
@@ -127,8 +127,8 @@ function FormSection() {
                     type='text'
                     placeholder='نام خانوادگی'
                     className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.last_name && formik.errors.last_name
-                        ? 'border-red-500'
-                        : 'border-gray-300 dark:border-gray-600'
+                      ? 'border-red-500'
+                      : 'border-gray-300 dark:border-gray-600'
                       } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                     id='last_name'
                     {...formik.getFieldProps('last_name')}
@@ -145,8 +145,8 @@ function FormSection() {
                     type='password'
                     placeholder='رمز عبور'
                     className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.password && formik.errors.password
-                        ? 'border-red-500'
-                        : 'border-gray-300 dark:border-gray-600'
+                      ? 'border-red-500'
+                      : 'border-gray-300 dark:border-gray-600'
                       } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                     id='password'
                     {...formik.getFieldProps('password')}
@@ -163,8 +163,8 @@ function FormSection() {
                     type='text'
                     placeholder='شماره تلفن'
                     className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 border ${formik.touched.phone_number && formik.errors.phone_number
-                        ? 'border-red-500'
-                        : 'border-gray-300 dark:border-gray-600'
+                      ? 'border-red-500'
+                      : 'border-gray-300 dark:border-gray-600'
                       } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
                     id='phone_number'
                     {...formik.getFieldProps('phone_number')}

@@ -103,7 +103,7 @@ export default function BookPage({ id }: { id: number }) {
         real_price={data.real_price}
         translator={data.traslator}
       />
-      <Nav isMine={data.is_mine} data={data} in_cart={data.in_cart} book_id={data.id} setData={setData} />
+      <Nav id={id} isMine={data.is_mine} data={data} in_cart={data.in_cart} book_id={data.id} setData={setData} />
 
       <TopFooter data={topFooterData} />
 
