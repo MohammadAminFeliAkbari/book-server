@@ -1,5 +1,5 @@
 'use client'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useLayoutEffect, useState } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { AppContext } from '../../../context/AppContext'
@@ -60,7 +60,7 @@ const BookForm = () => {
     description: Yup.string().max(100, 'به حداکثر رسیدید!')
   })
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!access) router.push('/signup')
   }, [])
 
@@ -407,8 +407,8 @@ const BookForm = () => {
         whileTap={{ scale: 0.98 }}
         disabled={loading}
         className={`w-full py-3 px-6 rounded-lg font-medium text-white transition-colors duration-200 ${loading
-            ? 'bg-green-500 cursor-not-allowed opacity-80'
-            : 'bg-green-600 hover:bg-green-700 shadow-md'
+          ? 'bg-green-500 cursor-not-allowed opacity-80'
+          : 'bg-green-600 hover:bg-green-700 shadow-md'
           }`}
       >
         {loading ? (

@@ -28,7 +28,7 @@
 //     publish_year: number
 //     real_price: number
 //     translator: string
-//     page_number: string
+//     page_number: number
 //     condition: 'new' | 'like_new' | 'good' | 'acceptable' | 'damaged' | ''
 // }
 
@@ -71,12 +71,12 @@
 //             description: '',
 //             front_image: null,
 //             province: 'آذربایجان شرقی',
-//             sale_price: '',
+//             sale_price: 0,
 //             condition: '',
 //             page_number: 0,
 //             publish_year: 0,
 //             publisher: '',
-//             real_price: '',
+//             real_price: 0,
 //             translator: '',
 //         },
 //         validationSchema,
