@@ -190,7 +190,7 @@ const Update = ({ id }: { id: string }) => {
             console.log(err);
         })
 
-    }, [])
+    }, [access])
 
 
     return (

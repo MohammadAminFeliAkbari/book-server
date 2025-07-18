@@ -16,7 +16,6 @@ function Dashboard() {
     phone_number: string
   }>()
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -29,15 +28,13 @@ function Dashboard() {
           }
         })
         setData(response.data)
-      } catch {
-        setError(true)
       } finally {
         setLoading(false)
       }
     }
 
     fetchData()
-  }, [])
+  }, [access])
 
   if (loading) {
     return (
@@ -63,7 +60,7 @@ function Dashboard() {
     )
   }
 
-  if (error) {
+  if (!data && loading) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -90,7 +87,6 @@ function Dashboard() {
           <h2 className='text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2'>
             خطا! مشکلی پیش آمده است
           </h2>
-          <p className='text-gray-600 dark:text-gray-400 mb-6'>{error}</p>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

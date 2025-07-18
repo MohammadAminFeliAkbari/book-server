@@ -30,6 +30,7 @@ export type Tdata = {
   traslator: string
   is_mine: boolean
   in_cart: boolean
+  in_invoice: boolean
   created_by: {
     last_name: string
     first_name: string
@@ -48,7 +49,7 @@ export default function BookPage({ id }: { id: number }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${config.BASE_URL}/bookcase/books/${id}`, {
+        const { data } = await axios.get(`${config.BASE_URL}/bookcase/books/${id}`, {
           headers: {
             ...(access && { Authorization: `Bearer ${access}` })
           }
@@ -56,7 +57,7 @@ export default function BookPage({ id }: { id: number }) {
 
         const topFooterResponse = await axios.get(`${config.BASE_URL}/bookcase/featured-categories/`)
 
-        setData(response.data)
+        setData(data)
         setTopFooterData(topFooterResponse.data)
       } catch {
         router.push('networkError')
@@ -66,7 +67,7 @@ export default function BookPage({ id }: { id: number }) {
     }
 
     fetchData()
-  }, [id])
+  }, [id, access])
 
   if (loading) return <SkeletonLoader />
 
@@ -103,7 +104,7 @@ export default function BookPage({ id }: { id: number }) {
         real_price={data.real_price}
         translator={data.traslator}
       />
-      <Nav id={id} isMine={data.is_mine} data={data} in_cart={data.in_cart} book_id={data.id} setData={setData} />
+      <Nav id={id} in_invoice={data.in_invoice} isMine={data.is_mine} data={data} in_cart={data.in_cart} book_id={data.id} setData={setData} />
 
       <TopFooter data={topFooterData} />
 

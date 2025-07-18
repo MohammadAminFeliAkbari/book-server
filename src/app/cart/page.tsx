@@ -11,6 +11,7 @@ import { Navigation } from "swiper/modules"
 import config from '../../config'
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
 
 export interface CartItem {
     id: number;
@@ -86,7 +87,7 @@ function Cart() {
         }
 
         fetchData()
-    }, [])
+    }, [access])
 
     const delete_cart = async (book_id: number) => {
         try {
@@ -139,6 +140,25 @@ function Cart() {
                 );
             }).catch((err) => {
                 console.log(err);
+                if (err.status == '409') {
+                    const books = err.response.data.invoiced_books;
+                    let invoiced_books_name = ''
+
+                    for (let index = 0; index < books.length; index++) {
+                        const element = books[index];
+
+                        invoiced_books_name += element.title
+                        if (index < books.length - 1)
+                            invoiced_books_name += ','
+                    }
+                    console.log(invoiced_books_name);
+
+                    toast.error(`کتاب  '${invoiced_books_name}'  قبلا رزرو شده است`, {
+                        style: {
+                            fontSize: '12px'
+                        }
+                    })
+                }
             })
     }
 

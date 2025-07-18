@@ -28,7 +28,7 @@ const Infinite = () => {
   const fetchPosts = async (pageNum: number) => {
     try {
       const { data } = await axios.get(
-        `${config.BASE_URL}/bookcase/my-books/?page=${pageNum}&page_size=10`,
+        `${config.BASE_URL}/bookcase/books//my-books/?page=${pageNum}&page_size=10`,
         {
           headers: {
             ...(access && { Authorization: `Bearer ${access}` })
@@ -42,17 +42,17 @@ const Infinite = () => {
       if (data.results.length < 10) {
         setHasMore(false)
       }
-    } catch (err : unknown) {
+    } catch (err: unknown) {
       if (err)
-        console.log();
-        
+        console.log(err);
+
     }
   }
 
   // Load posts when the component mounts and when page number changes
   useEffect(() => {
     fetchPosts(page)
-  }, [page])
+  }, [page, access])
 
   return (
     <InfiniteScroll
@@ -96,7 +96,7 @@ const Infinite = () => {
             className='flex m-1 bg-white relative p-2 shadow-md rounded-md dark:bg-gray-800'
             href={`/book/${post.id}`}
           >
-            <h3 className='absolute top-0 right-0 px-2 rounded bg-red-500 m-2'>{post.status == 1 ? 'درانتظار تایید' : post.status == 2 ? 'تایید شده': 'ردشده'   }</h3>
+            <h3 className='absolute top-0 right-0 text-[10px] px-2 py-1 rounded bg-red-500 m-3'>{post.status == 1 ? 'درانتظار تایید' : post.status == 2 ? 'تایید شده' : 'ردشده'}</h3>
             <div className='flex-shrink-0'>
               <Image
                 width={100}
