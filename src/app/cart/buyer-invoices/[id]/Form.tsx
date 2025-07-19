@@ -7,6 +7,7 @@ import { AppContext } from '../../../../../context/AppContext'
 import { toPersianNumber } from '@/convertNumberToPersion'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
 
 interface Order {
     id: number
@@ -36,6 +37,7 @@ function Form({ id }: { id: number }) {
     const [data, setData] = useState<Order>()
     const [loading, setLoading] = useState(true)
     const [loadingButton, setLoadingButton] = useState(false)
+    const router = useRouter()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,8 +46,7 @@ function Form({ id }: { id: number }) {
                     headers: { ...(access && { Authorization: `Bearer ${access}` }) }
                 })
                 setData(res.data)
-            } catch (err) {
-                console.error(err)
+            } catch {
             } finally {
                 setLoading(false)
             }
@@ -58,7 +59,7 @@ function Form({ id }: { id: number }) {
     const pay = async () => {
         setLoadingButton(true)
         try {
-            const res = await axios.post(
+            await axios.post(
                 `${config.BASE_URL}/payment/invoices/${id}/pay/`,
                 {},
                 {
@@ -67,11 +68,11 @@ function Form({ id }: { id: number }) {
                     },
                 }
             )
-            setData(res.data)
 
             toast.success('پرداخت با موفقیت انجام شد')
+            router.back()
         } catch (err) {
-            console.error(err)
+            console.log(err);
         } finally {
             setLoadingButton(false)
         }

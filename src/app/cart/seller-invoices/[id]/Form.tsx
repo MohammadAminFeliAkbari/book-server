@@ -35,7 +35,7 @@ function Form({ id }: { id: number }) {
     const { access } = useContext(AppContext)
     const [data, setData] = useState<Order>()
     const [loading, setLoading] = useState(true)
-    const [shipping_cost, setShipping] = useState<number>()
+    const [shipping_cost, setShipping] = useState<number>(0)
 
 
     useEffect(() => {
@@ -71,13 +71,34 @@ function Form({ id }: { id: number }) {
                     },
                 }
             )
+            console.log('res is:::');
+
             console.log(res)
 
             setData((pre) => pre ? { ...pre, status: 2, status_display: 'تایید پیش فاکتور' } : pre)
 
-            toast.success(`پیش‌فاکتور برای ${data?.buyer.first_name} ${data?.buyer.last_name} تایید شد. لطفاً منتظر پرداخت خریدار بمانید.`)
+            // toast.success(`پیش‌فاکتور برای ${data?.buyer.first_name} ${data?.buyer.last_name} تایید شد. لطفاً منتظر پرداخت خریدار بمانید.`)
         } catch (err) {
             console.error(err)
+            if (axios.isAxiosError(err) && err.response?.status == 409) {
+                const books = err.response.data.invoiced_books;
+                let invoiced_books_name = ''
+
+                for (let index = 0; index < books.length; index++) {
+                    const element = books[index];
+
+                    invoiced_books_name += element.title
+                    if (index < books.length - 1)
+                        invoiced_books_name += ','
+                }
+                console.log(invoiced_books_name);
+
+                toast.error(`کتاب  '${invoiced_books_name}'  قبلا رزرو شده است`, {
+                    style: {
+                        fontSize: '12px'
+                    }
+                })
+            }
         }
     }
 
@@ -159,7 +180,7 @@ function Form({ id }: { id: number }) {
             {data.status === 1 && (
                 <form onSubmit={finish_buy} className="mt-6 space-y-4 print:hidden">
                     <label htmlFor="shipping" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        هزینه حمل و نقل:
+                        هزینه حمل و نقل: (تومان)
                     </label>
                     <input
                         id="shipping"
