@@ -11,7 +11,8 @@ import { Navigation } from "swiper/modules"
 import config from '../../config'
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
+import loading_img from '../../app/signup/loading.svg'
+import Modal, { addressT } from "@/components/Modal/modal"
 
 export interface CartItem {
     id: number;
@@ -68,6 +69,11 @@ function Cart() {
     const [data, setData] = useState<Order[]>([])
     const [loading, setLoading] = useState(true)
     const router = useRouter()
+    const [loading_button, set_loading_button] = useState(false)
+    const [showModal, setShowModal] = useState(true)
+    const [select_cart_id, set_select_cart_id] = useState<number | null>(null)
+    const [addres, setAddress] = useState<addressT[] | []>()
+    const [success, setSuccess] = useState(false)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -89,7 +95,7 @@ function Cart() {
         fetchData()
     }, [access])
 
-    const delete_cart = async (book_id: number) => {
+    const delete_book_in_cart = async (book_id: number) => {
         try {
             await axios.post(`${config.BASE_URL}/cart/remove/`, {
                 book_id
@@ -124,45 +130,44 @@ function Cart() {
     }
 
     const add_to_invoice = async (cart_id: number) => {
-        await axios.post(`${config.BASE_URL}/cart/invoice/${cart_id}/`, {}, {
-            headers: {
-                ...(access && { Authorization: `Bearer ${access}` })
-            }
+        set_loading_button(true)
+        await axios.get(`${config.BASE_URL}/account/address`, {
+            headers: { ...(access && { Authorization: `Bearer ${access}` }) }
+        }).then((res) => {
+            setAddress(res.data)
+            set_select_cart_id(cart_id);
+            setShowModal(true)
+        }).finally(() => {
+            set_loading_button(false)
         })
-            .then((res) => {
-                console.log(res);
-                setData(prevData =>
-                    prevData.map(order =>
-                        order.id === cart_id
-                            ? { ...order, is_invoiced: true }
-                            : order
-                    )
-                );
-            }).catch((err) => {
-                console.log(err);
-                if (err.status == '409') {
-                    const books = err.response.data.invoiced_books;
-                    let invoiced_books_name = ''
-
-                    for (let index = 0; index < books.length; index++) {
-                        const element = books[index];
-
-                        invoiced_books_name += element.title
-                        if (index < books.length - 1)
-                            invoiced_books_name += ','
-                    }
-                    console.log(invoiced_books_name);
-
-                    toast.error(`کتاب  '${invoiced_books_name}'  قبلا رزرو شده است`, {
-                        style: {
-                            fontSize: '12px'
-                        }
-                    })
-                }
-            })
     }
 
+    useEffect(() => {
+        if (success)
+            setData(prevData =>
+                prevData.map(order =>
+                    order.id === select_cart_id
+                        ? { ...order, is_invoiced: true }
+                        : order
+                )
+            );
+    }, [success])
+
+
+
+    if (showModal && select_cart_id != null)
+        return (
+            <Modal
+                cart_id={select_cart_id}
+                address={(addres ?? [])}
+                setAddress={setAddress}
+                showModal={showModal}
+                setShowModal={setShowModal}
+                setSuccess={setSuccess}
+            />)
+
     return (
+
         <div className="w-full max-w-4xl mx-auto p-4 flex flex-col gap-6">
             {loading ? (
                 <div className="space-y-4">
@@ -194,8 +199,9 @@ function Cart() {
                         data.map((order, index) => (
                             <div key={index} className="dark:bg-gray-800 dark:border-gray-700 border rounded-2xl p-6 shadow-xl bg-white space-y-4 transition-all duration-300">
                                 <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4 sm:p-6 transition-all duration-300">
-                                    <button onClick={() => { if (!order.is_invoiced) add_to_invoice(order.id) }} className={`absolute top-4 left-0 text-[10px] px-3 py-1 rounded-full font-medium text-white bg-green-500`}>
+                                    <button onClick={() => { if (!order.is_invoiced) add_to_invoice(order.id) }} className={`${loading_button && 'opacity-40'} flex gap-2 absolute top-4 left-0 text-[10px] px-3 py-1 rounded-full font-medium text-white bg-green-500`}>
                                         {order.is_invoiced ? 'پیش فاکتور اضافه شد!' : 'افزودن به پیش فاکتور'}
+                                        {loading_button && <Image alt="صبرکنید..." className="w-3" src={loading_img} />}
                                     </button>
 
                                     <div className="flex flex-col space-y-2">
@@ -249,7 +255,7 @@ function Cart() {
                                                     </div>
                                                 </Link>
                                                 <button
-                                                    onClick={() => delete_cart(item.book.id)}
+                                                    onClick={() => delete_book_in_cart(item.book.id)}
                                                     className="absolute top-2 right-2 text-red-500 hover:text-red-700 transition-colors duration-200 p-2 rounded-full bg-red-50 dark:bg-red-900 hover:bg-red-100 dark:hover:bg-red-800"
                                                     title="حذف از سبد خرید"
                                                 >
