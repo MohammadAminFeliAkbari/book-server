@@ -10,7 +10,6 @@ import Properties from './Properties'
 import Nav from './Nav'
 import TopFooter from '../../../components/Home/slider/Slider'
 import { AppContext } from '../../../../context/AppContext'
-import { useRouter } from 'next/navigation'
 
 export type Tdata = {
   id: number
@@ -44,7 +43,6 @@ export default function BookPage({ id }: { id: number }) {
   const [topFooterData, setTopFooterData] = useState([])
   const [loading, setLoading] = useState(true)
   const { access } = useContext(AppContext)
-  const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,7 +58,6 @@ export default function BookPage({ id }: { id: number }) {
         setData(data)
         setTopFooterData(topFooterResponse.data)
       } catch {
-        router.push('networkError')
       } finally {
         setLoading(false)
       }
