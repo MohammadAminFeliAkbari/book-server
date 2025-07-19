@@ -74,13 +74,15 @@ export default function Header () {
             خروج
           </button>
         ) : (
-          <h3
-            className={`${
-              loading ? 'opacity-25' : ''
-            } px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors`}
-          >
-            خروج
-          </h3>
+          loading && (
+            <h3
+              className={`${
+                loading ? 'opacity-25' : ''
+              } px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors`}
+            >
+              خروج
+            </h3>
+          )
         )}
       </div>
 

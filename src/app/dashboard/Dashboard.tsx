@@ -60,7 +60,7 @@ function Dashboard() {
     )
   }
 
-  if (!data && loading) {
+  if (!data) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
