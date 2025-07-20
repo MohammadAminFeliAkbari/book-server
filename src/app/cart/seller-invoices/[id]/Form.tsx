@@ -11,6 +11,10 @@ import toast from 'react-hot-toast'
 interface Order {
     id: number
     total_price: number
+    address: {
+        address_line: string
+        postal_code: string
+    }
     buyer: {
         first_name: string
         last_name: string
@@ -141,10 +145,13 @@ function Form({ id }: { id: number }) {
             <section className="mb-6 space-y-2 text-sm text-gray-700 dark:text-gray-300">
                 <p>🧍 خریدار: <strong>{data.buyer.first_name} {data.buyer.last_name}</strong></p>
                 <p>📦 وضعیت فاکتور: <span className="font-semibold">{data.status_display}</span></p>
+                <p>📍 آدرس: {data.address.address_line}</p>
+                <p>🏤 کدپستی: {data.address.postal_code}</p>
                 <p>💰 مبلغ کل: <strong className="text-green-600 dark:text-green-400">
                     {toPersianNumber(data.total_price).toLocaleString()} تومان
                 </strong></p>
             </section>
+
 
             <table className="w-full text-sm border-t border-gray-300 dark:border-gray-600">
                 <thead>
